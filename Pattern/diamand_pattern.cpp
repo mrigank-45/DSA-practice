@@ -1,3 +1,12 @@
+// Input Format: N = 3
+// Result: 
+//   *  
+//  ***
+// ***** 
+// *****  
+//  ***
+//   *  
+
 #include <bits/stdc++.h>
 using namespace std;
 

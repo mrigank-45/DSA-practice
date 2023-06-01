@@ -3,40 +3,48 @@ using namespace std;
 
 int main()
 {
-    long long int n;
-    cout << "Enter the value of n" << endl;
-    cin >> n;
+    vector<int> v = {
+        6,
+        -2,
+        -5,
+        7,
+        -9,
+    };
 
-    vector<long long int> v1;
-    vector<long long int> v2;
+    int n = v.size();
+    int x = 3;
 
-    while (n>0)
+    int a = v[0];
+    int b = v[1];
+    int c = v[2];
+
+    int diff = abs(x - (a + b + c));
+    int sum = a + b + c;
+
+    for (int i = 3; i < n; i++)
     {
-        v1.push_back(n%10);
-        n=n/10;
-
-    }
-    int k =0;
-    for (long long int i = 0; i < v1.size()/2; i++)
-    {
-        if (v1[i] != v1[v1.size()-i-1])
+        if (abs(x - (v[i] + b + c)) < diff)
         {
-            k++;
-            break;
+            diff = abs(x - (v[i] + b + c));
+            sum = v[i] + b + c;
+            cout << 1 << endl;
+            cout << i << endl;
         }
-        
+        if (abs(x - (v[i] + a + c)) < diff)
+        {
+            diff = abs(x - (v[i] + b + c));
+            int sum = v[i] + a + c;
+            cout << 2 << endl;
+            cout << i << endl;
+        }
+        if (abs(x - (v[i] + b + a)) < diff)
+        {
+            diff = abs(x - (v[i] + b + c));
+            int sum = v[i] + b + c;
+            cout << 3 << endl;
+            cout << i << endl;
+        }
     }
-    if (k==1)
-    {
-        cout<<"NO"<<endl;
-    }
-    else{
-        cout<<"YES"<<endl;
-    }
-    
-    
-    
-    
 
-    return 0;
+    cout << sum << endl;
 }
