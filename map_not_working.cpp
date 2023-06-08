@@ -1,3 +1,7 @@
+// Given a string s, sort it in decreasing order based on the frequency of the characters. 
+// Input: s = "tree"
+// Output: "eert"
+
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -20,15 +24,14 @@ int main()
             m[s[i]]++;
         }
     }
-    for (auto item : m)
-    {
-        cout << item.first << " " << item.second << endl;
-    }
 
     for (auto item : m)
     {
+        cout << item.first << " " << item.second << endl;
         m1[item.second] = item.first;
+        cout<<m1[item.second]<<endl;
     }
+    cout<<"gg"<<endl;
     for (auto item : m1)
     {
         cout << item.first << " " << item.second << endl;

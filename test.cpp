@@ -1,20 +1,53 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+bool isPalindrome(string S)
+{
+    string P = S;
+    reverse(P.begin(), P.end());
+    if (S == P)
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
 int main()
 {
-    vector<int> v = {2, 1, 5, 5, 5, 5, 6, 6, 6, 6, 6};
+    string s = "vnrtysfrzrmzlygfv";
 
-    vector<int> ans;
+    long long int max = 1;
+    long long int index = 0;
+    long long int n = s.size();
 
-    sort(v.begin(), v.end());
-
-    int m = min(v[0],v[1]);
-    cout<<m<<endl;
-
-
-    // for (int i = 0; i < ans.size(); i++)
-    // {
-    //     cout << ans[i] << " ";
-    // }
+    for (long long int i = 0; i < s.size(); i++)
+    {
+        long long int k = n - i;
+        while (k > 0)
+        {
+            if (isPalindrome(s.substr(i, k)))
+            {
+                if (k > max)
+                {
+                    max = k;
+                    index = i;
+                }
+                else if (k == max)
+                {
+                    if (i < index)
+                    {
+                        max = k;
+                        index = i;
+                    }
+                }
+                break;
+            }
+            k--;
+        }
+    }
+    string ans = s.substr(index, max);
+    cout << ans << endl;
 }
