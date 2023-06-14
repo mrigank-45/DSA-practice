@@ -16,7 +16,9 @@ long long int sqrtInteger(int n)
         long long int square = mid * mid;
 
         if (square == n)
+        {
             return mid;
+        }
 
         if (square < n)
         {

@@ -30,7 +30,7 @@ int find_peak(vector<int> v)
 
 int main()
 {
-    vector<int> v = {2,3,4,6,10};
+    vector<int> v = {2,3,4,6,10,7,2};
 
     int ans = find_peak(v);
 

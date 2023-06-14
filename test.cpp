@@ -1,35 +1,13 @@
-#include <bits/stdc++.h>
-using namespace std;
+require(
+    userStakingAmount[msg.sender] <=
+        IERC20(stakingToken).balanceOf(address(this)),
+    "Not enough balance in contract");
+// transfer
+stakingToken.transfer(msg.sender, userStakingAmount[msg.sender]);
+userStakingAmount[msg.sender] = 0;
 
-bool isPalindrome(string S)
-{
-    string P = S;
-    reverse(P.begin(), P.end());
-    if (S == P)
-    {
-        return 1;
-    }
-    else
-    {
-        return 0;
-    }
-}
-
-int main()
-{
-    string s = "vnrtysfrzrmzlygfv";
-
-    long long int k = 2;
-
-    for (long long int i = 0; i < s.size(); i++)
-    {
-        long long int count;
-
-        while (count<=k)
-        {
-            
-        }
-        
-    }
-    
-}
+require(
+    rewards[msg.sender] <=
+        IERC20(stakingToken).balanceOf(address(this)),
+    "Not enough balance in contract");
+rewardToken.transfer(msg.sender, rewards[msg.sender]);\
