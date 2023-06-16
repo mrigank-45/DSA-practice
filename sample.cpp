@@ -1,48 +1,55 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int main()
+bool isPossible(vector<int> v, int n, int h, int mid)
 {
-    string s = "tree";
-
-    map<char, int> m;
-    map<int, char> m1;
-    string ans;
-
-    for (int i = 0; i < s.size(); i++)
+    int time = 0;
+    for (int i = 0; i < n; i++)
     {
-        if (m.find(s[i]) == m.end())
+        if (v[i] % mid == 0)
         {
-            m[s[i]] = 1;
+            time += v[i] / mid;
         }
         else
         {
-            m[s[i]]++;
+            time = time + v[i] / mid + 1;
         }
-    }
-    for (auto item : m)
-    {
-        cout << item.first << " " << item.second << endl;
-    }
-
-    for (auto item : m)
-    {
-        m1[item.second] = item.first;
-    }
-    for (auto item : m1)
-    {
-        cout << item.first << " " << item.second << endl;
-    }
-    for (auto item : m1)
-    {
-        for (int i = 0; i < item.first; i++)
+        if (time > h)
         {
-            ans.push_back(item.second);
-            // cout << item.second << " ";
+            return false;
         }
-        // cout << endl;
     }
+    return true;
+}
 
-    reverse(ans.begin(), ans.end());
+int Solve(vector<int> v, int n, int h)
+{
+    int s = 0;
+    int e = *max_element(v.begin(), v.end());
+    int ans = e;
+
+    while (s <= e)
+    {
+        cout<<s<<' '<<e<<endl;
+        int mid = s + (e - s) / 2;
+
+        if (isPossible(v, n, h, mid))
+        {
+            ans = mid;
+            e = mid - 1;
+        }
+        else
+        {
+            s = mid + 1;
+        }
+    }
+    return ans;
+}
+
+int main()
+{
+    vector<int> v = {3, 6, 7, 11};
+
+    int ans = Solve(v, 4, 8);
     cout << ans << endl;
 }
