@@ -11,12 +11,25 @@ int main()
     int reverse = 0;
     while (n != 0)
     {
-        int digit = n % 10;
-        reverse = reverse * 10 + digit;
+        int rem = n % 10;
+
+        // check the overflow condition
+        if (reverse > INT_MAX / 10 || reverse == INT_MAX / 10 && rem > 7)
+        {
+            cout << "overflowed" << endl;
+        }
+
+        if (reverse < INT_MIN / 10 || reverse == INT_MIN / 10 && rem < -8)
+        {
+            cout << "overflowed" << endl;
+        }
+        // done
+        
+        reverse = reverse * 10 + rem;
         n = n / 10;
     }
 
-    cout<<reverse<<endl;
+    cout << reverse << endl;
 
     return 0;
 }
