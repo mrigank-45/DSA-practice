@@ -1,53 +1,62 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-vector<int> v;
-
-int isPossible(int N, int D) {
-        int dig = N % 10;
-        int sum = dig;
-        if (dig == D) return 0;
-        N /= 10;
-        while (N) {
-            dig = N % 10;
-            if (dig == D || dig <= sum) return 0;
-            sum += dig;
-            N /= 10;
-        }
-        return 1;
-    }
-
-void goodNumbers(int l, int r, int d)
-{
-    // base case
-    if (l == r)
+bool canPush(vector<vector<int>> ans, vector<int> v){
+    for (int i = 0; i < ans.size(); i++)
     {
-        if (isPossible(l, d))
+        if (ans[i]==v)
         {
-            v.push_back(l);
+            return false;
         }
+        
+    }
+    return true;
+    
+}
+void combination(vector<int> &candidates, int target, vector<int> currComb, int currSum, int currIndex, vector<vector<int>>& ans)
+{
+    if (currSum > target)
+    {
+        return;
+    }
+    if (currSum == target)
+    {
+        
+        sort(currComb.begin(),currComb.end());
+        if (canPush(ans, currComb))
+        {
+            ans.push_back(currComb);
+        }
+        
+        cout << endl;
+
         return;
     }
 
-    if (isPossible(l, d))
+    for (int i = currIndex +1; i < candidates.size(); i++)
     {
-        v.push_back(l);
+        currComb.push_back(candidates[i]);
+        currSum += candidates[i];
+        combination(candidates, target, currComb, currSum, i, ans);
+        currComb.pop_back();
+        currSum -= candidates[i];
     }
-    if (isPossible(r, d))
-    {
-        v.push_back(r);
-    }
-    l++;
-    r--;
-    goodNumbers(l, r, d);
+}
+
+vector<vector<int>> combinationSum(vector<int> &candidates, int target)
+{
+    vector<int> currComb;
+    int currSum = 0;
+    int currIndex = -1;
+    vector<vector<int>> ans;
+    combination(candidates, target, currComb, currSum, currIndex, ans);
+    return ans;
 }
 
 int main()
 {
-    goodNumbers(200, 700, 4);
+    vector<int> candidates = {2, 3, 6, 7};
+    int target = 7;
 
-    for (int i = 0; i < v.size(); i++)
-    {
-        cout << v[i] << " ";
-    }
+    combinationSum(candidates, 7);
 }
