@@ -16,15 +16,12 @@ class Node {
 
     //destructor
     ~Node() {
-        int value = this -> data;
         //memory free
         if(this->next != NULL) {
             delete next;
             this->next = NULL;
         }
-        cout << " memory is free for node with data " << value << endl;
     }
-
 };
 
 void insertAtHead(Node* &head, int d) {
@@ -180,7 +177,7 @@ Node* floydDetectLoop(Node* head) {
         slow = slow -> next;
 
         if(slow == fast) {
-            cout << "present at " << slow -> data << endl;
+            cout << "loop is present at " << slow -> data << endl;
             return slow;
         }
     }

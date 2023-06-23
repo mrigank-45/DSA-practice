@@ -1,51 +1,77 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <map>
 using namespace std;
 
-bool isPalindrome(string &s, int low, int high)
+class Node
 {
-    while (low < high)
-    {
-        if (s[low++] != s[high--])
-            return false;
-    }
-    return true;
-}
 
-void solve(vector<vector<string>> &result, string &s, int start, vector<string> &currentList)
-{
-    if (start >= s.length())
-        result.push_back(currentList);
-    for (int end = start; end < s.length(); end++)
+public:
+    int data;
+    Node *next;
+
+    // constructor
+    Node(int data)
     {
-        if (isPalindrome(s, start, end))
+        this->data = data;
+        this->next = NULL;
+    }
+
+    // destructor
+    ~Node()
+    {
+        // memory free
+        if (this->next != NULL)
         {
-            // add current substring in the currentList
-            currentList.push_back(s.substr(start, end - start + 1));
-            solve(result, s, end + 1, currentList);
-            // backtrack and remove the current substring from currentList
-            currentList.pop_back();
+            delete next;
+            this->next = NULL;
         }
     }
+};
+
+void print(Node *&head)
+{
+
+    if (head == NULL)
+    {
+        cout << "List is empty " << endl;
+        return;
+    }
+    Node *temp = head;
+
+    while (temp != NULL)
+    {
+        cout << temp->data << " ";
+        temp = temp->next;
+    }
+    cout << endl;
 }
 
-vector<vector<string>> partition(string s)
+Node *middleNode(Node *head)
 {
-    vector<vector<string>> result;
-    vector<string> currentList;
-    solve(result, s, 0, currentList);
-    return result;
+    Node *slow = head;
+    Node *fast = head;
+    Node *middle = NULL;
+    while (fast != NULL)
+    {
+        slow = slow->next;
+        fast = fast->next;
+        if (fast != NULL)
+        {
+            fast = fast->next;
+        }
+        if (fast == NULL)
+        {
+            middle = slow;
+        }
+    }
+    return middle;
 }
 
 int main()
 {
 
-    vector<vector<string>> s = partition("abbab");
-    for (int i = 0; i < s.size(); i++)
-    {
-        for (int j = 0; j < s[i].size(); j++)
-        {
-            cout << s[i][j] << " ";
-        }
-        cout << endl;
-    }
+    // created a new node
+    Node *node1 = new Node(10);
+
+    return 0;
 }
