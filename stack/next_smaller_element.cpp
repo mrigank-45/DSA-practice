@@ -24,8 +24,8 @@ vector<int> nextSmallerElement(vector<int> &arr, int n)
 }
 int main()
 {
-    vector<int> v = {2, 4, 3, 2};
-    vector<int> ans = nextSmallerElement(v, 4);
+    vector<int> v = {2, 4, 5, 2, 6};
+    vector<int> ans = nextSmallerElement(v, 5);
     for (int i = 0; i < ans.size(); i++)
     {
         cout << ans[i] << ' ';
