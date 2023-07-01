@@ -27,6 +27,23 @@ private:
     }
 
 public:
+    int diameter(Node *root)             // O(n2) approach
+    {
+
+        // base case
+        if (root == NULL)
+        {
+            return 0;
+        }
+
+        int op1 = diameter(root->left);
+        int op2 = diameter(root->right);
+        int op3 = height(root->left) + height(root->right) + 1;
+
+        return max(op1, max(op2, op3));
+    }
+
+    //********* Optmised Approach in O(n)
     pair<int, int> diameterFast(Node *root)
     {
         // base case
@@ -41,33 +58,17 @@ public:
 
         int op1 = left.first;
         int op2 = right.first;
-        int op3 = left.second + right.second + 1;
+        int op3 = left.second + right.second;
 
         pair<int, int> ans;
         ans.first = max(op1, max(op2, op3));
-        ;
         ans.second = max(left.second, right.second) + 1;
 
         return ans;
     }
-    // int diameter(Node* root) {
 
-    //     return diameterFast(root).first;
-
-    // }
-    int diameter(Node *root)
-    { // O(n2) approach
-
-        // base case
-        if (root == NULL)
-        {
-            return 0;
-        }
-
-        int op1 = diameter(root->left);
-        int op2 = diameter(root->right);
-        int op3 = height(root->left) + height(root->right) + 1;
-
-        return max(op1, max(op2, op3));
+    int diameter(Node* root) {
+        return diameterFast(root).first;
     }
+    //*********
 };
