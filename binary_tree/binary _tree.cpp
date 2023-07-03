@@ -36,41 +36,45 @@ node *buildTree(node *root)
     return root;
 }
 
-void levelOrderTraversal(node *root)
+vector<vector<int>> levelOrderTransversal(node *root)
 {
+    vector<vector<int>> result;
+    if (root == NULL)
+    {
+        return result;
+    }
+
     queue<node *> q;
     q.push(root);
-    q.push(NULL);
+
+    bool leftToRight = true;
 
     while (!q.empty())
     {
-        node *temp = q.front();
-        q.pop();
 
-        if (temp == NULL)
-        {
-            // purana level complete traverse ho chuka hai
-            cout << endl;
-            if (!q.empty())
-            {
-                // queue still has some child ndoes
-                q.push(NULL);
-            }
-        }
-        else
-        {
-            cout << temp->data << " ";
-            if (temp->left)
-            {
-                q.push(temp->left);
-            }
+        int size = q.size();
+        vector<int> ans(size);
 
-            if (temp->right)
-            {
-                q.push(temp->right);
-            }
+        // Level Process
+        for (int i = 0; i < size; i++)
+        {
+
+            node *frontNode = q.front();
+            q.pop();
+
+            ans[i] = frontNode->data;
+
+            if (frontNode->left)
+                q.push(frontNode->left);
+
+            if (frontNode->right)
+                q.push(frontNode->right);
         }
+
+        result.push_back(ans);
     }
+
+    return result;
 }
 
 void inorder(node *root)
@@ -163,7 +167,7 @@ int main()
 
     node *root = NULL;
 
-    levelOrderTraversal(root);
+    // levelOrderTraversal(root);
     // 1 3 5 7 11 17 -1 -1 -1 -1 -1 -1 -1
 
     /*
