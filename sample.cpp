@@ -1,58 +1,46 @@
-#include <bits/stdc++.h>
-using namespace std;
+#include <iostream>
+#include <unordered_map>
+#include <vector>
 
-vector<int> maxSlidingWindow(vector<int> v, int k)
+int maxLengthOfSubarray(std::vector<int> &nums)
 {
-    deque<int> dq;
-    vector<int> ans;
-    int index = 0;
+    int maxLength = 0;
+    std::unordered_map<int, int> lastIndex;
+    int n = nums.size();
+    int length = 0;
 
-    for (int i = 0; i < k; i++)
+    for (int i = 0; i < n; i++)
     {
-        if (v[i] >= v[index])
+        if (lastIndex.find(nums[i]) != lastIndex.end())
         {
-            index = i;
+            length = i - lastIndex[nums[i]] + 1;
         }
+        else
+        {
+            lastIndex[nums[i]] = i;
+        }
+
+        maxLength = std::max(maxLength, length);
     }
-    dq.push_back(index);
 
-    ans.push_back(v[dq.front()]);
-
-    for (int i = k; i < v.size(); i++)
-    {
-
-        if (!dq.empty() && (i - dq.front()) >= k)
-        {
-            dq.pop_front();
-        }
-
-        if (!dq.empty() && v[i] >= v[dq.front()])
-        {
-            dq.pop_back();
-            dq.push_back(i);
-        }
-        else if (dq.empty())
-        {
-            dq.push_back(i);
-        }
-
-        ans.push_back(v[dq.front()]);
-    }
-    return ans;
+    return maxLength;
 }
 
 int main()
 {
+    // int n;
+    // std::cout << "Enter the size of the array: ";
+    // std::cin >> n;
 
-    vector<int> v = {1, 3, 1, 2, 0, 5};
-    int k = 3;
+    std::vector<int> nums = {2, 2, 3, 1, 2, 2, 3, 1, 1};
+    // std::cout << "Enter the elements of the array: ";
+    // for (int i = 0; i < n; i++)
+    // {
+    //     std::cin >> nums[i];
+    // }
 
-    vector<int> ans = maxSlidingWindow(v, k);
-    for (auto it : ans)
-    {
-        cout << it << " ";
-    }
-    cout << endl;
+    int result = maxLengthOfSubarray(nums);
+    std::cout << "Maximum length of a subarray with the same start and end element: " << result << std::endl;
 
     return 0;
 }
