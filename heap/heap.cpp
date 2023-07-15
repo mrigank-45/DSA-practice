@@ -115,6 +115,15 @@ void MinHeap::MinHeapify(int i)
     }
 }
 
+void heapSort(int arr[], int n){
+    int size = n-1;
+    while(size>1){
+        swap(arr[size],arr[0]);
+        size--;
+        // heapify(arr,i,size); //do this
+    }
+}
+
 // Driver program to test above functions
 int main()
 {
