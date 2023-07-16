@@ -10,7 +10,7 @@ int main()
     // defining priority queue
     priority_queue<int> pq;  // max heap by default
 
-    // priority_queue<int, vector<int>, greater<int>> minHeap;
+    priority_queue<int, vector<int>, greater<int>> minHeap;
 
  
     // printing array

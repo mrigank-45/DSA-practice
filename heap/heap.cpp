@@ -1,4 +1,7 @@
 // A C++ program to demonstrate common Binary Heap Operations
+// we can do in dexing indexing from 0 or 1, parent and left/right child index changes accor. to that.
+// Here we have done indexing from 0.
+
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -120,7 +123,7 @@ void heapSort(int arr[], int n){
     while(size>1){
         swap(arr[size],arr[0]);
         size--;
-        // heapify(arr,i,size); //do this
+        // MinHeapify(arr,i,size); //do this
     }
 }
 
