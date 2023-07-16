@@ -1,4 +1,4 @@
-// Print all permutations of a string
+// Rat and maze problem
 
 #include <bits/stdc++.h>
 using namespace std;
