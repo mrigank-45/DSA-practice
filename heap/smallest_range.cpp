@@ -1,3 +1,9 @@
+// You have k lists of sorted integers in non-decreasing order. Find the smallest range that includes at least one number from 
+// each of the k lists.
+
+// Input: nums = [[4,10,15,24,26],[0,9,12,20],[5,18,22,30]]
+// Output: [20,24]
+
 #include <bits/stdc++.h>
 using namespace std;
 
