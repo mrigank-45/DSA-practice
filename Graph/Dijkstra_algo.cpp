@@ -1,5 +1,6 @@
-// ALGO: Use a min heap, and somewhat like BFS, till heap is not empty, keep pushing neighbours (if not visited) and keep updating the minimum distance array (ans).
-// Applicable to all graphs(weighted as well).
+// Finds minimum distance from a src node to all the nodes.
+// ALGO: Use a min heap (pair<distance,node>), and somewhat like BFS, till heap is not empty, push neighbours(non-visited) if minimum distance array(ans) can be updated. 
+// Applicable to DAGs
 
 #include <bits/stdc++.h>
 using namespace std;

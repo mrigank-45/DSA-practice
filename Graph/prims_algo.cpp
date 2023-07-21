@@ -1,3 +1,5 @@
+// Used to find minimum spanning tree (applicable to only connected directed graphs with weights)
+
 // ALGO : Use 3 structure(weight array, isMST array, parent array) and a min heap to get min of the weight array, then follow 3 steps till heap is not empty. 1-> extract top 
 // 2-> mark MST array ture 3-> see if weight can be updated of neighbors, if yes, update weight, parent and insert in heap as well.
 

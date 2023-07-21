@@ -1,4 +1,8 @@
-// uses BFS
+// ALGO: Find indegree of all nodes and initially push into queue all nodes where (indegree = 0), till queue is not empty keep decreasing indegree of neighbours by 1 and 
+// push into queue if (indegree = 0). For no cycle, ans.size() == n.
+
+// Applicable to directed acyclic graphs (uses BFS)
+
 #include <bits/stdc++.h>
 using namespace std;
 

@@ -1,3 +1,5 @@
+// ALGO: Maintain a pathVis array, mark true when you enter it's DFS, false when leave, if adjacent node is visited as well as pathVis, then there is a cycle.
+
 #include <bits/stdc++.h>
 using namespace std;
 

@@ -1,3 +1,5 @@
+// ALGO: Maintain a parent array during BFS, if adjacent node is visited and is not it's own parent node, then there is a cycle.
+
 #include <bits/stdc++.h>
 using namespace std;
 

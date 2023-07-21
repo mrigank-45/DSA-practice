@@ -60,13 +60,5 @@ vector<int> shortestPathInDAG(int n, int m, vector<vector<int>> &edges)
         }
     }
 
-    // If 'dis[i]' is 10^9 for some vertex 'i', then assigning -1 in 'dis[i]'.
-    for (int i = 0; i < n; i++)
-    {
-        if (dis[i] == 1e9)
-        {
-            dis[i] = -1;
-        }
-    }
     return dis;
 }

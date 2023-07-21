@@ -1,5 +1,7 @@
 // In topological sorting, node u will always appear before node v if there is a directed edge from node u towards node v(u -> v).
+
 // ALGO: we just have to push the node into stack while coming back fromn it's DFS, we have the desired order. (uses DFS)
+// applicable to directed acyclic graphs.
 
 #include <bits/stdc++.h>
 using namespace std;
