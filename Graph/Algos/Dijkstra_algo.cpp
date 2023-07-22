@@ -1,6 +1,6 @@
 // Finds minimum distance from a src node to all the nodes.
 // ALGO: Use a min heap (pair<distance,node>), and somewhat like BFS, till heap is not empty, push neighbours(non-visited) if minimum distance array(ans) can be updated. 
-// Applicable to DAGs
+// Applicable to DAGs (fails in -ve weighted graphs)
 
 #include <bits/stdc++.h>
 using namespace std;
