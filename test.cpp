@@ -1,50 +1,82 @@
 #include <bits/stdc++.h>
 using namespace std;
-class Solution
+void dfs(int row, int col, vector<vector<int>> &vis,
+         vector<vector<int>> &grid, int delrow[], int delcol[], int &count, bool &flag)
 {
-public:
-    void dfs(int node,  map<int, vector<int>> adj, unordered_map<int, bool> &visited)
-    {
-        visited[node] = 1;
+    vis[row][col] = 1;
+    int n = grid.size();
+    int m = grid[0].size();
 
-        for (auto it : adj[node])
+    // check for top, right, bottom, left
+    for (int i = 0; i < 4; i++)
+    {
+        int nrow = row + delrow[i];
+        int ncol = col + delcol[i];
+
+        if (grid[nrow][ncol] == 1 && !vis[nrow][ncol])
         {
-            if (!visited[it])
+            if ((nrow > 0) && (nrow < n - 1) && (ncol > 0) && (ncol < m - 1))
             {
-                dfs(it, adj, visited);
+                count++;
+                dfs(nrow, ncol, vis, grid, delrow, delcol, count, flag);
+            }
+            else
+            {
+                flag = true;
             }
         }
     }
-    int findCircleNum(vector<vector<int>> &isConnected)
+}
+
+int numEnclaves(vector<vector<int>> &grid)
+{
+
+    int n = grid.size();
+    int m = grid[0].size();
+    int delrow[] = {-1, 0, +1, 0};
+    int delcol[] = {0, 1, 0, -1};
+    vector<vector<int>> vis(n, vector<int>(m, 0));
+
+    vector<pair<int, int>> one;
+    vector<int> ans;
+    ans.push_back(0);
+
+    for (int i = 0; i < n; i++)
     {
-        map<int, vector<int>> adj;
-        int n = isConnected[0].size();
-        for (int i = 0; i < n; i++)
+        for (int j = 0; j < m; j++)
         {
-            for (int j = i; j < n; j++)
+            if (grid[i][j] == 1 && (i > 0) && (i < n - 1) && (j > 0) && (j < m - 1))
             {
-                if (isConnected[i][j])
-                {
-                    adj[i].push_back(j);
-                    adj[j].push_back(i);
-                }
-            }
-        }
-
-        int cnt = 0;
-        unordered_map<int, bool> visited;
-        for (int i = 0; i < n; i++)
-        {
-            visited[i] = 0;
-        }
-
-        for (int i = 0; i < n; i++)
-        {
-            if (!visited[i])
-            {
-                cnt++;
-                dfs(i, adj, visited);
+                one.push_back({i, j});
             }
         }
     }
-};
+
+    for (int i = 0; i < one.size(); i++)
+    {
+        if (!vis[one[i].first][one[i].second])
+        {
+            int count = 1;
+            bool flag = false;
+            dfs(one[i].first, one[i].second, vis, grid, delrow, delcol, count, flag);
+            if (!flag)
+            {
+                ans.push_back(count);
+            } 
+        }
+    }
+
+    int max = *max_element(ans.begin(), ans.end());
+    return max;
+}
+
+int main()
+{
+    vector<vector<int>> grid = {{0, 1, 1, 0}, {0, 0, 1, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}};
+
+    int ans = numEnclaves(grid);
+
+    cout << ans << endl;
+
+    return 0;
+}
