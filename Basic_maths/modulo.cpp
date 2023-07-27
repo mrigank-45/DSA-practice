@@ -1,6 +1,8 @@
+// Number of Ways to Arrive at Destination : Given a graph, Return the number of ways you can arrive at your destination in the shortest amount of time. 
+// Use dijkstra algo, maintain a ways array, whenevr shorter or equal distance is encountered, update the ways array.
+
 #include <bits/stdc++.h>
 using namespace std;
-
 
 class Solution
 {
