@@ -1,5 +1,5 @@
 // leetcode Q (using DFS)
-// Note: start GFS from boundry elements and mark visited in these types of Q.
+// Note: start DFS from boundry elements and mark visited in these types of Q.
 
 #include <bits/stdc++.h>
 using namespace std;

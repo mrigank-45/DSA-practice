@@ -28,10 +28,10 @@ vector<int> Solve(vector<vector<pair<int, int>>> &adjList, int vertices, int sou
         visited[u] = true;
 
         // Update the distances of the adjacent nodes.
-        for (auto it = adjList[u].begin(); it != adjList[u].end(); it++)
+        for (auto it:adjList[u])
         {
-            int v = (*it).first;
-            int dist = (*it).second;
+            int v = it.first;
+            int dist = it.second;
 
             if (visited[v] == false && distance[v] > distance[u] + dist)
             {
