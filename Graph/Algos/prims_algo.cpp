@@ -1,7 +1,7 @@
 // Used to find minimum spanning tree (applicable to only connected undirected graphs with weights)
 
-// ALGO : Use 3 structure(weight array, isMST array, parent array) and a min heap to get min of the weight array, then follow 3 steps till heap is not empty. 1-> extract top 
-// 2-> mark MST array ture 3-> see if weight can be updated of neighbors, if yes, update weight, parent and insert in heap as well.
+// ALGO : Use 3 structure(weight array, inMST array, parent array) and a min heap to get min of the weight array, then follow 3 steps till heap is not empty. 1-> extract top 
+// 2-> mark MST array true 3-> see if weight can be updated of neighbors, if yes, update weight, parent and insert in heap as well.
 
 //  Time Complexity = O(M * log(N))
 //  Space Complexity = O(N + M)
@@ -9,8 +9,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-vector<pair<pair<int, int>, int>>
-primsMST(vector<pair<int, int>> *adjList, int n)
+vector<pair<pair<int, int>, int>> primsMST(vector<pair<int, int>> *adjList, int n)
 {
     // pair {min weight, node}
     priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq; // min heap
@@ -48,7 +47,7 @@ primsMST(vector<pair<int, int>> *adjList, int n)
         // Include u to in our MST. (step 2)
         inMST[u] = true;
 
-        // Explore all adjacent of u and if not visited, update the weight and parent array and push to the heap. (step 3)
+        // Explore all adjacent of u. (step 3)
         for (auto x : adjList[u])
         {
             int v = x.first;

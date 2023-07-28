@@ -1,68 +1,91 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+class DisjointSet
+{
+    vector<int> rank, parent;
+
+public:
+    DisjointSet(int n)
+    {
+        rank.resize(n + 1, 0);
+        parent.resize(n + 1);
+        // initialize the parent and rank array
+        for (int i = 0; i <= n; i++)
+        {
+            parent[i] = i;
+            rank[i] = 0;
+        }
+    }
+
+    int findParent(int node)
+    {
+        // base case: it means it's last node
+        if (node == parent[node])
+            return node;
+        return parent[node] = findParent(parent[node]); // For Path Compression
+        // return findParent(parent[node]);
+    }
+
+    void unionByRank(int u, int v)
+    {
+        int ulp_u = findParent(u);
+        int ulp_v = findParent(v);
+        if (ulp_u == ulp_v)
+            return;
+        if (rank[ulp_u] < rank[ulp_v])
+        {
+            parent[ulp_u] = ulp_v;
+        }
+        else if (rank[ulp_v] < rank[ulp_u])
+        {
+            parent[ulp_v] = ulp_u;
+        }
+        else
+        {
+            parent[ulp_v] = ulp_u;
+            rank[ulp_u]++; // update the rank
+        }
+    }
+};
 
 class Solution
 {
 public:
-    int countPaths(int n, vector<vector<int>> &roads)
+    int makeConnected(int n, vector<vector<int>> &connections)
     {
-        // Creating an adjacency list for the given graph.
-        vector<pair<int, int>> adj[n];
-        for (auto it : roads)
+        vector<pair<int, pair<int, int>>> edges;
+        for (int i = 0; i < n; i++)
         {
-            adj[it[0]].push_back({it[1], it[2]});
-            adj[it[1]].push_back({it[0], it[2]});
+
+            int u= connections[i][0];
+            int v = connections[i][1];
+            int wt = 1;
+
+            edges.push_back({wt, {u, v}});
+            edges.push_back({wt, {v, u}});
         }
+        sort(edges.begin(), edges.end());
 
-        // Defining a priority queue (min heap).
-        priority_queue<pair<int, int>,
-                       vector<pair<int, int>>, greater<pair<int, int>>>
-            pq;
+        // initialy we assume all nodes are disconnected
+        DisjointSet ds(n);
+        int mstWt = 0;
+        int cnt = 0;
 
-        // Initializing the dist array and the ways array
-        // along with their first indices.
-        vector<int> dist(n, INT_MAX), ways(n, 0);
-        dist[0] = 0;
-        ways[0] = 1;
-        pq.push({0, 0});
-
-        // Define modulo value
-        int mod = (int)(1e9 + 7);
-
-        // Iterate through the graph with the help of priority queue
-        // just as we do in Dijkstra's Algorithm.
-        while (!pq.empty())
+        for (auto it : edges)
         {
-            int dis = pq.top().first;
-            int node = pq.top().second;
-            pq.pop();
+            int wt = it.first;
+            int u = it.second.first;
+            int v = it.second.second;
 
-            for (auto it : adj[node])
+            if (ds.findParent(u) != ds.findParent(v)) 
             {
-                int adjNode = it.first;
-                int edW = it.second;
-
-                // This ‘if’ condition signifies that this is the first
-                // time we’re coming with this short distance, so we push
-                // in PQ and keep the no. of ways the same.
-                if (dis + edW < dist[adjNode])
-                {
-                    dist[adjNode] = dis + edW;
-                    pq.push({dis + edW, adjNode});
-                    ways[adjNode] = ways[node];
-                }
-
-                // If we again encounter a node with the same short distance
-                // as before, we simply increment the no. of ways.
-                else if (dis + edW == dist[adjNode])
-                {
-                    ways[adjNode] = (ways[adjNode] + ways[node]) % mod;
-                }
+                mstWt += wt; 
+                cnt++;
+                ds.unionByRank(u, v);
             }
         }
-        // Finally, we return the no. of ways to reach
-        // (n-1)th node modulo 10^9+7.
-        return ways[n - 1] % mod;
+
+        return cnt;
     }
 };

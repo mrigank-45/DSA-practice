@@ -1,4 +1,4 @@
-// Used to find minimum spanning tree (applicable to all graphs(disconncted as well) with weights)
+// Used to find minimum spanning tree (applicable to undirected graphs with weights)
 // we need a Disjoint Set data structure whether 2 nodes are in the same component or not in constant time. (func: findParent,unionByRank)
 
 // ALGO: Sort the edges by weight, transverse them and if they are not in same component, add weight to ans and join them using disjoint set.
@@ -8,7 +8,7 @@ using namespace std;
 
 class DisjointSet
 {
-    vector<int> rank, parent, size;
+    vector<int> rank, parent;
 
 public:
     DisjointSet(int n)
@@ -70,7 +70,7 @@ public:
                 int wt = it[1];
                 int node = i;
 
-                edges.push_back({wt, {node, adjNode}});
+                edges.push_back({wt, {node, adjNode}});  // you do not need to make edge from both side in kruskal's algo
             }
         }
         sort(edges.begin(), edges.end());
