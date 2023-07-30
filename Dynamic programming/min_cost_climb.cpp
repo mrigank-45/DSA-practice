@@ -56,7 +56,8 @@ public:
 
         return min(prev1, prev2);
     }
-
+    
+    // main function
     int minCostClimbingStairs(vector<int> &cost)
     {
 

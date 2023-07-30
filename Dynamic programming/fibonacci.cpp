@@ -1,7 +1,7 @@
 #include <iostream>
 using namespace std;
 
-// using top down approach
+ // recursion + memorization
 int fibonacci(int n, int dp[])
 {
     if (n <= 1)
@@ -18,7 +18,7 @@ int fibonacci(int n, int dp[])
     return dp[n];
 }
 
-// using bottom up approach
+// tabulation
 int fibonacci(int n)
 {
     int dp[n + 1];
@@ -34,7 +34,7 @@ int fibonacci(int n)
     return dp[n];
 }
 
-// space optmization in bottom up approach
+// space optmization 
 int fibonacci(int n)
 {
     int prev2 = 0;
