@@ -4,32 +4,59 @@ using namespace std;
 class Solution
 {
 public:
-    int solve(int index, int buy, vector<vector<int>> &dp, vector<int> &prices)
+    // Memoiation Solution
+    int solve(int i, int total, pair<int, int> p, vector<int> arr, int ans, vector<vector<int>> dp)
     {
-        if (index == prices.size() || buy >= 4)
+        // base case
+        if (p.first == arr.size() / 2)
         {
-            return 0;
+            return min(ans, abs((total - p.second) - p.second));
         }
-        if (dp[index][buy] != -1)
+        if (i == arr.size())
         {
-            return dp[index][buy];
+            return INT_MAX;
         }
 
-        if (buy == 0 || buy == 2)
+        if (dp[i][p.first] != -1)
         {
-            return dp[index][buy] = max((-1) * prices[index] + solve(index + 1, buy + 1, dp, prices), solve(index + 1, buy, dp, prices));
+            return dp[i][p.first];
         }
-        else
-        {
-            return dp[index][buy] = max(prices[index] + solve(index + 1, buy + 1, dp, prices), solve(index + 1, buy, dp, prices));
-        }
+
+        int take = min(solve(i + 1, total, {p.first + 1, p.second + arr[i]}, arr, ans, dp), ans);
+        int notTake = min(solve(i + 1, total, {p.first, p.second}, arr, ans, dp), ans);
+
+        return dp[i][p.first] = min(take, notTake);
     }
 
-    int maxProfit(vector<int> &prices)
+    // tabulation
+    int solve1(vector<int> arr)
     {
+        int total = 0, n = arr.size();
+        for (int i = 0; i < n; i++)
+        {
+            total += arr[i];
+        }
+        if (n == 1)
+        {
+            return arr[0];
+        }
 
-        int n = prices.size();
-        vector<vector<int>> dp(n, vector<int>(5, -1));
-        return solve(0, 0, dp, prices);
+        vector<vector<int>> dp(n, vector<int>(n / 2 + 1, -1));
+
+    }
+
+    int minimumDifference(vector<int> &nums)
+    {
+        int total = 0, n = nums.size();
+        for (int i = 0; i < n; i++)
+        {
+            total += nums[i];
+        }
+        if (n == 1)
+        {
+            return nums[0];
+        }
+        vector<vector<int>> dp(n, vector<int>(n / 2 + 1, -1));
+        return solve(0, total, {0, 0}, nums, INT_MAX, dp);
     }
 };
