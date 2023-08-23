@@ -1,55 +1,68 @@
 #include <bits/stdc++.h>
+
 using namespace std;
 
-class Solution
+int solve(vector<int> &price, int ind, int N, vector<vector<int>> &dp)
 {
-public:
-    bool subsetSumUtil(int ind, int target, vector<int> &arr, vector<vector<int>> &dp)
+    if (ind == 0)
     {
-        if (target == 0)
-            return dp[ind][target] = true;
-
-        if (ind == 0)
-            return dp[ind][target] = arr[0] == target;
-
-        if (dp[ind][target] != -1)
-            return dp[ind][target];
-
-        bool notTaken = subsetSumUtil(ind - 1, target, arr, dp);
-
-        bool taken = false;
-        if (arr[ind] <= target)
-            taken = subsetSumUtil(ind - 1, target - arr[ind], arr, dp);
-
-        return dp[ind][target] = notTaken || taken;
+        return N * price[0];
     }
 
-    int minimumDifference(vector<int> &arr)
+    if (dp[ind][N] != -1)
+        return dp[ind][N];
+
+    int notTaken = 0 + solve(price, ind - 1, N, dp);
+
+    int taken = INT_MIN;
+    int rodLength = ind + 1;
+    if (rodLength <= N)
+        taken = price[ind] + solve(price, ind, N - rodLength, dp);
+
+    return dp[ind][N] = max(notTaken, taken);
+}
+
+int tabulation(vector<int> &price, int N)
+{
+    vector<vector<int>> dp(N + 1, vector<int>(N + 1, -1));
+
+    for (int i = 0; i < N; i++)
     {
-        int n = arr.size();
-        int totSum = 0;
-
-        for (int i = 0; i < n; i++)
+        for (int j = 0; j <= N; j++)
         {
-            totSum += arr[i];
-        }
-
-        vector<vector<int>> dp(n, vector<int>(totSum + 1, -1));
-
-        for (int i = 0; i <= totSum; i++)
-        {
-            bool dummy = subsetSumUtil(n - 1, i, arr, dp);
-        }
-
-        int mini = 1e9;
-        for (int i = 0; i <= totSum; i++)
-        {
-            if (dp[n - 1][i] == true)
+            if (i == 0)
             {
-                int diff = abs(i - (totSum - i));
-                mini = min(mini, diff);
+                dp[i][j] = j * price[i];
+            }
+            else
+            {
+                int notTaken = dp[i - 1][j];
+                int taken = INT_MIN;
+                int rodLength = i + 1;
+                if (rodLength <= j)
+                    taken = price[i] + dp[i][j - rodLength];
+
+                dp[i][j] = max(notTaken, taken);
             }
         }
-        return mini;
     }
-};
+
+    return dp[N - 1][N];
+}
+
+int cutRod(vector<int> &price, int N)
+{
+
+    vector<vector<int>> dp(N, vector<int>(N + 1, -1));
+    return solve(price, N - 1, N, dp);
+}
+
+int main()
+{
+
+    vector<int> price = {2, 5, 7, 8, 10};
+
+    int n = price.size();
+
+    cout << "The Maximum price generated is " << cutRod(price, n);
+}

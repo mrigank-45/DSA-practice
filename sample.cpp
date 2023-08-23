@@ -4,59 +4,61 @@ using namespace std;
 class Solution
 {
 public:
-    // Memoiation Solution
-    int solve(int i, int total, pair<int, int> p, vector<int> arr, int ans, vector<vector<int>> dp)
+    int memoization(string s1, string s2, int i, int j, vector<vector<int>> &dp)
     {
-        // base case
-        if (p.first == arr.size() / 2)
+        if (i == s1.length() || j == s2.length())
         {
-            return min(ans, abs((total - p.second) - p.second));
-        }
-        if (i == arr.size())
-        {
-            return INT_MAX;
+            return 0;
         }
 
-        if (dp[i][p.first] != -1)
+        int ans = INT_MAX;
+        if (dp[i][j] != -1)
         {
-            return dp[i][p.first];
+            return dp[i][j];
         }
 
-        int take = min(solve(i + 1, total, {p.first + 1, p.second + arr[i]}, arr, ans, dp), ans);
-        int notTake = min(solve(i + 1, total, {p.first, p.second}, arr, ans, dp), ans);
+        if (s1[i] == s2[j])
+        {
+            ans = 1 + memoization(s1, s2, i + 1, j + 1, dp);
+        }
+        else
+        {
+            int op1 = memoization(s1, s2, i + 1, j, dp);
+            int op2 = memoization(s1, s2, i, j + 1, dp);
+            ans = max(op1, op2);
+        }
 
-        return dp[i][p.first] = min(take, notTake);
+        return dp[i][j] = ans;
+    }
+    int tabulation(string &s1, string &s2)
+    {
+        vector<vector<int>> dp(s1.size() + 1, vector<int>(s2.size() + 1, 0));
+        for (int i = s1.length() - 1; i >= 0; i--)
+        {
+            for (int j = s2.size() - 1; j >= 0; j--)
+            {
+                int ans = 0;
+                if (s1[i] == s2[j])
+                {
+                    ans = 1 + dp[i + 1][j + 1];
+                }
+                else
+                {
+                    int op1 = dp[i + 1][j];
+                    int op2 = dp[i][j + 1];
+                    ans = max(op1, op2);
+                }
+                dp[i][j] = ans;
+            }
+        }
+        return dp[0][0];
     }
 
-    // tabulation
-    int solve1(vector<int> arr)
+    int longestCommonSubsequence(string s1, string s2)
     {
-        int total = 0, n = arr.size();
-        for (int i = 0; i < n; i++)
-        {
-            total += arr[i];
-        }
-        if (n == 1)
-        {
-            return arr[0];
-        }
-
-        vector<vector<int>> dp(n, vector<int>(n / 2 + 1, -1));
-
-    }
-
-    int minimumDifference(vector<int> &nums)
-    {
-        int total = 0, n = nums.size();
-        for (int i = 0; i < n; i++)
-        {
-            total += nums[i];
-        }
-        if (n == 1)
-        {
-            return nums[0];
-        }
-        vector<vector<int>> dp(n, vector<int>(n / 2 + 1, -1));
-        return solve(0, total, {0, 0}, nums, INT_MAX, dp);
+        vector<vector<int>> dp(s1.length() + 1, vector<int>(s2.size(), -1));
+        return memoization(s1, s2, 0, 0, dp);
+        return tabulation(s1, s2);
+        // return space(s1,s2);
     }
 };
