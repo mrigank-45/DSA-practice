@@ -39,7 +39,7 @@ vector<int> Solve(vector<vector<pair<int, int>>> &adjList, int vertices, int sou
 
                 pq.push({distance[v], v});
             }
-        }
+        }   
     }
 
     return distance;
