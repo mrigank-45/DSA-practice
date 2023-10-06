@@ -1,3 +1,6 @@
+// Number of Inversions (codestudio)
+// Use Merge sort with the adjustment that whenever an unsorted pair is discovered, increase the count by one and return the count at the end.
+
 #include <bits/stdc++.h>
 using namespace std;
 
