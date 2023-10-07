@@ -3,11 +3,11 @@
 //      [2, 6, 9],
 //      [3, 6, 9]]
 // Output: 5
-// Explanation: Sorting matrix elements gives
-// us {1,2,3,3,5,6,6,9,9}. Hence, 5 is median.
+// Explanation: Sorting matrix elements gives us {1,2,3,3,5,6,6,9,9}. Hence, 5 is median.
 
 #include <bits/stdc++.h>
 using namespace std;
+
 int countSmallerThanOrEqualToMid(vector<int> &row, int mid)
 {
     int l = 0, h = row.size() - 1;
@@ -25,6 +25,7 @@ int countSmallerThanOrEqualToMid(vector<int> &row, int mid)
     }
     return l;
 }
+
 int findMedian(vector<vector<int>> &A)
 {
     int n = A.size();
@@ -63,6 +64,7 @@ int findMedian(vector<vector<int>> &A)
     }
     return low;
 }
+
 int main()
 {
     int row = 3, col = 3;

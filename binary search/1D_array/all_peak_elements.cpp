@@ -1,19 +1,6 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-vector<int> findPeakElement(vector<int> nums)
-{
-
-    if (nums.size() == 1)
-        return {0};
-
-    vector<int> peaks;
-
-    findPeak(0, nums.size(), nums, peaks);
-
-    return peaks;
-}
-
 void findPeak(int start, int end, vector<int> nums, vector<int> peaks)
 {
     if (start > end || start == nums.size() || end < 0)
@@ -49,4 +36,17 @@ void findPeak(int start, int end, vector<int> nums, vector<int> peaks)
 
     findPeak(middle + 1, end, nums, peaks);
     findPeak(start, middle - 1, nums, peaks);
+}
+
+vector<int> findPeakElements(vector<int> nums)
+{
+
+    if (nums.size() == 1)
+        return {0};
+
+    vector<int> peaks;
+
+    findPeak(0, nums.size(), nums, peaks);
+
+    return peaks;
 }

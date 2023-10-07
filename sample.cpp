@@ -4,98 +4,121 @@ using namespace std;
 class Solution
 {
 public:
-    // Merge function to merge two sorted halves of the array
-    void merge(vector<int> &nums, int low, int mid, int high)
-    {
-        vector<int> temp;    // Temporary vector to store the merged result
-        int left = low;      // Pointer for the left subarray
-        int right = mid + 1; // Pointer for the right subarray
+    // int find_peak(vector<int> v)
+    // {
+    //     int s = 0, e = v.size() - 1;
+    //     int mid = (s + e) / 2;
+    //     while (s < e)
+    //     {
+    //         if (mid == s)
+    //         {
+    //             if (v[mid] > v[mid + 1])
+    //             {
+    //                 return mid;
+    //             }
+    //             else
+    //             {
+    //                 return mid + 1;
+    //             }
+    //         }
+    //         else if (v[mid] > v[mid - 1])
+    //         {
+    //             s = mid;
+    //         }
+    //         else
+    //         {
+    //             e = mid - 1;
+    //         }
 
-        // Compare elements from both subarrays and merge them into temp
-        while (left <= mid && right <= high)
+    //         mid = (s + e) / 2;
+    //     }
+    //     return e;
+    // }
+
+    vector<int> findPeakElement(vector<int> nums)
+    {
+
+        if (nums.size() == 1)
+            return {0};
+
+        vector<int> peaks;
+
+        findPeak(0, nums.size(), nums, peaks);
+
+        return peaks;
+    }
+
+    void findPeak(int start, int end, vector<int> nums, vector<int> peaks)
+    {
+        if (start > end || start == nums.size() || end < 0)
+            return;
+
+        int middle = start + (end - start) / 2;
+
+        if (middle == 0)
         {
-            if (nums[left] <= nums[right])
+            if (nums[start] > nums[start + 1])
             {
-                temp.push_back(nums[left]);
-                left++;
+                peaks.push_back(0);
             }
             else
             {
-                temp.push_back(nums[right]);
-                right++;
+                findPeak(1, 1, nums, peaks);
             }
         }
-
-        // Copy remaining elements from the left subarray, if any
-        while (left <= mid)
+        else if (middle == nums.size() - 1)
         {
-            temp.push_back(nums[left]);
-            left++;
-        }
-
-        // Copy remaining elements from the right subarray, if any
-        while (right <= high)
-        {
-            temp.push_back(nums[right]);
-            right++;
-        }
-
-        // Copy the merged result back to the original array nums
-        for (int i = low; i <= high; i++)
-        {
-            nums[i] = temp[i - low];
-        }
-    }
-
-    // Merge Sort function to sort and count reverse pairs
-    int mergeSort(vector<int> &nums, int low, int high)
-    {
-        int count = 0; // Counter for reverse pairs
-
-        // Base case: if the subarray has one or zero elements, return 0
-        if (low >= high)
-            return count;
-
-        int mid = low + (high - low) / 2; // Calculate the midpoint
-
-        // Recursively sort and count reverse pairs in left and right subarrays
-        count += mergeSort(nums, low, mid);
-        count += mergeSort(nums, mid + 1, high);
-
-        // Count reverse pairs between the left and right subarrays
-        count += countPairs(nums, low, mid, high);
-
-        // Merge the sorted subarrays
-        merge(nums, low, mid, high);
-
-        return count; // Return the total count of reverse pairs
-    }
-
-    // Function to count reverse pairs between two halves
-    int countPairs(vector<int> &nums, int low, int mid, int high)
-    {
-        int right = mid + 1; // Pointer for the right subarray
-        int count = 0;       // Counter for reverse pairs
-
-        // Iterate through the left subarray
-        for (int i = low; i <= mid; i++)
-        {
-            // Find the rightmost element in the right subarray
-            // that is greater than twice the value of the current element
-            while (right <= high && nums[i] > 2LL * nums[right])
+            if (nums[middle] > nums[middle - 1])
             {
-                right++;
+                peaks.push_back(middle);
             }
-            // Count the number of elements in the right subarray
-            // that are less than or equal to half the value of the current element
-            count += (right - (mid + 1));
         }
-        return count; // Return the count of reverse pairs
+        else
+        {
+            if (nums[middle] > nums[middle - 1] && nums[middle] > nums[middle + 1])
+            {
+                peaks.push_back(middle);
+            }
+        }
+
+        findPeak(middle + 1, end, nums, peaks);
+        findPeak(start, middle - 1, nums, peaks);
     }
 
-    // Main function to find and count reverse pairs in the array
-    int reversePairs(vector<int> &nums)
+    vector<int> findPeakGrid(vector<vector<int>> &arr)
     {
-        return mergeSort(nums, 0, nums.size() - 1); // Call mergeSort with the entire array
+
+        int row = arr.size();
+        int col = arr[0].size();
+
+        for (int i = 0; i < row; i++)
+        {
+            vector<int> peaks = findPeakElement(arr[i]);
+            for (int j = 0; j < peaks.size(); j++)
+            {
+                if (i == 0)
+                {
+                    if (arr[i][peaks[j]] >= arr[i + 1][peaks[j]])
+                    {
+                        return {i, peaks[j]};
+                    }
+                }
+                else if (i == row - 1)
+                {
+                    if (arr[i][peaks[j]] >= arr[i - 1][peaks[j]])
+                    {
+                        return {i, peaks[j]};
+                    }
+                }
+                else
+                {
+                    if (arr[i][peaks[j]] >= arr[i - 1][peaks[j]] && arr[i][peaks[j]] >= arr[i + 1][peaks[j]])
+                    {
+                        return {i, peaks[j]};
+                    }
+                }
+            }
+        }
+        return {0, 0};
     }
 };
