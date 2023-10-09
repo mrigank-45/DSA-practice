@@ -1,3 +1,9 @@
+// A peak element in a 2D grid is an element that is strictly greater than all of its adjacent neighbors to the left, right, top, and bottom.
+// Given a m x n matrix mat where no two adjacent cells are equal, find any peak element mat[i][j] and return the length 2 array [i,j].
+
+// Input: mat = [[10,20,15],[21,30,14],[7,16,32]]   Output: [1,1]
+// Explanation: Both 30 and 32 are peak elements so [1,1] and [2,2] are both acceptable answers.
+
 #include <bits/stdc++.h>
 using namespace std;
 
