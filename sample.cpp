@@ -1,71 +1,51 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class Solution
+int helper(string str, int k) 
 {
-public:
-    int find_peak(vector<int> v)
+
+    int i = 0, j = 0, currCount = 0;
+    int result = 0;
+
+    // Array to store count of characters.
+    vector<int>count(26, 0);
+
+    while (j < str.size()) 
     {
-        int s = 0, e = v.size() - 1;
-        int mid = (s + e) / 2;
-        while (s < e)
+        // Index for current character.
+        int index = str[j] - 'a';
+
+        // Increment count for the current character.
+        count[index] += 1;
+
+        if (count[index] == 1) 
         {
-            if (mid == s)
-            {
-                if (v[mid] > v[mid + 1])
-                {
-                    return mid;
-                }
-                else
-                {
-                    return mid + 1;
-                }
-            }
-            else if (v[mid] > v[mid - 1])
-            {
-                s = mid;
-            }
-            else
-            {
-                e = mid - 1;
-            }
-
-            mid = (s + e) / 2;
+            currCount++;
         }
-        return e;
-    }
 
-    vector<int> findPeakGrid(vector<vector<int>> &arr)
-    {
-
-        int row = arr.size();
-        int col = arr[0].size();
-
-        for (int i = 0; i < row; i++)
+        // Decrement count and increase ith pointer.
+        while (currCount > k) 
         {
-            int peak = find_peak(arr[i]);
-            if (i == 0)
+            count[str[i] - 'a']--;
+            if (count[str[i] - 'a'] == 0) 
             {
-                if (arr[i][peak] >= arr[i + 1][peak])
-                {
-                    return {i, peak};
-                }
+                currCount--;
             }
-            else if (i == row - 1)
-            {
-                if (arr[i][peak] >= arr[i - 1][peak])
-                {
-                    return {i, peak};
-                }
-            }
-            else
-            {
-                if (arr[i][peak] >= arr[i - 1][peak] && arr[i][peak] >= arr[i + 1][peak])
-                {
-                    return {i, peak};
-                }
-            }
+
+            i++;
         }
-        return {0, 0};
+
+        // Total substrings.
+        result += (j - i + 1);
+        j++;
     }
-};
+    return result;
+}
+
+int countSubStrings(string str, int k) {
+
+    // Calculating for at most k and at most k-1 distinct chars.
+    int ans = helper(str, k) - helper(str, k - 1);
+
+    return ans;
+}

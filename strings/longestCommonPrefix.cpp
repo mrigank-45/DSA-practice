@@ -31,13 +31,13 @@ int main()
 
     for (int i = 1; i < n; i++)
     {
-        if (arr[i].find(f) == 0)
+        if (arr[i].find(f) == 0) // found
         {
             continue;
         }
         else
         {
-            while (arr[i].find(f) != 0)
+            while (arr[i].find(f) != 0) // till not found
             {
                 if (f.size() == 0)
                 {

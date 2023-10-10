@@ -1,42 +1,46 @@
 // find the longest palindromic substring
-// Input: S = "aaaabbaa"
-// Output: aabbaa
-// A O(n^2) time and O(1) space program 
+// Input: S = "aaaabbaa"  Output: aabbaa
+// A O(n^2) time and O(1) space program
 
 #include <bits/stdc++.h>
 using namespace std;
 
-// This function prints the
-// longest palindrome substring 
+// This function prints the longest palindrome substring
 int longestPalSubstr(string str)
 {
     int n = str.size(); // calculating size of string
     if (n < 2)
-        return n; // if string is empty then size will be 0.
-                  // if n==1 then, answer will be 1(single
-                  // character will always palindrome)
+    {
+        return n;
+    }
 
     int maxLength = 1, start = 0;
     int low, high;
-    for (int i = 0; i < n; i++) {
+
+    for (int i = 0; i < n; i++)
+    {
         low = i - 1;
         high = i + 1;
-        while (high < n
-               && str[high] == str[i]) // increment 'high'
+        while (high < n && str[high] == str[i]) // increment 'high'
+        {
             high++;
+        }
 
-        while (low >= 0
-               && str[low] == str[i]) // decrement 'low'
+        while (low >= 0 && str[low] == str[i]) // decrement 'low'
+        {
             low--;
+        }
 
-        while (low >= 0 && high < n
-               && str[low] == str[high]) {
+        while (low >= 0 && high < n && str[low] == str[high])
+        {
             low--;
             high++;
         }
 
         int length = high - low - 1;
-        if (maxLength < length) {
+
+        if (maxLength < length)
+        {
             maxLength = length;
             start = low + 1;
         }
@@ -44,6 +48,7 @@ int longestPalSubstr(string str)
 
     cout << "Longest palindrome substring is: ";
     cout << str.substr(start, maxLength);
+
     return maxLength;
 }
 

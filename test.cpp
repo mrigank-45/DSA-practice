@@ -1,55 +1,38 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class Solution
+int countSubStrings(string str, int k)
 {
-public:
-    int findRow(vector<vector<int>> &mat, int col, int m, int n)
-    {
-        int maxi = -1;
-        int index = -1;
+    int result = 0;
 
-        for (int i = 0; i < n; i++)
+    // Array to store count of characters.
+    vector<int> count(26);
+
+    // All substrings.
+    for (int i = 0; i < str.size(); i++)
+    {
+        int distinctChars = 0;
+
+        // Initializing count array with zero for every iteration.
+        fill(count.begin(), count.end(), 0);
+
+        for (int j = i; j < str.length(); j++)
         {
-            if (mat[i][col] > maxi)
+
+            if (count[str[j] - 'a'] == 0)
             {
-                maxi = mat[i][col];
-                index = i;
+                distinctChars++;
+            }
+
+            // Increment count of current character.
+            count[str[j] - 'a']++;
+
+            if (distinctChars == k)
+            {
+                result++;
             }
         }
-
-        return index;
     }
 
-    vector<int> findPeakGrid(vector<vector<int>> &mat)
-    {
-        int n = mat.size();    // rows
-        int m = mat[0].size(); // columns
-
-        int low = 0, high = m - 1;
-
-        while (low <= high)
-        {
-            int midcol = low + (high - low) / 2;
-            int midrow = findRow(mat, midcol, m, n); // find max element of that column
-
-            // Ensure that left and right are not out of bounds
-            int left = midcol - 1 >= low ? mat[midrow][midcol - 1] : -1;
-            int right = midcol < high ? mat[midrow][midcol + 1] : -1;
-
-            if (mat[midrow][midcol] > left && mat[midrow][midcol] > right)
-            {
-                return {midrow, midcol};
-            }
-            else if (mat[midrow][midcol] < left)
-            {
-                high = midcol - 1;
-            }
-            else
-            {
-                low = midcol + 1;
-            }
-        }
-        return {-1, -1};
-    }
-};
+    return result;
+}
