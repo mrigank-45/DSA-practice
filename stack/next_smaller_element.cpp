@@ -1,4 +1,4 @@
-// for an array, return the next smaller element for rach item in the array
+// for an array, return the next smaller element for each item in the array
 
 #include <bits/stdc++.h>
 using namespace std;
