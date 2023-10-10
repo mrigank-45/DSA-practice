@@ -1,38 +1,21 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int countSubStrings(string str, int k)
+//   Definition for singly-linked list.
+struct ListNode
 {
-    int result = 0;
+    int val;
+    ListNode *next;
+    ListNode() : val(0), next(nullptr) {}
+    ListNode(int x) : val(x), next(nullptr) {}
+    ListNode(int x, ListNode *next) : val(x), next(next) {}
+};
 
-    // Array to store count of characters.
-    vector<int> count(26);
-
-    // All substrings.
-    for (int i = 0; i < str.size(); i++)
+class Solution
+{
+public:
+    ListNode *reverseList(ListNode *head)
     {
-        int distinctChars = 0;
-
-        // Initializing count array with zero for every iteration.
-        fill(count.begin(), count.end(), 0);
-
-        for (int j = i; j < str.length(); j++)
-        {
-
-            if (count[str[j] - 'a'] == 0)
-            {
-                distinctChars++;
-            }
-
-            // Increment count of current character.
-            count[str[j] - 'a']++;
-
-            if (distinctChars == k)
-            {
-                result++;
-            }
-        }
+        
     }
-
-    return result;
-}
+};

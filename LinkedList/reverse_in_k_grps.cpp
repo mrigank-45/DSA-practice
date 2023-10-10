@@ -1,19 +1,19 @@
-/****************************************************************
-    Following is the Linked List node structure
+#include <bits/stdc++.h>
+using namespace std;
 
-    class Node
+// Following is the Linked List node structure
+
+class Node
+{
+public:
+    int data;
+    Node *next;
+    Node(int data)
     {
-    public:
-        int data;
-        Node *next;
-        Node(int data)
-        {
-            this->data = data;
-            this->next = NULL;
-        }
-    };
-
-*****************************************************************/
+        this->data = data;
+        this->next = NULL;
+    }
+};
 
 Node *kReverse(Node *head, int k)
 {

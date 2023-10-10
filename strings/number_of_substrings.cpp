@@ -1,5 +1,6 @@
 // Count With K Different Characters (codeStudio)
 // Given a string and an integer k, find the number of substrings that contain at exactly k distinct characters.
+// Sliding window concept
 
 #include <bits/stdc++.h>
 using namespace std;
