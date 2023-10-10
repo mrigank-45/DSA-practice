@@ -12,6 +12,7 @@ public:
         priority_queue<int, vector<int>, greater<int>> pq;
 
         int n = nums.size();
+        // step: 1
         for (int i = 0; i < k; i++)
         {
             pq.push(nums[i]);
@@ -29,8 +30,6 @@ public:
 
         // step: 3
         return pq.top();
-
-
 
         //    sort(nums.begin(), nums.end());
         //    return nums[n-k];

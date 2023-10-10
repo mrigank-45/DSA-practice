@@ -60,6 +60,7 @@ int main()
     vector<int> arr = {2, 5, -1, 7, -3, -1, -2};
     int k = 3;
     vector<int> ans = solve(arr, k);
+    
     for (int i = 0; i < ans.size(); i++)
     {
         cout << ans[i] << " ";

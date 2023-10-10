@@ -1,7 +1,7 @@
-// Alice has some number of cards and she wants to rearrange the cards into groups so that each group is of size groupSize, and consists 
+// Alice has some number of cards and she wants to rearrange the cards into groups so that each group is of size groupSize, and consists
 // of groupSize consecutive cards.
 
-// Given an integer array hand where hand[i] is the value written on the ith card and an integer groupSize, return true if she can 
+// Given an integer array hand where hand[i] is the value written on the ith card and an integer groupSize, return true if she can
 // rearrange the cards, or false otherwise.
 
 // Input: hand = [1,2,3,6,2,3,4,7,8], groupSize = 3
@@ -23,9 +23,7 @@ public:
             m[hand[i]]++;
         }
 
-        priority_queue<pair<int, int>, vector<pair<int, int>>,
-                       greater<pair<int, int>>>
-            h;
+        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> h;
 
         for (auto it : m)
         {
