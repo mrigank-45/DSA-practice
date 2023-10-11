@@ -10,7 +10,7 @@ struct Node
 
 class Solution
 {
-private:
+public:
     int height(struct Node *node)
     {
         // base case
@@ -26,8 +26,7 @@ private:
         return ans;
     }
 
-public:
-    int diameter(Node *root)             // O(n2) approach
+    int diameter(Node *root) // O(n2) approach
     {
 
         // base case
@@ -44,6 +43,7 @@ public:
     }
 
     //********* Optmised Approach in O(n)
+    // pair<int,int> (diameter, height)
     pair<int, int> diameterFast(Node *root)
     {
         // base case
@@ -67,7 +67,8 @@ public:
         return ans;
     }
 
-    int diameter(Node* root) {
+    int diameter(Node *root)
+    {
         return diameterFast(root).first;
     }
     //*********

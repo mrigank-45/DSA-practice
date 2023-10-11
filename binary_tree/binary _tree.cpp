@@ -51,7 +51,6 @@ vector<vector<int>> levelOrderTransversal(node *root)
 
     while (!q.empty())
     {
-
         int size = q.size();
         vector<int> ans(size);
 
