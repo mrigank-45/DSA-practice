@@ -17,8 +17,10 @@ public:
     {
         Node *res = NULL;
         nodeToParent[root] = NULL;
+
         queue<Node *> q;
         q.push(root);
+
         while (!q.empty())
         {
             Node *front = q.front();
@@ -40,16 +42,20 @@ public:
         }
         return res;
     }
+
     int burnTree(Node *root, map<Node *, Node *> &nodeToParent)
     {
         map<Node *, bool> visited;
+        visited[root] = true;
+
         queue<Node *> q;
         q.push(root);
-        visited[root] = true;
+
         int time = 0;
+        
         while (!q.empty())
         {
-            bool flag = 0;               // addition hole flag true kore dibo
+            bool flag = 0;               
             int size = q.size();
             for (int i = 0; i < size; i++)
             {
@@ -84,10 +90,10 @@ public:
     }
     int minTime(Node *root, int target)
     {
-        // algo
-        // 1=create nodetoparent mapping
-        // 2=find target node
-        // 3=burn the tree
+        // Algo
+        // 1 = create node to parent mapping
+        // 2 = find target node
+        // 3 = burn the tree
         int time = 0;
         map<Node *, Node *> nodeToParent;
         Node *targetNode = createParentMapping(root, target, nodeToParent);

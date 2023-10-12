@@ -19,11 +19,13 @@ public:
             return ans;
         }
 
+        // {level, value of node}
         map<int, int> m;
 
+        // {node,level}
         queue<pair<TreeNode *, int>> q;
         q.push(make_pair(root, 0));
-        
+
         while (!q.empty())
         {
             pair<TreeNode *, int> p = q.front();
