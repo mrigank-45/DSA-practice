@@ -1,5 +1,5 @@
 // Lowest Common Ancister (leetcode): using recursion
-// We can also solve this by finding paths to both node and then see the first common element from back.
+// Alternate approach: We can also solve this by finding paths to both node and then see the first common element from back.
 
 #include <bits/stdc++.h>
 using namespace std;

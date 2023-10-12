@@ -62,7 +62,6 @@ int main()
 	insert(root, 60);
 	insert(root, 80);
 
-    
 	// Key to be found
 	int key = 6;
 
@@ -75,9 +74,13 @@ int main()
 	// key = 60;
 
 	// Searching in a BST
-	// if (search(root, key) == NULL)
-	// 	cout << key << " not found" << endl;
-	// else
-	// 	cout << key << " found" << endl;
-	// return 0;
+	if (search(root, key) == NULL)
+	{
+		cout << key << ": not found" << endl;
+	}
+	else
+	{
+		cout << key << ": found" << endl;
+	}
+	return 0;
 }

@@ -7,31 +7,34 @@ struct Node
     Node *left;
     Node *right;
 };
-
 struct info
 {
     int isbst;
     int size;
-    int mn;
-    int mx;
+    int min;
+    int max;
 };
-struct info bst(struct Node *root,int &ans)
+
+struct info bst(struct Node *root, int &ans)
 {
     struct info x;
     if (root == NULL)
     {
         x.isbst = 1;
         x.size = 0;
-        x.mn = 1000000;
-        x.mx = 0;
+        x.min = 1000000;
+        x.max = 0;
         return x;
     }
-    struct info left = bst(root->left,ans);
-    struct info right = bst(root->right,ans);
+
+    struct info left = bst(root->left, ans);
+    struct info right = bst(root->right, ans);
+
     x.size = 1 + left.size + right.size;
-    x.mx = max(root->data, right.mx);
-    x.mn = min(root->data, left.mn);
-    if (left.isbst == 1 && right.isbst == 1 && root->data > left.mx && root->data < right.mn)
+    x.max = max(root->data, right.max);
+    x.min = min(root->data, left.min);
+
+    if (left.isbst == 1 && right.isbst == 1 && root->data > left.max && root->data < right.min)
     {
         x.isbst = 1;
     }
@@ -39,8 +42,10 @@ struct info bst(struct Node *root,int &ans)
     {
         x.isbst = 0;
     }
-    if(x.isbst){
-        ans = max(ans,x.size);
+
+    if (x.isbst)
+    {
+        ans = max(ans, x.size);
     }
     return x;
 };
