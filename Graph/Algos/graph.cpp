@@ -1,4 +1,4 @@
-// create a graph using Adjacency list and print them. n->nodes,m->edges.
+// Create a graph using Adjacency list and print them. n-> nodes, m->edges.
 #include <bits/stdc++.h>
 using namespace std;
 

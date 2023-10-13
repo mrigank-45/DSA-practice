@@ -2,8 +2,7 @@
 // Every minute, any fresh orange that is 4-directionally adjacent to a rotten orange becomes rotten.
 // Return the minimum number of minutes that must elapse until no cell has a fresh orange. If this is impossible, return -1.
 
-// ALGO: use BFS Concept, put all rotten in a queue, till queue is not empty, empty queue in each iteration and keep adding neighbours of rotten to the queue, when no neighbours
-// is added, queue becomes empty, return ans.
+// ALGO: use BFS Concept, put all rotten in a queue, till queue is not empty, empty queue in each iteration and keep adding neighbours of rotten to the queue, when no neighbours is added, queue becomes empty, return ans.
 
 #include <bits/stdc++.h>
 using namespace std;
@@ -15,7 +14,10 @@ public:
     {
         if (grid.empty())
             return 0;
+
+        
         int m = grid.size(), n = grid[0].size(), days = 0, tot = 0, cnt = 0;
+
         queue<pair<int, int>> rotten;
         for (int i = 0; i < m; ++i)
         {
@@ -45,10 +47,12 @@ public:
                     int nx = x + dx[i], ny = y + dy[i];
                     if (nx < 0 || ny < 0 || nx >= m || ny >= n || grid[nx][ny] != 1)
                         continue;
+
                     grid[nx][ny] = 2;
                     rotten.push({nx, ny});
                 }
             }
+
             if (!rotten.empty())
                 days++;
         }
@@ -63,3 +67,4 @@ public:
         }
     }
 };
+gi

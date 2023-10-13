@@ -40,7 +40,7 @@ public:
 
         for (auto it : adj[node])
         {
-           if (!visited[it])
+            if (!visited[it])
             {
                 DFS(it, adj, ans, visited);
             }
