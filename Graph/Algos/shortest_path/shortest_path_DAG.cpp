@@ -1,4 +1,5 @@
-// ALGO: Find topo sort order, then use it to updates the final distance array which is our ans, adjacency list also contains weight along with nodes.
+// Shortest path for directed acyclic graph assuming source node as 0, adjacency list also contains weight along with nodes.
+// ALGO: Find topo sort order stack, then use the stack to updates the final distance array which is our ans.
 
 #include <bits/stdc++.h>
 using namespace std;
@@ -43,19 +44,19 @@ vector<int> shortestPathInDAG(int n, int m, vector<vector<int>> &edges)
     dis[0] = 0;
 
     // Finding shortest distances.
-    while (st.size() > 0)
+    while (!st.empty())
     {
-        int u = st.top();
+        int node = st.top();
         st.pop();
 
-        for (auto i : adj[u])
+        for (auto i : adj[node])
         {
-            int v = i.first;
-            int w = i.second;
-            if (dis[v] > dis[u] + w)
+            int neighbour = i.first;
+            int weight = i.second;
+            if (dis[neighbour] > dis[node] + weight)
             {
                 // Updating dis[v].
-                dis[v] = dis[u] + w;
+                dis[neighbour] = dis[node] + weight;
             }
         }
     }

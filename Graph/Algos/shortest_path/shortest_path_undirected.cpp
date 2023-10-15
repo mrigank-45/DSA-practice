@@ -1,4 +1,5 @@
-// ALGO: make parent mapping by BFS and then just transverse from target to source, and reverse.
+// Shortest path for undirected graphs given source and target.
+// ALGO: Make parent mapping by BFS and then just transverse from target to source, and reverse.
 // we can do it for weighted as well by using adjacency list which also contains weight along with nodes.
 
 #include <bits/stdc++.h>
@@ -23,18 +24,18 @@ vector<int> shortestPath(vector<pair<int, int>> edges, int n, int m, int s, int 
     queue<int> Q;
     Q.push(s);
 
-    while (Q.size() > 0)
+    while (Q.size() > 0) // not empty
     {
         int currentNode = Q.front();
         Q.pop();
 
-        for (int nextNode : ADJ[currentNode])
+        for (int neighbour : ADJ[currentNode])
         {
-            if (visited[nextNode] == -1)
+            if (visited[neighbour] == -1)
             {
-                visited[nextNode] = 1;
-                Q.push(nextNode);
-                parent[nextNode] = currentNode;
+                visited[neighbour] = 1;
+                Q.push(neighbour);
+                parent[neighbour] = currentNode;
             }
         }
     }
