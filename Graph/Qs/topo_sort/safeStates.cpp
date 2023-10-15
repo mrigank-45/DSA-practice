@@ -1,4 +1,5 @@
 // Eventual Safe States: Given a graph, Return an array containing all the safe nodes (every possible path starting from that node leads to a terminal node) of the graph.
+
 // ALGO: Use topo sort, for that, first reverse the edges and then impliment normal topo sort and get the ans. Why this works because, all possible paths starting from a node 
 // are going to end at some terminal node unless there exists a cycle, so in topo sort, after reversing the edges, we start from terminal nodes and keep adding the nodes, but 
 // when cycle comes, we do not add node, hence get only the safe nodes.
@@ -14,7 +15,7 @@ public:
         vector<int> adjRev[V];
         int indegree[V] = {0};
 
-        // reverse trhe edges
+        // reverse the edges
         for (int i = 0; i < V; i++)
         {
             for (auto it : adj[i])
