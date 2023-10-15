@@ -1,5 +1,5 @@
 // leetcode Q (using DFS)
-// Note: start DFS from boundry elements and mark visited in these types of Q.
+// Note: Start DFS from boundry elements and mark visited in these types of Q.
 
 #include <bits/stdc++.h>
 using namespace std;
@@ -33,7 +33,9 @@ public:
         int m = mat[0].size();
         int delrow[] = {-1, 0, +1, 0};
         int delcol[] = {0, 1, 0, -1};
+        
         vector<vector<int>> vis(n, vector<int>(m, 0));
+
         // traverse first row and last row
         for (int j = 0; j < m; j++)
         {

@@ -16,9 +16,9 @@ public:
         // find indegree of all nodes
         for (int i = 0; i < V; i++)
         {
-            for (auto it : adj[i])
+            for (auto neighbour : adj[i])
             {
-                indegree[it]++;
+                indegree[neighbour]++;
             }
         }
 
@@ -40,12 +40,12 @@ public:
             ans.push_back(node);
 
             // reduce the indegree of neighbours by 1
-            for (auto it : adj[node])
+            for (auto neighbour : adj[node])
             {
-                indegree[it]--;
-                if (indegree[it] == 0)
+                indegree[neighbour]--;
+                if (indegree[neighbour] == 0)
                 {
-                    q.push(it);
+                    q.push(neighbour);
                 }
             }
         }
