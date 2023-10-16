@@ -1,4 +1,5 @@
 // ALGO: Maintain a pathVis array, mark true when you enter it's DFS, false when leave, if adjacent node is visited as well as pathVis, then there is a cycle.
+// Can also detect cycle in directed graphs using topo sort (kahn's algo).
 
 #include <bits/stdc++.h>
 using namespace std;
