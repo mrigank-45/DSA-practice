@@ -14,7 +14,8 @@ public:
         }
         return false;
     }
-
+    
+    // recursion and memorizaton
     int solve(vector<vector<int>> &grid, int n, int m, int i, int j, vector<vector<int>> dp)
     {
         // base case
@@ -42,6 +43,7 @@ public:
         return dp[i][j] = right + down;
     }
 
+    // tabulation
     int solve1(vector<vector<int>> &grid)
     {
 
