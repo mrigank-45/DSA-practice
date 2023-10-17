@@ -31,7 +31,7 @@ public:
 
         int d = solve(word1, word2, i, j + 1, dp) + 1; // insert
 
-        dp[i][j] = min(a, min(b, min(c, d)));
+        dp[i][j] = min(a, min(b, min(c, d))); // min of all
         return dp[i][j];
     }
 
