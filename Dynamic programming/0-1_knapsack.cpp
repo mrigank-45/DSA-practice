@@ -136,5 +136,6 @@ int knapsack(vector<int> &wt, vector<int> &val, int n, int W)
 {
     // 2D dp since 2 states are changing (index and capacity)
     vector<vector<int>> dp(n, vector<int>(W + 1, -1));
+    
     return solve1(wt, val, n - 1, W, dp);
 }

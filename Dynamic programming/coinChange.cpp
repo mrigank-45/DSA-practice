@@ -16,9 +16,11 @@ public:
         {
             return INT_MAX;
         }
+
         int mini = INT_MAX;
         for (int i = 0; i < coins.size(); i++)
         {
+            // include the coin
             int ans = solve1(coins, t - coins[i]);
             if (ans != INT_MAX)
             {
@@ -55,8 +57,8 @@ public:
                 mini = min(mini, ans + 1);
             }
         }
-        dp[t] = mini;
-        return dp[t];
+        
+        return dp[t] = mini;
     }
 
     // tabulation
@@ -67,7 +69,6 @@ public:
 
         for (int i = 1; i <= t; i++)
         {
-
             for (int j = 0; j < coins.size(); j++)
             {
                 if (i - coins[j] >= 0 && dp[i - coins[j]] != INT_MAX)
