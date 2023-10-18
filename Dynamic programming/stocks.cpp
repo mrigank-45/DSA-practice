@@ -17,12 +17,15 @@ public:
         {
             return dp[index][buy];
         }
+
         if (buy)
         {
+            // max(buy or skip)
             return dp[index][buy] = max((-1) * prices[index] + solve(index + 1, 0, dp, prices), solve(index + 1, 1, dp, prices));
         }
         else
         {
+            // max(sell or skip)
             return dp[index][buy] = max(prices[index] + solve(index + 1, 1, dp, prices), solve(index + 1, 0, dp, prices));
         }
     }
@@ -57,6 +60,7 @@ public:
     {
         int n = prices.size();
         vector<vector<int>> dp(n, vector<int>(2, -1));
+
         return solve(0, 1, dp, prices);
     }
 };
