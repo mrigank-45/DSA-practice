@@ -1,51 +1,47 @@
 #include <bits/stdc++.h>
 using namespace std;
+// Happy Students
+// maximum-number-of-alloys
 
-int helper(string str, int k) 
+class Solution
 {
-
-    int i = 0, j = 0, currCount = 0;
-    int result = 0;
-
-    // Array to store count of characters.
-    vector<int>count(26, 0);
-
-    while (j < str.size()) 
+public:
+    int countWays(vector<int> &nums)
     {
-        // Index for current character.
-        int index = str[j] - 'a';
+        // {val,{greater,smaller}}}
+        map<int, pair<int, int>> m;
+        int n = nums.size();
 
-        // Increment count for the current character.
-        count[index] += 1;
-
-        if (count[index] == 1) 
+        for (long long int i = 0; i <= n; i++)
         {
-            currCount++;
+            m[i].first = 0;
+            m[i].second = 0;
         }
 
-        // Decrement count and increase ith pointer.
-        while (currCount > k) 
+        for (long long int i = 0; i < n; i++)
         {
-            count[str[i] - 'a']--;
-            if (count[str[i] - 'a'] == 0) 
+            long long int k = 0;
+            while (k < nums[i])
             {
-                currCount--;
+                m[k].first++;
+                k++;
             }
-
-            i++;
+            k = nums[i] + 1;
+            while (k <= n)
+            {
+                m[k].second++;
+                k++;
+            }
         }
 
-        // Total substrings.
-        result += (j - i + 1);
-        j++;
+        long long int count = 0;
+        for (long long int i = 0; i <= n; i++)
+        {
+            if (m[i].second == i && m[i].first == n - i)
+            {
+                count++;
+            }
+        }
+        return count;
     }
-    return result;
-}
-
-int countSubStrings(string str, int k) {
-
-    // Calculating for at most k and at most k-1 distinct chars.
-    int ans = helper(str, k) - helper(str, k - 1);
-
-    return ans;
-}
+};
