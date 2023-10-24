@@ -1,47 +1,47 @@
 #include <bits/stdc++.h>
 using namespace std;
-// Happy Students
-// maximum-number-of-alloys
 
 class Solution
 {
 public:
-    int countWays(vector<int> &nums)
+    bool isAffordable(long long int alloys, int budget, vector<vector<int>> &composition, vector<int> &stock, vector<int> &cost)
     {
-        // {val,{greater,smaller}}}
-        map<int, pair<int, int>> m;
-        int n = nums.size();
-
-        for (long long int i = 0; i <= n; i++)
+        long long int minCost = INT_MAX;
+        for (int i = 0; i < composition.size(); ++i)
         {
-            m[i].first = 0;
-            m[i].second = 0;
+            long long int currCost = 0;
+            for (int j = 0; j < composition[i].size(); ++j)
+            {
+                long long int curr = alloys * composition[i][j];
+                if (stock[j] >= curr)
+                    continue;
+                else
+                {
+                    long long int extra = (curr - stock[j]) * cost[j];
+                    currCost += extra;
+                }
+            }
+            minCost = min(currCost, minCost); // min of both machine
         }
+        return (minCost <= budget);
+    }
 
-        for (long long int i = 0; i < n; i++)
+    int maxNumberOfAlloys(int n, int k, int budget, vector<vector<int>> &composition, vector<int> &stock, vector<int> &cost)
+    {
+        long long int low = 0, high = 1e9, ans = 0;
+        while (low <= high)
         {
-            long long int k = 0;
-            while (k < nums[i])
+            long long int mid = low + (high - low) / 2;
+            if (isAffordable(mid, budget, composition, stock, cost))
             {
-                m[k].first++;
-                k++;
+                ans = mid;
+                low = mid + 1;
             }
-            k = nums[i] + 1;
-            while (k <= n)
+            else
             {
-                m[k].second++;
-                k++;
+                high = mid - 1;
             }
         }
-
-        long long int count = 0;
-        for (long long int i = 0; i <= n; i++)
-        {
-            if (m[i].second == i && m[i].first == n - i)
-            {
-                count++;
-            }
-        }
-        return count;
+        return ans;
     }
 };
