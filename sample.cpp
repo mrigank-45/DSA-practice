@@ -4,43 +4,71 @@ using namespace std;
 class Solution
 {
 public:
-    bool isAffordable(long long int alloys, int budget, vector<vector<int>> &composition, vector<int> &stock, vector<int> &cost)
+    long long int helper(long long int maxIndex, vector<int> &maxHeights)
     {
-        long long int minCost = INT_MAX;
-        for (int i = 0; i < composition.size(); ++i)
-        {
-            long long int currCost = 0;
-            for (int j = 0; j < composition[i].size(); ++j)
-            {
-                long long int curr = alloys * composition[i][j];
-                if (stock[j] >= curr)
-                    continue;
-                else
-                {
-                    long long int extra = (curr - stock[j]) * cost[j];
-                    currCost += extra;
-                }
-            }
-            minCost = min(currCost, minCost); // min of both machine
-        }
-        return (minCost <= budget);
-    }
+        long long int sum = maxHeights[maxIndex];
+        long long int curr = maxIndex + 1;
+        long long int maxi1 = maxHeights[maxIndex];
 
-    int maxNumberOfAlloys(int n, int k, int budget, vector<vector<int>> &composition, vector<int> &stock, vector<int> &cost)
-    {
-        long long int low = 0, high = 1e9, ans = 0;
-        while (low <= high)
+        while (curr < maxHeights.size())
         {
-            long long int mid = low + (high - low) / 2;
-            if (isAffordable(mid, budget, composition, stock, cost))
+            if (maxHeights[curr] <= maxi1)
             {
-                ans = mid;
-                low = mid + 1;
+                sum += maxHeights[curr];
+                maxi1 = maxHeights[curr];
             }
             else
             {
-                high = mid - 1;
+                sum += maxi1;
             }
+            curr++;
+        }
+
+        long long int curr1 = maxIndex - 1;
+        long long int maxi2 = maxHeights[maxIndex];
+
+        while (curr1 >= 0)
+        {
+            if (maxHeights[curr1] <= maxi2)
+            {
+                sum += maxHeights[curr1];
+                maxi2 = maxHeights[curr1];
+            }
+            else
+            {
+                sum += maxi2;
+            }
+            curr1--;
+        }
+
+        return sum;
+    }
+
+    long long maximumSumOfHeights(vector<int> &maxHeights)
+    {
+        long long int maxi = INT_MIN;
+        for (long long int i = 0; i < maxHeights.size(); i++)
+        {
+            if (maxHeights[i] >= maxi)
+            {
+                maxi = maxHeights[i];
+            }
+        }
+        vector<long long int> maximum;
+
+        for (long long int i = 0; i < maxHeights.size(); i++)
+        {
+            if (maxHeights[i] == maxi)
+            {
+                maximum.push_back(i);
+            }
+        }
+        long long int ans = INT_MIN;
+
+        for (long long int i = 0; i < maximum.size(); i++)
+        {
+            long long int curr = helper(maximum[i], maxHeights);
+            ans = max(ans, curr);
         }
         return ans;
     }
