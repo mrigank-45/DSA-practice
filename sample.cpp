@@ -4,66 +4,75 @@ using namespace std;
 class Solution
 {
 public:
-    long long maximumSumOfHeights(vector<int> &arr)
+    // Function to generate a vector of boolean values where prime[i] is true if 'i' is prime.
+    // Sieve algo
+    vector<bool> genPrimes(int n)
     {
-        long long n = arr.size(), i;
-        vector<long long> nsr(n, n + 1), nsl(n, -1); // we will be storing indices
-        stack<long long> st1, st2;
+        vector<bool> prime(n + 1);
 
-        // Finding NSR
-        st1.push(n - 1);
-        for (i = n - 2; i >= 0; i--)
-        {
-            while (!st1.empty() && arr[st1.top()] >= arr[i])
-                st1.pop();
-            if (!st1.empty())
-                nsr[i] = st1.top();
-            st1.push(i);
-        }
-        // Finding NSL
-        st2.push(0);
-        for (i = 1; i < n; i++)
-        {
-            while (!st2.empty() && arr[st2.top()] >= arr[i])
-                st2.pop();
-            if (!st2.empty())
-                nsl[i] = st2.top();
-            st2.push(i);
-        }
+        // Initialize all numbers as potential prime numbers (true).
+        if (n > 1)
+            fill(prime.begin() + 2, prime.end(), true);
 
-        vector<long long> hr(n, 0), hl(n, 0);
-        // height of beautiful tower to the right
-        hr[n - 1] = arr[n - 1];
-        for (i = n - 2; i >= 0; i--)
+        // Sieve of Eratosthenes algorithm: Mark multiples of each prime number as non-prime.
+        for (int i = 2; i <= n; ++i)
+            if (prime[i])
+                for (int j = i + i; j <= n; j += i)
+                    prime[j] = false;
+
+        return prime;
+    }
+
+    vector<int> dfs(int node, int parent, vector<bool> isPrime, long long int &ans, vector<vector<int>> adj)
+    {
+        // Since indexing starts from 1
+        int prime = isPrime[node + 1];
+        vector<int> cur(2);
+        cur[prime]++;
+
+        // Recursively traverse the tree.
+        for (int y : adj[node])
         {
-            if (nsr[i] == n + 1) // no smaller element to the right
+            if (y == parent)
             {
-                hr[i] = arr[i] * (n - i);
+                continue;
             }
-            else
+            vector<int> v = dfs(y, node, isPrime, ans, adj);
+            ans += (long long)v[0] * cur[1];
+            ans += (long long)v[1] * cur[0];
+            cur[prime] += v[0];
+
+            // If the current node is not prime, update the count for prime nodes.
+            if (!prime)
             {
-                hr[i] = arr[i] * (nsr[i] - i) + hr[nsr[i]];
+                cur[1 + prime] += v[1];
             }
-        }
-        // height of beautiful tower to the left
-        hl[0] = arr[0];
-        for (i = 1; i < n; i++)
-        {
-            if (nsl[i] == -1) // no smaller element to the left
-            {
-                hl[i] = arr[i] * (i + 1);
-            }
-            else
-            {
-                hl[i] = arr[i] * (i - nsl[i]) + hl[nsl[i]];
-            }
-        }
-        long long res = 0;
-        for (i = 0; i < n; i++)
-        {
-            res = max(res, hl[i] + hr[i] - arr[i]); // arr[i] is counted twice so subhracting it once
         }
 
-        return res;
+        return cur;
+    }
+
+    // Function to count paths in a tree graph where some nodes are prime and others are not.
+    long long countPaths(int n, vector<vector<int>> &edges)
+    {
+        // Generate a vector to store whether each node is prime.
+        vector<bool> isPrime = genPrimes(n);
+
+        // Create an adjacency list representation of the tree.
+        vector<vector<int>> adj(n);
+        for (int i = 0; i < n - 1; ++i)
+        {
+            int u = edges[i][0], v = edges[i][1];
+            --u;
+            --v;
+            adj[u].push_back(v);
+            adj[v].push_back(u);
+        }
+        long long int ans = 0;
+
+        // Start DFS from the root node (node 0) with parent -1.
+        vector<int> temp = dfs(0, -1, isPrime, ans, adj);
+
+        return ans;
     }
 };

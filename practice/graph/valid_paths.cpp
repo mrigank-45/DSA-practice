@@ -1,3 +1,5 @@
+// Count Valid Paths in a Tree
+
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -23,20 +25,21 @@ public:
         return prime;
     }
 
-    vector<int> dfs(int x, int p, vector<bool> isPrime, long long int &ans, vector<vector<int>> E)
+    vector<int> dfs(int node, int parent, vector<bool> isPrime, long long int &ans, vector<vector<int>> adj)
     {
-        int prime = isPrime[x + 1];
+        // Since indexing starts from 1
+        int prime = isPrime[node + 1];
         vector<int> cur(2);
         cur[prime]++;
 
         // Recursively traverse the tree.
-        for (int y : E[x])
+        for (int y : adj[node])
         {
-            if (y == p)
+            if (y == parent)
             {
                 continue;
             }
-            vector<int> v = dfs(y, x, isPrime, ans, E);
+            vector<int> v = dfs(y, node, isPrime, ans, adj);
             ans += (long long)v[0] * cur[1];
             ans += (long long)v[1] * cur[0];
             cur[prime] += v[0];
@@ -58,19 +61,19 @@ public:
         vector<bool> isPrime = genPrimes(n);
 
         // Create an adjacency list representation of the tree.
-        vector<vector<int>> E(n);
+        vector<vector<int>> adj(n);
         for (int i = 0; i < n - 1; ++i)
         {
             int u = edges[i][0], v = edges[i][1];
             --u;
             --v;
-            E[u].push_back(v);
-            E[v].push_back(u);
+            adj[u].push_back(v);
+            adj[v].push_back(u);
         }
         long long int ans = 0;
 
         // Start DFS from the root node (node 0) with parent -1.
-        vector<int> temp = dfs(0, -1, isPrime, ans, E);
+        vector<int> temp = dfs(0, -1, isPrime, ans, adj);
 
         return ans;
     }
