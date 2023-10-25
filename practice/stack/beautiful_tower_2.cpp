@@ -1,3 +1,9 @@
+// Beautiful Towers II (leetcode)
+// Logic: Given array [2,7,8,6,7,4,2,3,1] we need to find height of tower to the right of 6. It will be like [6,6,4,2,2,1] that is we will 
+// have 6 height towers till the next smaller element to the right (nsr) is found and then height will be 4 till next nsr and so on. Also 
+// notice after the tower to the right of first nsr tower will be same as tower of the nsr. 
+// Therefore TowerRight(i) = arr[i] * (i-nsr[i]) + TowerRight(nsr[i])
+
 #include <bits/stdc++.h>
 using namespace std;
 
