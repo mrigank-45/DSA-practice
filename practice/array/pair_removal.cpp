@@ -1,3 +1,5 @@
+// Minimum Array Length After Pair Removals
+
 #include <bits/stdc++.h>
 using namespace std;
 
