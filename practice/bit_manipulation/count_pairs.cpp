@@ -1,3 +1,5 @@
+// count-pairs-of-points-with-distance-k (leetocde)
+
 #include <bits/stdc++.h>
 using namespace std;
 
