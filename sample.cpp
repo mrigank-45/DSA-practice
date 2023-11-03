@@ -4,39 +4,53 @@ using namespace std;
 class Solution
 {
 public:
-    int countPairs(vector<vector<int>> &c, int k)
+    bool solve(int sx, int sy, int fx, int fy, long long int t)
     {
 
-        // finding all possible (x,y) which gives :
-        // c[i][0]^x+c[i][1]^y=k                   (0)
-        // Consider above is true , then
-        // if , c[i][0]^x=val                      (1)
-        // then c[i][1]^y=k-val                    (2)
-
-        // We can definitely find all possible values of val (0 to k inclusive)
-        // using a^b=c , then a^c=b
-        // from  (1) , we have c[i][0]^val=x;
-        // from  (2) , we have c[i][1]^(k-val)=y;
-        // so we just need to traverse through all possible values of val to get pairs(x,y) satisfying  eq.(0)
-
-        int n = c.size();
-        // to keep track which pair of (x,y) is visited
-        map<pair<int, int>, int> hash;
-        int cnt = 0;
-        for (int i = 0; i < n; i++)
+        if (sx < 1 || sy < 1)
         {
-            int x1 = c[i][0];
-            int y1 = c[i][1];
-            for (int i = 0; i <= k; i++)
-            {
-                int x2 = i ^ x1;
-                int y2 = (k - i) ^ y1;
-                // increase count if (x2,y2) is already visited
-                cnt = cnt + hash[{x2, y2}];
-            }
-
-            hash[{x1, y1}]++;
+            return false;
         }
-        return cnt;
-    };
+
+        if (t == 0)
+        {
+            if (sx == fx && sy == fy)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        
+        bool c1 = solve(sx + 1, sy, fx, fy, t - 1);
+
+        bool c2 = solve(sx, sy + 1, fx, fy, t - 1);
+
+        bool c3 = solve(sx - 1, sy, fx, fy, t - 1);
+
+        bool c4 = solve(sx, sy - 1, fx, fy, t - 1);
+
+        bool c5 = solve(sx + 1, sy + 1, fx, fy, t - 1);
+
+        bool c6 = solve(sx - 1, sy - 1, fx, fy, t - 1);
+
+        bool c7 = solve(sx + 1, sy - 1, fx, fy, t - 1);
+
+        bool c8 = solve(sx - 1, sy + 1, fx, fy, t - 1);
+
+        if (c1 || c2 || c3 || c4 || c5 || c6 || c7 || c8)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    bool isReachableAtTime(int sx, int sy, int fx, int fy, int t)
+    {
+        return solve(sx, sy, fx, fy, t);
+    }
 };
