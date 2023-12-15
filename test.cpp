@@ -13,123 +13,70 @@ struct hash_pair
         {
             return hash1 ^ hash2;
         }
-
         return hash1;
     }
 };
-
-bool check(unordered_map<pair<int, int>, bool, hash_pair> m_one)
+class Solution
 {
-    for (auto it : m_one)
+public:
+    long long solve(vector<int> &nums, int modulo, int k, long long int cnt, long long int &ans, long long int i, long long int j, unordered_map<pair<int, int>, bool, hash_pair> m)
     {
-        if (it.second == true)
+        if (cnt % modulo == k)
         {
-            return true;
+            ans++;
+            cout << i << " " << j << endl;
+            cout << "cnt: " << cnt << endl;
+            cout << "ans: " << ans << endl;
         }
-    }
-    return false;
-}
 
-void print(unordered_map<pair<int, int>, bool, hash_pair> m)
-{
-    for (auto it : m)
-    {
-        if (it.second)
+        if (i + 1 < nums.size() && i + 1 <= j && !m[{i + 1, j}])
         {
-            cout << it.first.first << " " << it.first.second << " " << endl;
-        }
-    }
-}
-
-int minimumMoves(vector<vector<int>> &grid)
-{
-
-    unordered_map<pair<int, int>, bool, hash_pair> m_zero;
-    unordered_map<pair<int, int>, bool, hash_pair> m_one;
-
-    queue<pair<int, int>> q;
-
-    int cnt = 0;
-
-    for (int i = 0; i < 3; i++)
-    {
-        for (int j = 0; j < 3; j++)
-        {
-            m_zero[{i, j}] = false;
-            m_one[{i, j}] = false;
-
-            if (grid[i][j] == 0)
+            if (nums[i] % modulo == k)
             {
-                m_zero[{i, j}] = true;
+                m[{i + 1, j}] = true;
+                cnt--;
+                solve(nums, modulo, k, cnt, ans, i + 1, j, m);
             }
-            else if (grid[i][j] > 1)
+            else
             {
-                m_one[{i, j}] = true;
+                m[{i + 1, j}] = true;
+                solve(nums, modulo, k, cnt, ans, i + 1, j, m);
             }
         }
-    }
-    // print(m_zero);
-    // print(m_one);
 
-    if (!check(m_one))
-    {
-        return 0;
-    }
-
-    do
-    {
-        int min = INT_MAX;
-        int q = 0, r = 0;
-        int x, y;
-
-        for (auto item : m_one)
+        if (j - 1 >= 0 && i <= j - 1 && !m[{i, j - 1}])
         {
-            if (item.second == true)
+            if (nums[j] % modulo == k)
             {
-                x = item.first.first;
-                y = item.first.second;
-
-                for (auto it : m_zero)
-                {
-                    if (it.second == true)
-                    {
-                        cout << "x: " << x << " y: " << y << endl;
-                        cout << "m: " << it.first.first << " n: " << it.first.second << endl;
-                        int a = abs(x - it.first.first) + abs(y - it.first.second);
-                        cout << "a: " << a << endl;
-                        if (a < min)
-                        {
-                            min = a;
-                            q = it.first.first;
-                            r = it.first.second;
-                            // cout << "min: " << min << endl;
-                        }
-                    }
-                }
+                m[{i, j - 1}] = true;
+                cnt--;
+                solve(nums, modulo, k, cnt, ans, i, j - 1, m);
+            }
+            else
+            {
+                m[{i, j - 1}] = true;
+                solve(nums, modulo, k, cnt, ans, i, j - 1, m);
             }
         }
-        cout << "min1: " << min << endl;
-        cout << "x1: " << x << " y2: " << y << endl;
-        cout << "m1: " << q << " n1: " << r << endl;
 
-        grid[x][y]--;
-        // cout << "grid[x][y]: " << grid[x][y] << endl;
-        if (grid[x][y] == 1)
+        return ans;
+    }
+    long long countInterestingSubarrays(vector<int> &nums, int modulo, int k)
+    {
+        long long int cnt = 0, ans = 0;
+
+        unordered_map<pair<int, int>, bool, hash_pair> m;
+
+        for (long long int i = 0; i < nums.size(); i++)
         {
-            m_one[{x, y}] = false;
+            if (nums[i] % modulo == k)
+            {
+                cnt++;
+            }
         }
 
-        grid[q][r]++;
-        m_zero[{q, r}] = false;
-        cnt += min;
-    } while (check(m_one));
+        solve(nums, modulo, k, cnt, ans, 0, nums.size() - 1, m);
 
-    return cnt;
-}
-
-int main()
-{
-    vector<vector<int>> grid = {{1, 3, 0}, {1, 0, 0}, {1, 0, 3}};
-    cout << "Minimum moves: " << minimumMoves(grid);
-    return 0;
-}
+        return ans;
+    }
+};

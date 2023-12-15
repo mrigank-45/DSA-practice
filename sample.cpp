@@ -4,67 +4,25 @@ using namespace std;
 class Solution
 {
 public:
-    int minimumOperations(string num)
+    long long countInterestingSubarrays(vector<int> &nums, int modulo, int k)
     {
-        // 52,57,05,00
-        int c1 = 0, c2 = 0, c3 = 0, c4 = 0;
-        cout<<"size: "<<num.size()<<endl;
+        int n = nums.size();
 
-        for (int i = num.size() - 1; i >= 0; i--)
+        int prefix_sum = 0;
+        long long int result = 0;
+
+        map<int, int> frq;
+        frq[k % modulo] = 1;
+
+        for (int j = 0; j < n; j++)
         {
-            bool flag = false;
+            int cur = (nums[j] % modulo) == k;
+            prefix_sum = (prefix_sum + cur) % modulo;
 
-            if ((num[i] == '5') && c1 == 0)
-            {
-                c1++;
-                cout<<"i: "<<i<<endl;
-                cout << "c1: " << c1 << " c2: " << c2 << " c3: " << c3 << " c4: " << c4 << endl;
-            }
-            if ((num[i] == '5') && c2 == 0)
-            {
-                c2++;
-                cout<<"i: "<<i<<endl;
-                cout << "c1: " << c1 << " c2: " << c2 << " c3: " << c3 << " c4: " << c4 << endl;
-            }
-            if ((num[i] == '0') && c3 == 0)
-            {
-                c3++;
-                cout<<"i: "<<i<<endl;
-                cout << "c1: " << c1 << " c2: " << c2 << " c3: " << c3 << " c4: " << c4 << endl;
-            }
-            if ((num[i] == '0') && c4 == 0)
-            {
-                c4++;
-                cout<<"i: "<<i<<endl;
-                cout << "c1: " << c1 << " c2: " << c2 << " c3: " << c3 << " c4: " << c4 << endl;
-                flag = true;
-            }
-
-            if ((num[i] == '2') && c1 == 1)
-            {
-                return num.size() - i - 2;
-            }
-            if ((num[i] == '7') && c2 == 1)
-            {
-                return num.size() - i - 2;
-            }
-            if ((num[i] == '5') && c3 == 1)
-            {
-                return num.size() - i - 2;
-            }
-            if ((num[i] == '0') && c4 == 1 && flag == false)
-            {
-                return num.size() - i - 2;
-            }
+            result += frq[prefix_sum];
+            frq[(prefix_sum + k) % modulo]++;
         }
 
-        if (c3 == 1 || c4 == 1)
-        {
-            return num.size() - 1;
-        }
-        else
-        {
-            return num.size();
-        }
+        return result;
     }
 };
