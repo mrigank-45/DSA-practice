@@ -4,25 +4,37 @@ using namespace std;
 class Solution
 {
 public:
-    long long countInterestingSubarrays(vector<int> &nums, int modulo, int k)
+    string destCity(vector<vector<string>> &paths)
     {
-        int n = nums.size();
+        map<string, int> frq;
 
-        int prefix_sum = 0;
-        long long int result = 0;
-
-        map<int, int> frq;
-        frq[k % modulo] = 1;
-
-        for (int j = 0; j < n; j++)
+        for (auto path : paths)
         {
-            int cur = (nums[j] % modulo) == k;
-            prefix_sum = (prefix_sum + cur) % modulo;
-
-            result += frq[prefix_sum];
-            frq[(prefix_sum + k) % modulo]++;
+            frq[path[0]] = 0;
+            frq[path[1]] = 0;
         }
 
-        return result;
+        for (auto path : paths)
+        {
+            frq[path[0]] = 2;
+
+            if (frq[path[1]] == 2)
+            {
+                frq[path[1]] = 2;
+            }
+            else
+            {
+                frq[path[1]] = 1;
+            }
+        }
+
+        for (auto path : paths)
+        {
+            if (frq[path[1]] == 1)
+            {
+                return path[1];
+            }
+        }
+        return "";
     }
 };
