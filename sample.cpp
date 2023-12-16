@@ -4,62 +4,54 @@ using namespace std;
 class Solution
 {
 public:
-    bool checkStrings(string s1, string s2)
+    long long maxSum(vector<int> &nums, int m, int k)
     {
-        map<char, int> even_s1, odd_s1;
-        map<char, int> even_s2, odd_s2;
+        map<int, int> frq;
+        int cnt = 0; 
+        long long int sum = 0;
+        long long int ans = 0;
 
-        for (int i = 0; i < s1.size(); i++)
+        for (int i = 0; i < k; i++)
         {
-            if (i % 2 == 0)
+            if (frq[nums[i]] == 0)
             {
-                even_s1[s1[i]]++;
+                cnt++;
             }
-            else
-            {
-                odd_s1[s1[i]]++;
-            }
+            frq[nums[i]]++;
+            sum += nums[i];
         }
 
-        for (int i = 0; i < s2.size(); i++)
-        {
-            if (i % 2 == 0)
-            {
-                even_s2[s2[i]]++;
-            }
-            else
-            {
-                odd_s2[s2[i]]++;
-            }
-        }
+        int i = 0;
+        int j = k - 1;
 
-        bool a = true, b = true;
-
-        for (auto it : even_s1)
+        while (j < nums.size())
         {
-            if (even_s2[it.first] != it.second)
+            if (cnt >= m)
             {
-                a = false;
+                ans = max(ans, sum);
+            }
+
+            if (frq[nums[i]] == 1)
+            {
+                cnt--;
+            }
+            frq[nums[i]]--;
+
+            sum -= nums[i];
+            i++;
+            j++;
+            if (j == nums.size())
+            {
                 break;
             }
-        }
-
-        for (auto it : odd_s1)
-        {
-            if (odd_s2[it.first] != it.second)
+            if (frq[nums[j]] == 0)
             {
-                b = false;
-                break;
+                cnt++;
             }
+            frq[nums[j]]++;
+            sum += nums[j];
         }
 
-        if (a && b)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return ans;
     }
 };
