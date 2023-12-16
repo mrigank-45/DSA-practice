@@ -4,37 +4,62 @@ using namespace std;
 class Solution
 {
 public:
-    string destCity(vector<vector<string>> &paths)
+    bool checkStrings(string s1, string s2)
     {
-        map<string, int> frq;
+        map<char, int> even_s1, odd_s1;
+        map<char, int> even_s2, odd_s2;
 
-        for (auto path : paths)
+        for (int i = 0; i < s1.size(); i++)
         {
-            frq[path[0]] = 0;
-            frq[path[1]] = 0;
-        }
-
-        for (auto path : paths)
-        {
-            frq[path[0]] = 2;
-
-            if (frq[path[1]] == 2)
+            if (i % 2 == 0)
             {
-                frq[path[1]] = 2;
+                even_s1[s1[i]]++;
             }
             else
             {
-                frq[path[1]] = 1;
+                odd_s1[s1[i]]++;
             }
         }
 
-        for (auto path : paths)
+        for (int i = 0; i < s2.size(); i++)
         {
-            if (frq[path[1]] == 1)
+            if (i % 2 == 0)
             {
-                return path[1];
+                even_s2[s2[i]]++;
+            }
+            else
+            {
+                odd_s2[s2[i]]++;
             }
         }
-        return "";
+
+        bool a = true, b = true;
+
+        for (auto it : even_s1)
+        {
+            if (even_s2[it.first] != it.second)
+            {
+                a = false;
+                break;
+            }
+        }
+
+        for (auto it : odd_s1)
+        {
+            if (odd_s2[it.first] != it.second)
+            {
+                b = false;
+                break;
+            }
+        }
+
+        if (a && b)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 };
