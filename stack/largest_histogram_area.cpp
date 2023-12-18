@@ -66,6 +66,7 @@ public:
             {
                 next[i] = n;
             }
+            // prev[i] = -1 means that there is no smaller element on the left side of the current element
             int b = next[i] - prev[i] - 1;
             int newArea = l * b;
             area = max(area, newArea);
