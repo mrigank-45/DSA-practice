@@ -14,7 +14,6 @@ vector<int> asteroidCollision(vector<int> v)
 {
     stack<int> s;
     s.push(0);
-    vector<int> temp;
 
     for (int i = v.size() - 1; i >= 0; i--)
     {
@@ -48,6 +47,9 @@ vector<int> asteroidCollision(vector<int> v)
             }
         }
     }
+
+    vector<int> temp;
+
     while (s.top() != 0)
     {
         temp.push_back(s.top());
