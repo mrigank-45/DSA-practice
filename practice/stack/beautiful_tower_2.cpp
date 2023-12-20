@@ -13,7 +13,9 @@ public:
     long long maximumSumOfHeights(vector<int> &arr)
     {
         long long n = arr.size(), i;
-        vector<long long> nsr(n, n + 1), nsl(n, -1); // we will be storing indices
+
+        // we will be storing indices
+        vector<long long> nsr(n, n + 1), nsl(n, -1);
         stack<long long> st1, st2;
 
         // Finding NSR
@@ -26,6 +28,7 @@ public:
                 nsr[i] = st1.top();
             st1.push(i);
         }
+
         // Finding NSL
         st2.push(0);
         for (i = 1; i < n; i++)
@@ -38,6 +41,7 @@ public:
         }
 
         vector<long long> hr(n, 0), hl(n, 0);
+
         // height of beautiful tower to the right
         hr[n - 1] = arr[n - 1];
         for (i = n - 2; i >= 0; i--)
@@ -51,6 +55,7 @@ public:
                 hr[i] = arr[i] * (nsr[i] - i) + hr[nsr[i]];
             }
         }
+
         // height of beautiful tower to the left
         hl[0] = arr[0];
         for (i = 1; i < n; i++)
@@ -64,6 +69,7 @@ public:
                 hl[i] = arr[i] * (i - nsl[i]) + hl[nsl[i]];
             }
         }
+
         long long res = 0;
         for (i = 0; i < n; i++)
         {
@@ -73,3 +79,4 @@ public:
         return res;
     }
 };
+g
