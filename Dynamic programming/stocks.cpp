@@ -1,5 +1,5 @@
 // Best Time to Buy and Sell Stock II (leetcode)
-// In Qs of bus and sell at most 2 times or k time, change the value of buy accordinkly in condition and base case
+// In Qs of bus and sell at most 2 times or k time, change the value of buy accordingly in condition and base case
 
 #include <bits/stdc++.h>
 using namespace std;
