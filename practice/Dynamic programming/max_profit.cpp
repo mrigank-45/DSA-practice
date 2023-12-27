@@ -17,7 +17,7 @@ public:
         }
 
         int nottake = helper(offers, i + 1, dp);
-        
+
         int next = offers.size();
         int low = i + 1;
         int high = offers.size() - 1;

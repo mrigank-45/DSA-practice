@@ -4,39 +4,85 @@ using namespace std;
 class Solution
 {
 public:
-    int minimumSum(int n, int k)
+    int solve(vector<vector<int>> &offers, int i, vector<int> &DP)
     {
-        int sum = 0;
-        int i = 0;
-        while (n)
+        // base case
+        if (i == offers.size())
         {
-            i++;
-            cout << "n: " << n << endl;
-            cout << "i: " << i << endl;
-            cout << "sum: " << sum << endl;
-
-            if (i == k / 2)
-            {
-                if (k % 2 == 0)
-                {
-                    sum += i;
-                    n--;
-                    i += k / 2 - 1;
-                    continue;
-                }
-                else
-                {
-                    sum += i;
-                    n--;
-                    i += k / 2;
-                    continue;
-                }
-            }
-
-            sum += i;
-            n--;
+            return 0;
         }
 
-        return sum;
+        // check if result for current state is already memoized
+        if (DP[i] != -1)
+        {
+            return DP[i];
+        }
+
+        // include
+        int prev = offers[i][1];
+        int j = i + 1;
+        while (j < offers.size() && offers[j][0] <= prev)
+        {
+            j++;
+        }
+        int includeProfit = solve(offers, j, DP) + offers[i][2];
+
+        // exclude
+        int excludeProfit = solve(offers, i + 1, DP);
+
+        // calculate the maximum profit for the current state
+        int maxProfit = max(includeProfit, excludeProfit);
+
+        // memoize the result
+        DP[i] = maxProfit;
+
+        return maxProfit;
+    }
+
+    int tabulation(vector<vector<int>> &offers)
+    {
+        vector<int> DP(offers.size() + 1, -1);
+
+        for (int i = offers.size() - 1; i >= 0; i--)
+        {
+            // exclude
+            int excludeProfit = DP[i + 1];
+
+            // include
+            int prev = offers[i][1];
+            int j = i + 1;
+            while (j < offers.size() && offers[j][0] <= prev)
+            {
+                j++;
+            }
+            int includeProfit = -1;
+            if (j == i + 1)
+            {
+             includeProfit = DP[j] + offers[i][2];
+            }
+            else {
+                includeProfit = DP[j];
+            }
+            
+            
+            // calculate the maximum profit for the current state
+            int maxProfit = max(includeProfit, excludeProfit);
+
+            // memoize the result
+            DP[i] = maxProfit;
+        }
+
+        return DP[0];
+    }
+
+    int maximizeTheProfit(int n, vector<vector<int>> &offers)
+    {
+        sort(offers.begin(), offers.end());
+
+        vector<int> DP(offers.size() + 1, -1);
+
+        int result = solve(offers, 0, DP);
+
+        return result;
     }
 };
