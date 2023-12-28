@@ -1,11 +1,9 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-
 class Solution
 {
 public:
-
     int solve(vector<int> nums, int i, int j, vector<vector<int>> &dp)
     {
         if (is_sorted(nums.begin(), nums.end()))
@@ -13,7 +11,7 @@ public:
             cout << "i: " << i << endl;
             cout << "j: " << j << endl;
 
-            for(int i = 0; i < nums.size(); i++)
+            for (int i = 0; i < nums.size(); i++)
             {
                 cout << nums[i] << " ";
             }
@@ -37,7 +35,6 @@ public:
         vector<int> temp1 = nums;
         vector<int> temp2 = nums;
 
-
         // 3 Cases
         if (nums[i] == 1)
         {
@@ -49,7 +46,7 @@ public:
             temp2[i] = 3;
             c = solve(temp2, i + 1, j + 1, dp);
         }
-        if (nums[i] == 2)
+        else if (nums[i] == 2)
         {
             temp1[i] = 1;
             a = solve(temp1, i + 1, j + 1, dp);
@@ -59,7 +56,7 @@ public:
             temp2[i] = 3;
             c = solve(temp2, i + 1, j + 1, dp);
         }
-        if (nums[i] == 3)
+        else
         {
             temp1[i] = 1;
             a = solve(temp1, i + 1, j + 1, dp);

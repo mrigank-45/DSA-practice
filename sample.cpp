@@ -1,87 +1,41 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-
 class Solution
 {
 public:
-
-    int solve(vector<int> nums, int i, int j, vector<vector<int>> &dp)
+    bool canMakeSubsequence(string str1, string str2)
     {
-        if (is_sorted(nums.begin(), nums.end()))
-        {
-            cout << "i: " << i << endl;
-            cout << "j: " << j << endl;
+        int i = 0, j = 0;
 
-            for(int i = 0; i < nums.size(); i++)
+        while (i < str1.size())
+        {
+            if (str1[i] == str2[j])
             {
-                cout << nums[i] << " ";
+                i++;
+                j++;
+            }
+            else if ((str1[i] - 'a') + 1 == str2[j] - 'a')
+            {
+                i++;
+                j++;
+            }
+            else if (str1[i] == 'z' &&  str2[j] == 'a')
+            {
+                i++;
+                j++;
+            }
+            else
+            {
+                i++;
             }
 
-            cout << endl;
-
-            return j;
+            if (j == str2.length())
+            {
+                return true;
+            }
         }
 
-        if (i == nums.size())
-        {
-            return INT_MAX;
-        }
-
-        if (dp[i][j] != -1)
-        {
-            return dp[i][j];
-        }
-
-        int a = INT_MAX, b = INT_MAX, c = INT_MAX;
-        vector<int> temp1 = nums;
-        vector<int> temp2 = nums;
-
-
-        // 3 Cases
-        if (nums[i] == 1)
-        {
-            a = solve(nums, i + 1, j, dp);
-
-            temp1[i] = 2;
-            b = solve(temp1, i + 1, j + 1, dp);
-
-            temp2[i] = 3;
-            c = solve(temp2, i + 1, j + 1, dp);
-        }
-        if (nums[i] == 2)
-        {
-            temp1[i] = 1;
-            a = solve(temp1, i + 1, j + 1, dp);
-
-            b = solve(nums, i + 1, j, dp);
-
-            temp2[i] = 3;
-            c = solve(temp2, i + 1, j + 1, dp);
-        }
-        if (nums[i] == 3)
-        {
-            temp1[i] = 1;
-            a = solve(temp1, i + 1, j + 1, dp);
-
-            temp2[i] = 2;
-            b = solve(temp2, i + 1, j + 1, dp);
-
-            c = solve(nums, i + 1, j, dp);
-        }
-
-        dp[i][j] = min(a, min(b, c));
-
-        return min(a, min(b, c));
-    }
-
-    int minimumOperations(vector<int> &nums)
-    {
-        if (is_sorted(nums.begin(), nums.end()))
-        {
-            return 0;
-        }
-        vector<vector<int>> dp(nums.size() + 1, vector<int>(nums.size() + 1, -1));
-        return solve(nums, 0, 0, dp);
+        return false;
     }
 };
