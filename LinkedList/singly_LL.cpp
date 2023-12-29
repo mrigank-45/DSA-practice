@@ -40,12 +40,27 @@ void insertAtHead(Node *&head, int d)
     head = temp;
 }
 
+// with tail
 void insertAtTail(Node *&tail, int d)
 {
     // new node create
     Node *temp = new Node(d);
     tail->next = temp;
     tail = temp;
+}
+
+// with head
+void insertAtTail2(Node *&head, int d)
+{
+    Node *temp = head;
+    while (temp->next != NULL)
+    {
+        temp = temp->next;
+    }
+
+    Node *newNode = new Node(d);
+    temp->next = newNode;
+    temp = newNode;
 }
 
 void print(Node *&head)

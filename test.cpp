@@ -1,10 +1,30 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int main(){
-    char s = 's';
-    cout<<s - 'a'+1<<endl;
+void check(int n)
+{
+    int e = 0, o = 0;
+    for (int i = 0; i < 32; i++)
+    {
+        if (n & (1 << i))
+        {
+            if (i % 2 == 0)
+            {
+                e++;
+            }
+            else
+            {
+                o++;
+            }
+        }
+    }
+    cout << e << " " << o << endl;
+}
 
-    char t = 't';
-    cout<<t - 'a'<<endl;
+int main()
+{
+    int a;
+    cin >> a;
+    check(a);
+    return 0;
 }
