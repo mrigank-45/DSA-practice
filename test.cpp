@@ -1,30 +1,55 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-void check(int n)
+class Solution
 {
-    int e = 0, o = 0;
-    for (int i = 0; i < 32; i++)
+public:
+    int minAbsoluteDifference(vector<int> &nums, int k)
     {
-        if (n & (1 << i))
+        unordered_map<int, int> mp;
+        set<int> s;
+        int ans = INT_MAX, n = nums.size();
+        for (int i = k; i < n; i++)
         {
-            if (i % 2 == 0)
+            mp[nums[i]]++;
+            s.insert(nums[i]);
+        }
+        for (int i = 0; i < n && !s.empty(); i++)
+        {
+            if (s.lower_bound(nums[i]) != s.end())
             {
-                e++;
+                auto a = s.lower_bound(nums[i]);
+                ans = min(ans, *a - nums[i]);
             }
-            else
+            mp[nums[i + k]]--;
+            if (mp[nums[i + k]] == 0)
             {
-                o++;
+                mp.erase(nums[i + k]);
+                s.erase(nums[i + k]);
             }
         }
+        mp.clear();
+        s.clear();
+        reverse(nums.begin(), nums.end());
+        for (int i = k; i < n; i++)
+        {
+            mp[nums[i]]++;
+            s.insert(nums[i]);
+        }
+        for (int i = 0; i < n && !s.empty(); i++)
+        {
+            if (s.lower_bound(nums[i]) != s.end())
+            {
+                auto a = s.lower_bound(nums[i]);
+                ans = min(ans, *a - nums[i]);
+            }
+            mp[nums[i + k]]--;
+            if (mp[nums[i + k]] == 0)
+            {
+                mp.erase(nums[i + k]);
+                s.erase(nums[i + k]);
+            }
+        }
+        return ans;
     }
-    cout << e << " " << o << endl;
-}
-
-int main()
-{
-    int a;
-    cin >> a;
-    check(a);
-    return 0;
-}
+};

@@ -1,78 +1,51 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-//   Definition for singly-linked list.
-struct ListNode
-{
-    int val;
-    ListNode *next;
-    ListNode() : val(0), next(nullptr) {}
-    ListNode(int x) : val(x), next(nullptr) {}
-    ListNode(int x, ListNode *next) : val(x), next(next) {}
-};
-
 class Solution
 {
 public:
-    ListNode *reverse(ListNode *head)
+    int solve(int i, int j, int sum, vector<int> &v, vector<vector<int>> &dp, int m)
     {
-        if (head == NULL || head->next == NULL)
-            return head;
+        if (i >= j)
+        {
+            return true;
+        }
+        else if (j - i + 1 <= 2)
+        {
+            return true;
+        }
+        else if (sum < m)
+        {
+            return false;
+        }
 
-        ListNode *rest = reverse(head->next);
-        head->next->next = head;
-        head->next = NULL;
+        if (dp[i][j] != -1)
+        {
+            return dp[i][j];
+        }
 
-        return rest;
+        int ans1 = false;
+        if (sum - v[i] >= m)
+        {
+            ans1 |= solve(i + 1, j, sum - v[i], v, dp, m);
+        }
+        if (sum - v[j] >= m)
+        {
+            ans1 |= solve(i, j - 1, sum - v[j], v, dp, m);
+        }
+        
+
+        return dp[i][j] = ans1;
     }
-
-    void insertAtTail(ListNode *&head, int d)
+    bool canSplitArray(vector<int> &nums, int m)
     {
-        ListNode *temp = head;
-        while (temp->next != NULL)
+        int n = nums.size();
+        vector<vector<int>> dp(n + 1, vector<int>(n + 1, -1));
+        int sum = 0;
+        for (auto &i : nums)
         {
-            temp = temp->next;
+            sum += i;
         }
-
-        ListNode *newNode = new ListNode(d, nullptr);
-        temp->next = newNode;
-        temp = newNode;
-    }
-
-    ListNode *doubleIt(ListNode *head)
-    {
-        if (head == NULL || head->val == 0)
-        {
-            ListNode *newHead = new ListNode(0);
-
-            return newHead;
-        }
-
-        ListNode *head2 = reverse(head);
-
-        int val = (head2->val * 2) % 10;
-        ListNode *newHead = new ListNode(val);
-        int carry = (head2->val * 2) / 10;
-
-        ListNode *temp = head2->next;
-
-        while (temp != NULL)
-        {
-            int val = ((temp->val * 2) + carry) % 10;
-            carry = ((temp->val * 2) + carry) / 10;
-
-            insertAtTail(newHead, val);
-
-            temp = temp->next;
-        }
-
-        if (carry != 0)
-        {
-            insertAtTail(newHead, carry);
-        }
-
-        ListNode *newHead2 = reverse(newHead);
-
-        return newHead2;
+        return solve(0, n - 1, sum, nums, dp, m);
     }
 };
