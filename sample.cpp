@@ -4,21 +4,60 @@ using namespace std;
 class Solution
 {
 public:
-    ListNode *insertGreatestCommonDivisors(ListNode *head)
+    int minimumSeconds(vector<int> &nums)
     {
-        ListNode *ans = new ListNode(0);
-        ListNode *p = ans;
-        while (head->next)
+        map<int, int> mp;
+        for (int i = 0; i < nums.size(); i++)
         {
-            int x = head->val;
-            int y = head->next->val;
-            ans->next = new ListNode(x);
-            ans = ans->next;
-            ans->next = new ListNode(__gcd(x, y));
-            ans = ans->next;
-            head = head->next;
+            mp[nums[i]]++;
         }
-        ans->next = head;
-        return p->next;
+
+        vector<int> possible;
+        for (auto it : mp)
+        {
+            if (it.second >= 2)
+            {
+                possible.push_back(it.first);
+            }
+        }
+        if (possible.size() == 0)
+        {
+            int dis = nums.size() - 1;
+            if (dis % 2 == 0)
+            {
+                return (dis / 2);
+            }
+            else
+            {
+                return (dis / 2 + 1);
+            }
+        }
+
+        int minAns = INT_MAX;
+        for (int j = 0; j < possible.size(); j++)
+        {
+            vector<int> index;
+            for (int i = 0; i < nums.size(); i++)
+            {
+                if (nums[i] == possible[j])
+                {
+                    index.push_back(i);
+                }
+            }
+
+            int dis = index[0] + (nums.size() - 1) - (index[index.size() - 1]);
+
+            for (int i = 1; i < index.size(); i++)
+            {
+                if ((index[i] - index[i - 1]) > dis)
+                {
+                    dis = index[i] - index[i - 1] - 1;
+                }
+            }
+
+            minAns = min(minAns, (dis + 1) / 2);
+        }
+
+        return minAns;
     }
 };

@@ -1,3 +1,5 @@
+// Minimum Seconds to Equalize a Circular Array (leetcode)
+
 #include <bits/stdc++.h>
 using namespace std;
 
