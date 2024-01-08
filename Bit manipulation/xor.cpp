@@ -1,5 +1,7 @@
 // Given an array of N positive integers where all numbers occur even number of times except one number which occurs odd number of times.
-// Find the exceptional number.
+// Find the exceptional number.`
+// (a ^ a) == 0  // even times
+// (a ^ a ^ a) == a  // odd times
 #include <bits/stdc++.h>
 using namespace std;
 
