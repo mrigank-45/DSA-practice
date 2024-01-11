@@ -18,7 +18,7 @@ public:
                 return true;
             ;
 
-            // At each index check if no.of unqiue people are greater than or equal to group no. and 
+            // At each index check if no.of unqiue people are greater than or equal to group no. and
             // total no. of people till that index are ≥ sum of n numbers.
             if ((i + 1 >= numofGroup) && getSum(numofGroup) <= ps[i])
             {

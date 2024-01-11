@@ -1,14 +1,23 @@
 #include <bits/stdc++.h>
 using namespace std;
+
 class Solution
 {
 public:
-    int solve(int i, int j, vector<int> nums, map<int, int> mp, int distict, int total)
+    int maxIncreasingGroups(vector<int> &usageLimits)
     {
-        
-    }
-    int countCompleteSubarrays(vector<int> &nums)
-    {
+        sort(usageLimits.begin(), usageLimits.end());
+        long long total = 0;
+        long long count = 0;
+        for (int i = 0; i < usageLimits.size(); ++i)
+        {
+            total += usageLimits[i];
+            if (total >= ((count + 1) * (count + 2)) / 2)
+            {
+                ++count;
+            }
+        }
 
+        return count;
     }
 };
