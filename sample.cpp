@@ -4,49 +4,66 @@ using namespace std;
 class Solution
 {
 public:
-    int maximumBeauty(vector<int> &nums, int k)
+    int solve(vector<int> &nums, int target, int index, vector<int> dp)
     {
-
-        sort(nums.begin(), nums.end());
-
-        int n = nums.size();
-        if (n == 1)
+        if (index >= nums.size())
         {
-            return 1;
+            return -1;
         }
-        
-        int ans = INT_MIN;
-
-        for (int i = 0; i < n; i++)
+        if (index == nums.size() - 1)
         {
-            int mini = nums[i];
+            return 0;
+        }
 
-            int low = i;
-            int high = nums.size() - 1;
+        if (dp[index] != -2)
+        {
+            return dp[index];
+        }
 
-            int mid = low + (high - low) / 2;
+        int ans = -1;
 
-            int temp = i;
-
-            while (low <= high)
+        for (int i = index + 1; i < nums.size(); i++)
+        {
+            if (abs(nums[index] - nums[i]) <= target)
             {
-
-                if (nums[mid] - mini > 2 * k)
+                if (solve(nums, target, i, dp) != -1)
                 {
-                    high = mid - 1;
+                    ans = max(ans, 1 + solve(nums, target, i, dp));
                 }
-                else
-                {
-                    low = mid + 1;
-                    temp = max(temp, mid);
-                }
+            }
+        }
 
-                mid = low + (high - low) / 2;
+        return dp[index] = ans;
+    }
+    int tabuation(vector<int> &nums, int target)
+    {
+        vector<int> dp(nums.size(), -2);
+
+        dp[nums.size() - 1] = 0;
+
+        for (int i = nums.size() - 2; i >= 0; i--)
+        {
+            int ans = -1;
+
+            for (int j = i + 1; j < nums.size(); j++)
+            {
+                if (abs(nums[i] - nums[j]) <= target)
+                {
+                    if (dp[j] != -1)
+                    {
+                        ans = max(ans, 1 + dp[j]);
+                    }
+                }
             }
 
-            ans = max(ans, temp - i + 1);
+            dp[i] = ans;
         }
 
-        return ans;
+        return dp[0];
+    }
+    int maximumJumps(vector<int> &nums, int target)
+    {
+        vector<int> dp(nums.size(), -2);
+        return solve(nums, target, 0, dp);
     }
 };
