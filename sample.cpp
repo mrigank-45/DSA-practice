@@ -4,34 +4,33 @@ using namespace std;
 class Solution
 {
 public:
-    int minOperations(int n)
+    vector<int> relocateMarbles(vector<int> &nums, vector<int> &moveFrom, vector<int> &moveTo)
     {
 
-        int ans = 0;
-        if (n % 2 == 1)
+        map<int, int> mp;
+
+        for (int i = 0; i < nums.size(); i++)
         {
-            int i = n/2;
-            int val = 2*i + 1;
-
-            while (i >= 0)
-            {
-                ans += val - (2*i + 1);
-                i--;
-            }
-        }
-        else{
-            int i = n/2;
-            int val = 2*i + 1;
-            val--;
-            i--;
-
-            while (i >= 0)
-            {
-                ans += val - (2*i + 1);
-                i--;
-            }
+            mp[nums[i]] = 1;
         }
 
+        for (int i = 0; i < moveFrom.size(); i++)
+        {
+            mp[moveFrom[i]] = 0;
+            mp[moveTo[i]] = 1;
+        }
+
+        vector<int> ans;
+
+        for (auto it : mp)
+        {
+            if (it.second == 1)
+            {
+                ans.push_back(it.first);
+            }
+        }
+        sort(ans.begin(), ans.end());
         return ans;
-    };
+        
+    }
 };
