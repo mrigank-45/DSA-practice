@@ -4,66 +4,30 @@ using namespace std;
 class Solution
 {
 public:
-    int solve(vector<int> &nums, int target, int index, vector<int> dp)
+    int solve(vector<int> &nums1, vector<int> &nums2, int index, int len)
     {
-        if (index >= nums.size())
+        if (index == nums1.size())
         {
-            return -1;
-        }
-        if (index == nums.size() - 1)
-        {
-            return 0;
+            return len;
         }
 
-        if (dp[index] != -2)
-        {
-            return dp[index];
-        }
+        int ans = INT_MIN;
 
-        int ans = -1;
+        // include from nums1
+        ans = max(ans, solve(nums1, nums2, index + 1, len + 1));
 
-        for (int i = index + 1; i < nums.size(); i++)
-        {
-            if (abs(nums[index] - nums[i]) <= target)
-            {
-                if (solve(nums, target, i, dp) != -1)
-                {
-                    ans = max(ans, 1 + solve(nums, target, i, dp));
-                }
-            }
-        }
+        // include from nums2
+        
 
-        return dp[index] = ans;
+        return ans;
     }
-    int tabuation(vector<int> &nums, int target)
+    int maxNonDecreasingLength(vector<int> &nums1, vector<int> &nums2)
     {
-        vector<int> dp(nums.size(), -2);
-
-        dp[nums.size() - 1] = 0;
-
-        for (int i = nums.size() - 2; i >= 0; i--)
+        if (nums1.size() == 1)
         {
-            int ans = -1;
-
-            for (int j = i + 1; j < nums.size(); j++)
-            {
-                if (abs(nums[i] - nums[j]) <= target)
-                {
-                    if (dp[j] != -1)
-                    {
-                        ans = max(ans, 1 + dp[j]);
-                    }
-                }
-            }
-
-            dp[i] = ans;
+            return 1;
         }
 
-        return dp[0];
-    }
-    int maximumJumps(vector<int> &nums, int target)
-    {
-        vector<int> dp(nums.size(), -2);
-        return solve(nums, target, 0, dp);
+        return solve(nums1, nums2, 0, 1);
     }
 };
