@@ -4,30 +4,34 @@ using namespace std;
 class Solution
 {
 public:
-    int solve(vector<int> &nums1, vector<int> &nums2, int index, int len)
+    int minOperations(int n)
     {
-        if (index == nums1.size())
+
+        int ans = 0;
+        if (n % 2 == 1)
         {
-            return len;
+            int i = n/2;
+            int val = 2*i + 1;
+
+            while (i >= 0)
+            {
+                ans += val - (2*i + 1);
+                i--;
+            }
         }
+        else{
+            int i = n/2;
+            int val = 2*i + 1;
+            val--;
+            i--;
 
-        int ans = INT_MIN;
-
-        // include from nums1
-        ans = max(ans, solve(nums1, nums2, index + 1, len + 1));
-
-        // include from nums2
-        
+            while (i >= 0)
+            {
+                ans += val - (2*i + 1);
+                i--;
+            }
+        }
 
         return ans;
-    }
-    int maxNonDecreasingLength(vector<int> &nums1, vector<int> &nums2)
-    {
-        if (nums1.size() == 1)
-        {
-            return 1;
-        }
-
-        return solve(nums1, nums2, 0, 1);
-    }
+    };
 };
