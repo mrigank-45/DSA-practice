@@ -4,33 +4,60 @@ using namespace std;
 class Solution
 {
 public:
-    vector<int> relocateMarbles(vector<int> &nums, vector<int> &moveFrom, vector<int> &moveTo)
+    bool check(long long int n)
     {
-
-        map<int, int> mp;
-
-        for (int i = 0; i < nums.size(); i++)
+        if (n == 0)
         {
-            mp[nums[i]] = 1;
+            return true;
         }
-
-        for (int i = 0; i < moveFrom.size(); i++)
+        while (n % 5 == 0)
         {
-            mp[moveFrom[i]] = 0;
-            mp[moveTo[i]] = 1;
+            n /= 5;
         }
-
-        vector<int> ans;
-
-        for (auto it : mp)
+        return n == 1;
+    }
+    int solve(string s, int i, string curr)
+    {
+        if (i == s.length())
         {
-            if (it.second == 1)
+            long long int z = stoll(curr);
+            if (check(z))
             {
-                ans.push_back(it.first);
+                return 1;
+            }
+            return INT_MAX;
+        }
+
+        // no partition
+        int c1 = solve(s, i + 1, curr + s[i]);
+
+        // partition
+        int c2 = INT_MAX;
+        if (curr.length() != 0 && check(stoll(curr)) && (i == s.length() - 1 || s[i + 1] == '1'))
+        {
+            string temp = "";
+            temp.push_back(s[i]);
+            if (solve(s, i + 1, temp) == INT_MAX)
+            {
+                c2 = INT_MAX;
+            }
+            else
+            {
+                c2 = 1 + solve(s, i + 1, temp);
             }
         }
-        sort(ans.begin(), ans.end());
-        return ans;
-        
+        return min(c1, c2);
+    }
+    int minimumBeautifulSubstrings(string s)
+    {
+
+        if (solve(s, 0, "") == INT_MAX || solve(s, 0, "") == 1)
+        {
+            return -1;
+        }
+        else
+        {
+            return solve(s, 0, "");
+        }
     }
 };
