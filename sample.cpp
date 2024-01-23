@@ -1,63 +1,90 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class Solution
+class TrieNode
 {
 public:
-    bool check(long long int n)
+    TrieNode *children[2];
+
+    TrieNode()
     {
-        if (n == 0)
-        {
-            return true;
-        }
-        while (n % 5 == 0)
-        {
-            n /= 5;
-        }
-        return n == 1;
+        children[0] = nullptr;
+        children[1] = nullptr;
     }
-    int solve(string s, int i, string curr)
+};
+class Trie
+{
+public:
+    TrieNode *root;
+
+    Trie()
     {
-        if (i == s.length())
+        root = new TrieNode();
+    }
+
+    void insert(int num)
+    {
+        TrieNode *current = root;
+        for (int i = 31; i >= 0; --i)
         {
-            long long int z = stoll(curr);
-            if (check(z))
+            int bit = (num >> i) & 1;
+            if (!current->children[bit])
             {
-                return 1;
+                current->children[bit] = new TrieNode();
             }
-            return INT_MAX;
+            current = current->children[bit];
         }
+    }
 
-        // no partition
-        int c1 = solve(s, i + 1, curr + s[i]);
+    int solve(int num)
+    {
+        TrieNode *current = root;
+        int maxXOR = 0;
 
-        // partition
-        int c2 = INT_MAX;
-        if (curr.length() != 0 && check(stoll(curr)) && (i == s.length() - 1 || s[i + 1] == '1'))
+        for (int i = 31; i >= 0; --i)
         {
-            string temp = "";
-            temp.push_back(s[i]);
-            if (solve(s, i + 1, temp) == INT_MAX)
+            int bit = (num >> i) & 1;
+            int flipBit = 1 - bit;
+
+            if (current->children[flipBit])
             {
-                c2 = INT_MAX;
+                maxXOR |= (1 << i);
+                current = current->children[flipBit];
             }
             else
             {
-                c2 = 1 + solve(s, i + 1, temp);
+                current = current->children[bit];
             }
         }
-        return min(c1, c2);
-    }
-    int minimumBeautifulSubstrings(string s)
-    {
 
-        if (solve(s, 0, "") == INT_MAX || solve(s, 0, "") == 1)
-        {
-            return -1;
-        }
-        else
-        {
-            return solve(s, 0, "");
-        }
+        return maxXOR;
     }
 };
+
+int find_max_xor(int lo, int hi, int k)
+{
+    Trie trie;
+    int max_xor = 0;
+
+    for (int i = lo; i <= hi; ++i)
+    {
+        trie.insert(i);
+        int complement = k - i;
+        max_xor = max(max_xor, trie.solve(complement));
+    }
+
+    return max_xor;
+}
+
+int main()
+{
+    int lo = 3;
+    int hi = 5;
+    int k = 6;
+
+    int max_xor = find_max_xor(lo, hi, k);
+
+    cout << "The maximum XOR value is " << max_xor << endl;
+
+    return 0;
+}
