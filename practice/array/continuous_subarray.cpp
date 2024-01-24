@@ -1,3 +1,6 @@
+// Continuous Subarrays
+// https://leetcode.com/problems/continuous-subarrays/solutions/3706716/c-simple-and-intuitive-sliding-window-detailed-explanation/
+
 #include <bits/stdc++.h>
 using namespace std;
 
