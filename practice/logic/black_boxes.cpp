@@ -1,3 +1,5 @@
+// Number of Black Blocks
+
 #include <bits/stdc++.h>
 using namespace std;
 
