@@ -4,53 +4,72 @@ using namespace std;
 class Solution
 {
 public:
-    vector<bool> SieveOfEratosthenes(int n)
+    void solve(int x, int y, int z, string &ans)
     {
-        // Create a boolean array "prime[0..n]" and initialize
-        // all entries it as true. A value in prime[i] will
-        // finally be false if i is Not a prime, else true.
-        vector<bool> prime(n + 1, true);
-        prime[0] = false;
-        prime[1] = false;
-
-        for (int p = 2; p * p <= n; p++)
+        if (ans.back() == 'x')
         {
-            // If prime[p] is not changed, then it is a prime
-            if (prime[p] == true)
+            if (y > 0)
             {
-                // Update all multiples of p greater than or
-                // equal to the square of it. Numbers which are
-                // multiples of p and are less than p^2 are
-                // already marked.
-                for (int i = p * p; i <= n; i += p)
-                    prime[i] = false;
+                ans.push_back('y');
+                y--;
+            }
+            else
+            {
+                return;
             }
         }
-
-        return prime;
+        else if (ans.back() == 'y')
+        {
+            if (y > 0 && x > 0)
+            {
+                ans.push_back('x');
+                x--;
+            }
+            else if (z > 0)
+            {
+                ans.push_back('z');
+                z--;
+            }
+            else
+            {
+                return;
+            }
+        }
+        else
+        {
+            if (y > 0 && x > 0)
+            {
+                ans.push_back('x');
+                x--;
+            }
+            else if (z > 0)
+            {
+                ans.push_back('z');
+                z--;
+            }
+            else
+            {
+                return;
+            }
+        }
     }
-
-    vector<vector<int>> findPrimePairs(int n)
+    int longestString(int x, int y, int z)
     {
-        if (n == 1 || n == 2)
-        {
-            return {};
-        }
-        vector<bool> is_prime = SieveOfEratosthenes(n);
+        string ans1;
+        ans1.push_back('x');
+        x--;
+        solve(x, y, z, ans1);
 
-        if (n == 10)
-        {
-            cout << is_prime[5] << endl;
-        }
+        string ans2;
+        ans2.push_back('y');
+        y--;
+        solve(x, y, z, ans2);
 
-        vector<vector<int>> ans;
-        for (int i = 2; i <= n / 2; i++)
-        {
-            if (is_prime[i] && is_prime[n - i])
-            {
-                ans.push_back({i, n - i});
-            }
-        }
-        return ans;
+        string ans3;
+        ans3.push_back('z');
+        z--;
+        solve(x, y, z, ans3);
+
+        return 2 * (max(ans1.length(), max(ans2.length(), ans3.length())));
     }
 };
