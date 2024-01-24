@@ -3,55 +3,53 @@ using namespace std;
 
 class Solution
 {
-private:
-    bool check(int i, int j, string &s)
+public:
+    vector<bool> SieveOfEratosthenes(int n)
     {
-        int num = 0, test = 1;
-        for (int k = j; k >= i; k--) // Converting Binary to Decimal
-        {
-            if (s[k] == '1')
-                num += test;
-            test *= 2;
-        }
-        while (num > 1) // Checking if num is a power of 5
-        {
-            if (num % 5)
-                return false;
-            num /= 5;
-        }
-        return num == 1;
-    }
-    int recursion(int index, string &s, vector<int> &dp)
-    {
-        if (index == s.length()) // End of partitioning
-        {
-            return 0;
-        }
-        if (s[index] == '0') // Invalid Case
-            return INT_MAX;
+        // Create a boolean array "prime[0..n]" and initialize
+        // all entries it as true. A value in prime[i] will
+        // finally be false if i is Not a prime, else true.
+        vector<bool> prime(n + 1, true);
+        prime[0] = false;
+        prime[1] = false;
 
-        if (dp[index] != 1e5)
-            return dp[index];
-        int ans = INT_MAX;
-        for (int j = index; j < s.length(); j++)
+        for (int p = 2; p * p <= n; p++)
         {
-            if (check(index, j, s))
+            // If prime[p] is not changed, then it is a prime
+            if (prime[p] == true)
             {
-                ans = min(ans, 1 + recursion(j + 1, s, dp));
+                // Update all multiples of p greater than or
+                // equal to the square of it. Numbers which are
+                // multiples of p and are less than p^2 are
+                // already marked.
+                for (int i = p * p; i <= n; i += p)
+                    prime[i] = false;
             }
         }
-        // Memoize the minimum value at the current index
-        return dp[index] = ans;
+
+        return prime;
     }
 
-public:
-    int minimumBeautifulSubstrings(string s)
+    vector<vector<int>> findPrimePairs(int n)
     {
-        vector<int> dp(s.length(), 1e5);
-        int ans = recursion(0, s, dp);
-        if (ans > 15)
+        if (n == 1 || n == 2)
         {
-            return -1;
+            return {};
+        }
+        vector<bool> is_prime = SieveOfEratosthenes(n);
+
+        if (n == 10)
+        {
+            cout << is_prime[5] << endl;
+        }
+
+        vector<vector<int>> ans;
+        for (int i = 2; i <= n / 2; i++)
+        {
+            if (is_prime[i] && is_prime[n - i])
+            {
+                ans.push_back({i, n - i});
+            }
         }
         return ans;
     }
