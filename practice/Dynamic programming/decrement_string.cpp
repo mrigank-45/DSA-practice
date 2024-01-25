@@ -1,3 +1,5 @@
+// Decremental String Concatenation
+
 #include <bits/stdc++.h>
 using namespace std;
 

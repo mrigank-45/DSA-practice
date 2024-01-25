@@ -4,72 +4,50 @@ using namespace std;
 class Solution
 {
 public:
-    void solve(int x, int y, int z, string &ans)
+    string concatinate(string &a, string &b)
     {
-        if (ans.back() == 'x')
+        if (a[a.length() - 1] == b[0])
         {
-            if (y > 0)
-            {
-                ans.push_back('y');
-                y--;
-            }
-            else
-            {
-                return;
-            }
-        }
-        else if (ans.back() == 'y')
-        {
-            if (y > 0 && x > 0)
-            {
-                ans.push_back('x');
-                x--;
-            }
-            else if (z > 0)
-            {
-                ans.push_back('z');
-                z--;
-            }
-            else
-            {
-                return;
-            }
+            return a + b.substr(1, b.length() - 1);
         }
         else
         {
-            if (y > 0 && x > 0)
-            {
-                ans.push_back('x');
-                x--;
-            }
-            else if (z > 0)
-            {
-                ans.push_back('z');
-                z--;
-            }
-            else
-            {
-                return;
-            }
+            return a + b;
         }
     }
-    int longestString(int x, int y, int z)
+
+    int solve(vector<string> &words, int index, string prev, vector<int> dp)
     {
-        string ans1;
-        ans1.push_back('x');
-        x--;
-        solve(x, y, z, ans1);
+        if (index == words.size())
+        {
+            return prev.length();
+        }
 
-        string ans2;
-        ans2.push_back('y');
-        y--;
-        solve(x, y, z, ans2);
+        if (dp[index] != -1)
+        {
+            return dp[index];
+        }
 
-        string ans3;
-        ans3.push_back('z');
-        z--;
-        solve(x, y, z, ans3);
+        // Case 1
+        string temp1 = concatinate(prev, words[index]);
+        int ans1 = solve(words, index + 1, temp1, dp);
 
-        return 2 * (max(ans1.length(), max(ans2.length(), ans3.length())));
+        // Case 2
+        string temp2 = concatinate(words[index], prev);
+        int ans2 = solve(words, index + 1, temp2, dp);
+
+        return dp[index] = min(ans1, ans2);
+    }
+
+    int minimizeConcatenatedLength(vector<string> &words)
+    {
+        if (words.size() == 0)
+        {
+            return words[0].length();
+        }
+
+        vector<int> dp(words.size() + 1, -1);
+
+        return solve(words, 1, words[0], dp);
     }
 };
