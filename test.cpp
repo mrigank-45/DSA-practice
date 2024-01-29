@@ -4,50 +4,50 @@ using namespace std;
 class Solution
 {
 public:
-    string concatinate(string &a, string &b)
+
+    vector<int> countServers(int n, vector<vector<int>> &logs, int x, vector<int> &queries)
     {
-        if (a[a.length() - 1] == b[0])
+        int m = logs.size();
+        vector<pair<int, int>> vp;
+        for (auto it : logs)
+            vp.push_back({it[1], it[0]}); // time,serverid
+        sort(vp.begin(), vp.end());       // sort on basis of time
+
+        int q = queries.size();
+        unordered_map<int, int> mp; // to store the unique server ids in the current window
+
+        vector<int> ans(q, 0);
+        vector<pair<int, int>> time(q);
+        // store the indices of queries to store the answer in correct manner
+        for (int i = 0; i < q; i++)
+            time[i] = {queries[i], i};  // time,index
+        sort(time.begin(), time.end()); // sort on basis of time
+
+        int i = 0, j = 0; // i is the start of window and j is the end of window
+        for (auto tm : time)
         {
-            return a + b.substr(1, b.length() - 1);
+            int curtime = tm.first;
+            int ind = tm.second;
+
+            int start = max(0, curtime - x); // finding the start time (like queries[i]-x), cant be less than 0
+            int end = curtime;
+
+            while (j < m and vp[j].first <= end) // move j until the value of time in logs is not more than end
+            {
+                mp[vp[j].second]++;
+                j++;
+            }
+            while (i < m and vp[i].first < start) // move i until the value is not >= start
+            {
+                // removing out of window elements
+                if (mp[vp[i].second] == 1)
+                    mp.erase(vp[i].second); // if it is its only occurence then erase it.
+                else
+                    mp[vp[i].second]--;
+                i++;
+            }
+            ans[ind] = n - mp.size();
         }
-        else
-        {
-            return a + b;
-        }
-    }
-
-    int solve(vector<string> &words, int index, string prev, vector<int> dp)
-    {
-        if (index == words.size())
-        {
-            return prev.length();
-        }
-
-        if (dp[index] != -1)
-        {
-            return dp[index];
-        }
-
-        // Case 1
-        string temp1 = concatinate(prev, words[index]);
-        int ans1 = solve(words, index + 1, temp1, dp);
-
-        // Case 2
-        string temp2 = concatinate(words[index], prev);
-        int ans2 = solve(words, index + 1, temp2, dp);
-
-        return dp[index] = min(ans1, ans2);
-    }
-
-    int minimizeConcatenatedLength(vector<string> &words)
-    {
-        if (words.size() == 0)
-        {
-            return words[0].length();
-        }
-
-        vector<int> dp(words.size() + 1, -1);
-
-        return solve(words, 1, words[0], dp);
+        return ans;
     }
 };

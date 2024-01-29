@@ -4,28 +4,46 @@ using namespace std;
 class Solution
 {
 public:
-    int dp[1000][26][26];
-    int solve(vector<string> &v, int start, int end, int i)
+    vector<int> countServers(int n, vector<vector<int>> &logs, int x, vector<int> &queries)
     {
-        if (i >= v.size())
+        map<int, vector<int>> mp;
+
+        for (auto i : logs)
         {
-            return 0;
-        }
-        if (dp[i][start][end] != -1)
-        {
-            return dp[i][start][end];
+            mp[i[0]].push_back(i[1]);
         }
 
-        int ans = INT_MAX;
-        ans = min(ans, (int)v[i].size() - (end + 'a' == v[i][0]) + solve(v, start, v[i].back() - 'a', i + 1));
-        ans = min(ans, (int)v[i].size() - (start + 'a' == v[i].back()) + solve(v, v[i][0] - 'a', end, i + 1));
+        map<int, int> vis;
 
-        return dp[i][start][end] = ans;
-    }
+        int servers = 0;
+        int l = queries[0] - x;
+        int r = queries[0];
 
-    int minimizeConcatenatedLength(vector<string> &v)
-    {
-        memset(dp, -1, sizeof(dp));
-        return v[0].size() + solve(v, v[0][0] - 'a', v[0].back() - 'a', 1);
+        for (int i = queries[0] - x; i <= queries[0]; i++)
+        {
+            if (mp.find(i) != mp.end()) // if found
+            {
+                for (auto j : mp[i])
+                {
+                    if (vis.find(j) == vis.end()) // not already visited in this window
+                    {
+                        vis[j] = 1;
+                        servers++;
+                    }
+                    else                         // else increase the count of vis
+                    {
+                        vis[j]++;
+                    }
+                }
+            }
+        }
+
+        for (int i = 1; i < queries.size(); i++)
+        {
+            
+
+            
+        }
+        
     }
 };
