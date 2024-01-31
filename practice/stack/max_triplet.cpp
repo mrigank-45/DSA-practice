@@ -1,3 +1,5 @@
+// Maximum Value of an Ordered Triplet II
+
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -30,7 +32,7 @@ public:
         int n = arr.size();
 
         vector<int> ans(n);
-        ans[n-1] = -1;
+        ans[n - 1] = -1;
 
         int maxi = n - 1;
 
