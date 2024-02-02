@@ -1,10 +1,12 @@
+// Minimum Size Subarray in Infinite Array
+
 #include <bits/stdc++.h>
 using namespace std;
 
 class Solution
 {
 public:
-    int minSizeSubvay(vector<int> &v, int k)
+    int minSizeSubarray(vector<int> &v, int k)
     {
         int n = v.size();
         long long s = 0;
@@ -34,8 +36,7 @@ public:
 
         while (i < 2 * n && j < 2 * n)
         {
-            // cout << i << ' ' << j << endl;
-            // cout << "sum: " << sum << endl;
+  
 
             if (sum == k)
             {
