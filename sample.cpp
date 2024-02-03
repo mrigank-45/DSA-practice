@@ -4,49 +4,30 @@ using namespace std;
 class Solution
 {
 public:
-    vector<int> countVisitedNodes(vector<int> &edges)
+    int minProcessingTime(vector<int> &processorTime, vector<int> &tasks)
     {
-        int sz = edges.size();
+        int n = processorTime.size();
 
-        vector<int> answer(sz); // ans array
-        set<int> visited;       // to keep check of the visited node
+        sort(processorTime.begin(), processorTime.end());
 
-        for (int index = 0; index < sz; ++index) // each index is considered
+        priority_queue<int> pq; // max heap for tasks
+
+        priority_queue<int> ans; // max heap for ans
+
+        for (int i = 0; i < tasks.size(); i++)
         {
-            visited.clear();
-            vector<int> nodeStack; // path for curr starting point
+            pq.push(tasks[i]);
+        }
 
-            int currSrc = index;
-            // continue till node is visited or already computed
-            while (visited.find(currSrc) == visited.end() && answer[currSrc] == 0)
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < 4; j++)
             {
-                visited.insert(currSrc);
-                nodeStack.push_back(currSrc);
-                currSrc = edges[currSrc]; // next node to visited
-            }
-
-            // if a cycle is formed
-            if (visited.find(currSrc) != visited.end())
-            {
-                int cycleLength = nodeStack.size() - distance(nodeStack.begin(), find(nodeStack.begin(), nodeStack.end(), currSrc));
-
-                // update ans for all nodes in the cycle as cycleLength
-                for (int times = 0; times < cycleLength; times++)
-                {
-                    answer[nodeStack.back()] = cycleLength;
-                    nodeStack.pop_back();
-                }
-            }
-
-            // update ans for nodes which are not part of cycle but directly connected to the cycle
-            while (!nodeStack.empty())
-            {
-                currSrc = nodeStack.back();
-                nodeStack.pop_back();
-                answer[currSrc] = answer[edges[currSrc]] + 1;
+                ans.push(processorTime[i] + pq.top());
+                pq.pop();
             }
         }
 
-        return answer;
+        return ans.top();
     }
 };
