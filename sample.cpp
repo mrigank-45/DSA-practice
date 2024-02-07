@@ -4,111 +4,31 @@ using namespace std;
 class Solution
 {
 public:
-    vector<int> dp;
-
-    // function to check the conditions of hamming distance and groups
-    bool isok(int index, int i, vector<string> &words, vector<int> &groups)
+    vector<int> findIndices(vector<int> &nums, int indexDifference, int valueDifference)
     {
+        int n = nums.size();
 
-        if (groups[index] == groups[i])
-        {
-            return false;
-        }
+        vector<int> ans;
 
-        if (words[index].size() != words[i].size())
+        for (int i = 0; i < n; i++)
         {
-            return false;
-        }
-
-        int ham = 0;
-        for (int k = 0; k < words[index].size(); k++)
-        {
-            if (words[index][k] != words[i][k])
+            for (int j = i; j < n; j++)
             {
-                ham++;
-            }
-            if (ham > 1)
-            { // If the Hamming distance exceeds 1, it's not a valid match.
-                return false;
-            }
-        }
-
-        return (ham == 1); // Hamming distance must be exactly 1.
-    }
-
-    int solve(int index, int n, vector<string> &words, vector<int> &groups, vector<int> &next)
-    {
-
-        // if index reaches end
-        if (index >= n)
-        {
-
-            return 0;
-        }
-
-        // using memoizatiosn
-        if (dp[index] != -1)
-        {
-
-            return dp[index];
-        }
-
-        int ans = 1;
-        for (int k = index + 1; k < n; k++)
-        {
-
-            if (isok(index, k, words, groups))
-            {
-
-                // check the answer
-                int tempans = 1 + solve(k, n, words, groups, next);
-                if (tempans > ans)
+                if ((j - i >= indexDifference) && (abs(nums[j] - nums[i]) >= valueDifference))
                 {
-
-                    // if answer is greater than previous then set next as k
-                    // from current index next = k
-                    ans = tempans;
-                    next[index] = k;
+                    ans.push_back(i);
+                    ans.push_back(j);
+                    return ans;
                 }
             }
         }
 
-        return dp[index] = ans;
-    }
-
-    vector<string> getWordsInLongestSubsequence(int n, vector<string> &words, vector<int> &groups)
-    {
-
-        dp.resize(n, -1);
-
-        int maxi = 0, index = 0;
-
-        // keeping next stored of each indx to rebuild the sequence
-        vector<int> next(n, -1);
-        for (int i = 0; i < n; i++)
+        if (ans.size() == 0)
         {
-
-            int ans = solve(i, n, words, groups, next);
-            if (maxi < ans)
-            {
-
-                maxi = ans;
-                index = i;
-            }
+            ans.push_back(-1);
+            ans.push_back(-1);
         }
 
-        vector<string> s;
-
-        // while next != -1 , means no possible next
-        while (index != -1)
-        {
-
-            // push word at index
-            s.push_back(words[index]);
-            // move to next index
-            index = next[index];
-        }
-
-        return s;
+        return ans;
     }
 };
