@@ -4,68 +4,56 @@ using namespace std;
 class Solution
 {
 public:
-    bool isLexicographicallySmaller(string a, string b)
+    vector<int> findIndices(vector<int> &nums, int indexDifference, int valueDifference)
     {
-        for (int i = 0; i < a.length(); ++i)
+        int n = nums.size();
+
+        vector<int> ans;
+
+        pair<int, int> maxi = {nums[0], 0}; // {value, index}
+        pair<int, int> mini = {nums[0], 0}; // {value, index}
+
+        int i = 0;
+        int j = indexDifference;
+
+        while (j < n)
         {
-            if (a[i] == b[i])
+            if (abs(nums[j] - maxi.first) >= valueDifference)
             {
-                continue;
+                ans.push_back(maxi.second);
+                ans.push_back(j);
+                break;
             }
-            else if (a[i] < b[i])
+            else if (abs(nums[j] - mini.first) >= valueDifference)
             {
-                return true;
+                ans.push_back(mini.second);
+                ans.push_back(j);
+                break;
             }
             else
             {
-                return false;
-            }
-        }
-
-        return false;
-    }
-
-    string shortestBeautifulSubstring(string s, int k)
-    {
-        vector<int> index;
-
-        for (int i = 0; i < s.size(); i++)
-        {
-            if (s[i] == '1')
-            {
-                index.push_back(i);
-            }
-        }
-
-        if (k > index.size())
-        {
-            return "";
-        }
-
-        int cnt = INT_MAX;
-        pair<int, int> p = {0, 0};
-
-        int l = 0;
-        int r = k - 1;
-
-        while (r < index.size())
-        {
-            if (index[r] - index[l] + 1 < cnt)
-            {
-                cnt = index[r] - index[l] + 1;
-                p = {index[l], index[r]};
-            }
-            else if (index[r] - index[l] + 1 == cnt)
-            {
-                if (isLexicographicallySmaller(s.substr(index[l], index[r] - index[l] + 1), s.substr(p.first, p.second - p.first + 1)))
+                i++;
+                if(i >= n){
+                    break;
+                }
+                if (nums[i] > maxi.first)
                 {
-                    p = {index[l], index[r]};
+                    maxi = {nums[i], i};
+                }
+                if (nums[i] < mini.first)
+                {
+                    mini = {nums[i], i};
                 }
             }
-            l++;
-            r++;
+            j++;
         }
 
-        return s.substr(p.first, p.second - p.first + 1);
+        if (ans.size() == 0)
+        {
+            ans.push_back(-1);
+            ans.push_back(-1);
+        }
+
+        return ans;
     }
 };
