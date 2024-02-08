@@ -21,6 +21,5 @@ bool isLexicographicallySmaller(string a, string b)
 int main()
 {
 
-    cout<<isLexicographicallySmaller("10101101101111","11101011011011");
-    return 0;
+    cout<< 0 % 4 <<endl;
 }

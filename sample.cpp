@@ -4,54 +4,65 @@ using namespace std;
 class Solution
 {
 public:
-    vector<int> findIndices(vector<int> &nums, int indexDifference, int valueDifference)
+    bool isPossible(map<int, int> mp, int minFreq)
+    {
+        int maxFreq = minFreq + 1;
+        for (auto it : mp)
+        {
+            if (it.second % maxFreq != 0 && (it.second / maxFreq + it.second % maxFreq) < minFreq)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    int minGroupsForValidAssignment(vector<int> &nums)
     {
         int n = nums.size();
+        map<int, int> mp;
 
-        vector<int> ans;
-
-        pair<int, int> maxi = {nums[0], 0}; // {value, index}
-        pair<int, int> mini = {nums[0], 0}; // {value, index}
-
-        int i = 0;
-        int j = indexDifference;
-
-        while (j < n)
+        for (int i = 0; i < n; i++)
         {
-            if (abs(nums[j] - maxi.first) >= valueDifference)
+            mp[nums[i]]++;
+        }
+
+        int minFreq = INT_MAX;
+        for (auto it : mp)
+        {
+            minFreq = min(minFreq, it.second);
+        }
+
+        while (minFreq > 1)
+        {
+            if (isPossible(mp, minFreq))
             {
-                ans.push_back(maxi.second);
-                ans.push_back(j);
-                break;
-            }
-            else if (abs(nums[j] - mini.first) >= valueDifference)
-            {
-                ans.push_back(mini.second);
-                ans.push_back(j);
                 break;
             }
             else
             {
-                i++;
-                if(i >= n){
-                    break;
-                }
-                if (nums[i] > maxi.first)
-                {
-                    maxi = {nums[i], i};
-                }
-                if (nums[i] < mini.first)
-                {
-                    mini = {nums[i], i};
-                }
+                minFreq--;
             }
-            j++;
         }
 
-        if (ans.size() == 0)
+        int maxFreq = minFreq + 1;
+        int ans = 0;
+
+        for (auto it : mp)
         {
-            ans.push_back(-1);
-            ans.push_back(-1);
+            while (1)
+            {
+                if (it.second % maxFreq == 0)
+                {
+                    ans += it.second / maxFreq;
+                    break;
+                }
+                else
+                {
+                    it.second -= minFreq;
+                    ans++;
+                }
+            }
         }
 
         return ans;
