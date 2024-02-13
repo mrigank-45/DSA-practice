@@ -4,67 +4,28 @@ using namespace std;
 class Solution
 {
 public:
-    bool isPossible(map<int, int> mp, int minFreq)
+    int minChanges(string s)
     {
-        int maxFreq = minFreq + 1;
-        for (auto it : mp)
-        {
-            if (it.second % maxFreq != 0 && (it.second / maxFreq + it.second % maxFreq) < minFreq)
-            {
-                return false;
-            }
-        }
-        return true;
-    }
+        int n = s.size();
 
-    int minGroupsForValidAssignment(vector<int> &nums)
-    {
-        int n = nums.size();
-        map<int, int> mp;
+        int cnt = 0;
+        char flag;
 
         for (int i = 0; i < n; i++)
         {
-            mp[nums[i]]++;
-        }
-
-        int minFreq = INT_MAX;
-        for (auto it : mp)
-        {
-            minFreq = min(minFreq, it.second);
-        }
-
-        while (minFreq > 1)
-        {
-            if (isPossible(mp, minFreq))
+            if (i % 2 == 0) // even
             {
-                break;
+                flag = s[i];
             }
-            else
+            else // odd
             {
-                minFreq--;
-            }
-        }
-
-        int maxFreq = minFreq + 1;
-        int ans = 0;
-
-        for (auto it : mp)
-        {
-            while (1)
-            {
-                if (it.second % maxFreq == 0)
+                if (s[i] != flag)
                 {
-                    ans += it.second / maxFreq;
-                    break;
-                }
-                else
-                {
-                    it.second -= minFreq;
-                    ans++;
+                    cnt++;
                 }
             }
         }
 
-        return ans;
+        return cnt;
     }
 };
