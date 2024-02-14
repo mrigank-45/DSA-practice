@@ -1,13 +1,8 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int main()
+class Solution
 {
-    int t;
-    cin >> t;
-    while (t--)
-    {
-        
-
-    }
-}
+public:
+    
+};
