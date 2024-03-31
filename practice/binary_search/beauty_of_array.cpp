@@ -18,6 +18,8 @@ public:
         
         int ans = INT_MIN;
 
+        // now find max range where all elements can be made equal
+
         for (int i = 0; i < n; i++)
         {
             int mini = nums[i];
@@ -31,7 +33,6 @@ public:
 
             while (low <= high)
             {
-
                 if (nums[mid] - mini > 2 * k)
                 {
                     high = mid - 1;

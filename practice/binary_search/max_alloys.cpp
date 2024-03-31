@@ -23,7 +23,7 @@ public:
                     currCost += extra;
                 }
             }
-            minCost = min(currCost, minCost); // min of both machine
+            minCost = min(currCost, minCost); // min of all machines
         }
         return (minCost <= budget);
     }
