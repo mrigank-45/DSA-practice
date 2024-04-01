@@ -39,7 +39,7 @@ public:
                 ans += pq.size();
                 break;
             }
-            vector<pair<int, char>> v;  // to store the elements to push again to priority queue
+            vector<pair<int, char>> v; // to store the elements to push again to priority queue
 
             for (int i = 0; i < n + 1; i++)
             {
@@ -51,11 +51,13 @@ public:
                 ans++;
             }
 
-            for (auto x : v)  // again push the elements but decrease the freq by one
+            for (auto x : v) // again push the elements but decrease the freq by one
+            {
                 if (x.first > 1)
                 {
                     pq.push({x.first - 1, x.second});
                 }
+            }
         }
         return ans;
     }

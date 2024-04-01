@@ -34,7 +34,6 @@ public:
 
     bool hasPathSum(Node *root, int targetSum)
     {
-
         if (root == NULL)
         {
             return false;
