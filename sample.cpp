@@ -4,30 +4,25 @@ using namespace std;
 class Solution
 {
 public:
-    int solve(int n, int limit, int index)
+    long long combo(int n)
     {
-        if (index == 3)
-        {
-            if (n >= 0 && n <= limit)
-            {
-                return 1;
-            }
-            else
-            {
-                return 0;
-            }
-        }
-        int ans = 0;
-
-        for (int i = 0; i <= limit; i++)
-        {
-            ans += solve(n - i, limit, index + 1);
-        }
-
-        return ans;
+        return 1ll * n * (n - 1) / 2;
     }
-    int distributeCandies(int n, int limit)
+    long long distributeCandies(int n, int limit)
     {
-        return solve(n, limit, 1);
+        if (n > 3 * limit)
+        {
+            return 0;
+        }
+        long long res = combo(n + 2);
+        if (n > limit)
+        {
+            res -= 3 * combo(n - limit + 1);
+        }
+        if (n - 2 >= 2 * limit)
+        {
+            res += 3 * combo(n - 2 * limit);
+        }
+        return res;
     }
 };
