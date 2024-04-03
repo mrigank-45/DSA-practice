@@ -4,34 +4,30 @@ using namespace std;
 class Solution
 {
 public:
-    vector<vector<int>> adj;
-    long long dfs(int node, int parent, vector<int> &values)
+    int solve(int n, int limit, int index)
     {
-        if (adj[node].size() == 1 && node != 0)
-            return values[node];
-        long long sum = 0;
-        for (auto it : adj[node])
+        if (index == 3)
         {
-            if (it == parent)
-                continue;
-            sum += dfs(it, node, values);
+            if (n >= 0 && n <= limit)
+            {
+                return 1;
+            }
+            else
+            {
+                return 0;
+            }
         }
-        return min(sum, 1LL * values[node]);
-    }
-    long long maximumScoreAfterOperations(vector<vector<int>> &edges, vector<int> &values)
-    {
-        int n = values.size();
-        adj.resize(n);
-        for (auto it : edges)
-        {
-            adj[it[0]].push_back(it[1]);
-            adj[it[1]].push_back(it[0]);
-        }
-        long long ans = 0;
-        for (int i = 0; i < n; i++)
-            ans += values[i];
-        long long x = dfs(0, -1, values);
+        int ans = 0;
 
-        return ans - x;
+        for (int i = 0; i <= limit; i++)
+        {
+            ans += solve(n - i, limit, index + 1);
+        }
+
+        return ans;
+    }
+    int distributeCandies(int n, int limit)
+    {
+        return solve(n, limit, 1);
     }
 };
