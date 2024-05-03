@@ -4,25 +4,54 @@ using namespace std;
 class Solution
 {
 public:
-    long long combo(int n)
+
+    int numSubarrayProductLessThanK(vector<int> &nums, int k)
     {
-        return 1ll * n * (n - 1) / 2;
-    }
-    long long distributeCandies(int n, int limit)
-    {
-        if (n > 3 * limit)
+        int n = nums.size();
+
+        int ans = 0;
+        int l = 0, r = 0;
+
+        long long int temp = nums[0];
+
+        while (l < n)
         {
-            return 0;
+            if (l == n)
+            {
+                break;
+            }
+            if (temp < (long long int)k)
+            {
+                ans++;
+                r++;
+                if (r < n)
+                {
+                    temp = temp * nums[r];
+                }
+
+                if (r == n)
+                {
+                    l++;
+                    r = l;
+                    if (l < n)
+                    {
+                        temp = nums[l];
+                    }
+                    continue;
+                }
+            }
+            else
+            {
+                l++;
+                r = l;
+                if (l < n)
+                {
+                    temp = nums[l];
+                }
+                continue;
+            }
         }
-        long long res = combo(n + 2);
-        if (n > limit)
-        {
-            res -= 3 * combo(n - limit + 1);
-        }
-        if (n - 2 >= 2 * limit)
-        {
-            res += 3 * combo(n - 2 * limit);
-        }
-        return res;
+
+        return ans;
     }
 };

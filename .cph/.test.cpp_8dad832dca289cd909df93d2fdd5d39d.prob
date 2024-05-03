@@ -1,1 +1,1 @@
-{"name":"Local: test","url":"c:\\Users\\prompt\\Desktop\\DSA\\test.cpp","tests":[],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\prompt\\Desktop\\DSA\\test.cpp","group":"local","local":true}
+{"name":"Local: test","url":"c:\\Users\\prompt\\Desktop\\DSA\\test.cpp","tests":[{"id":1713605203662,"input":"3 5\n1 10\n1 9\n2 8\n3 7\n3 6","output":"56"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\prompt\\Desktop\\DSA\\test.cpp","group":"local","local":true}
