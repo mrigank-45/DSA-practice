@@ -4,44 +4,35 @@ using namespace std;
 class Solution
 {
 public:
-    bool possible(int mid, vector<int> &quantities, int n)
+    // Function to find the minimum number of platforms required at the
+    // railway station such that no train waits.
+    int findPlatform(int arr[], int dep[], int n)
     {
-        if(mid == 0){
-            return false;
-        }
-        int m = quantities.size();
-        int sum = 0;
-        for (int i = 0; i < m; i++)
+        vector<pair<int, int>> v;
+
+        for (int i = 0; i < n; i++)
         {
-            sum += quantities[i]/ mid + (quantities[i] % mid != 0 ? 1 : 0);
+            v.push_back({arr[i], 0});
+            v.push_back({dep[i], 1});
         }
-        return sum <= n;
-    }
 
-    int minimizedMaximum(int n, vector<int> &quantities)
-    {
-        int maxi = *max_element(quantities.begin(), quantities.end());
+        sort(v.begin(), v.end());
 
-        int s = 0, e = maxi;
-        int mid = (s + e) / 2;
+        int temp = 0;
         int ans = 0;
-        while (s < e)
-        {
-            if (possible(mid, quantities, n))
-            {
-                e = mid;
-                ans = mid;
-            }
-            else
-            {
-                s = mid + 1;
-            }
 
-            mid = (s + e) / 2;
+        for (int i = 0; i < v.size(); i++)
+        {
+            if (v[i].second == 0)
+            {
+                temp++;
+                ans = max(ans, temp);
+            }
+            else{
+                temp--;
+            }
         }
-        if(ans == 0){
-            return maxi;
-        }
+
         return ans;
     }
 };
