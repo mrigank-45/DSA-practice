@@ -1,87 +1,42 @@
+// https://www.geeksforgeeks.org/problems/number-of-coins1824/1?page=2&company=Morgan%20Stanley&sortBy=submissions
+// can choose a index value many no. of times type Q
+
 #include <bits/stdc++.h>
 using namespace std;
 
 class Solution
 {
 public:
-    vector<pair<int, int>> nextSmallerElement1(vector<int> &arr, int n)
+    int solve(vector<int> &coins, int m, int v, vector<vector<int>> &dp)
     {
-        stack<pair<int, int>> s;
-        s.push({-1, -1});
-        vector<pair<int, int>> ans(n);
-
-        for (int i = n - 1; i >= 0; i--)
+        if (m < 0)
         {
-            int curr = arr[i];
-            while (s.top().first >= curr)
-            {
-                s.pop();
-            }
-            ans[i] = s.top();
-            s.push({curr, i});
+            return 1e9;
         }
-        return ans;
-    }
-    vector<pair<int, int>> nextSmallerElement2(vector<int> &arr, int n)
-    {
-        stack<pair<int, int>> s;
-        s.push({-1, -1});
-        vector<pair<int, int>> ans(n);
-
-        for (int i = 0; i <= n - 1; i++)
+        if (v == 0)
         {
-            int curr = arr[i];
-            while (s.top().first >= curr)
-            {
-                s.pop();
-            }
-            ans[i] = s.top();
-            s.push({curr, i});
+            return dp[m][v] = 0;
         }
-        return ans;
+        if (dp[m][v] != -1)
+        {
+            return dp[m][v];
+        }
+
+        int take = 1e9;
+        if (coins[m] <= v)
+        {
+            take = 1 + solve(coins, m, v - coins[m], dp);
+        }
+
+        int nottake = solve(coins, m - 1, v, dp);
+
+        return dp[m][v] = min(take, nottake);
     }
 
-    vector<int> nearestSmallerTower(vector<int> arr)
+    int minCoins(vector<int> &coins, int M, int V)
     {
-        int n = arr.size();
-        vector<pair<int, int>> ans1 = nextSmallerElement1(arr, n);
-        vector<pair<int, int>> ans2 = nextSmallerElement2(arr, n);
-        vector<int> ans;
-
-        for (int i = 0; i < n; i++)
-        {
-            if (ans1[i].first == -1 && ans2[i].first != -1)
-            {
-                ans.push_back(ans2[i].second);
-            }
-            else if (ans2[i].first == -1 && ans1[i].first != -1)
-            {
-                ans.push_back(ans1[i].second);
-            }
-            else if (ans1[i].first == -1 && ans2[i].first == -1)
-            {
-                ans.push_back(-1);
-            }
-            else
-            {
-                if (abs(ans1[i].second - i) < abs(ans2[i].second - i))
-                {
-                    ans.push_back(ans1[i].second);
-                }
-                else if(abs(ans1[i].second - i) > abs(ans2[i].second - i))
-                {
-                    ans.push_back(ans2[i].second);
-                }
-                else{
-                    if(ans1[i].first < ans2[i].first){
-                        ans.push_back(ans1[i].second);
-                    }
-                    else{
-                        ans.push_back(ans2[i].second);
-                    }
-                }
-            }
-        }
-        return ans;
+        vector<vector<int>> dp(M, vector<int>(V + 1, -1));
+        int ans = solve(coins, M - 1, V, dp);
+        return ans == 1e9 ? -1 : ans;
     }
 };
