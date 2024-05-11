@@ -1,49 +1,63 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+struct TreeNode
+{
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode() : val(0), left(nullptr), right(nullptr) {}
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+};
+
 class Solution
 {
 public:
-    int canCompleteCircuit(vector<int> &gas, vector<int> &cost)
+    bool sameTree(TreeNode *root, TreeNode *subRoot)
     {
-
-        int n = gas.size();
-
-        vector<int> v;
-
-        for (int i = 0; i < n; i++)
+        if (root == NULL && subRoot == NULL)
         {
-            if(gas[i] >= cost[i])
-            {
-                v.push_back(i);
-            }
+            return true;
+        }
+        if (root == NULL || subRoot == NULL)
+        {
+            return false;
         }
 
-        for (int i = 0; i < v.size(); i++)
+        if (root->val == subRoot->val)
         {
-            int j = v[i];
-            int sum = 0;
-            int k = 0;
-            while (k < n)
+            if (sameTree(root->left, subRoot->left) && sameTree(root->right, subRoot->right))
             {
-                sum += gas[j] - cost[j];
-                if (sum < 0)
-                {
-                    break;
-                }
-                j++;
-                if (j == n)
-                {
-                    j = 0;
-                }
-                k++;
-            }
-            if (k == n)
-            {
-                return v[i];
+                return true;
             }
         }
+        return false;
+    }
 
-        return -1;
+    bool solve(TreeNode *root, TreeNode *subRoot)
+    {
+        if (root == NULL && subRoot == NULL)
+        {
+            return true;
+        }
+        if (root == NULL || subRoot == NULL)
+        {
+            return false;
+        }
+
+        if (root->val == subRoot->val)
+        {
+            if (sameTree(root->left, subRoot->left) && sameTree(root->right, subRoot->right))
+            {
+                return true;
+            }
+        }
+        return solve(root->left, subRoot) || solve(root->right, subRoot);
+    }
+
+    bool isSubtree(TreeNode *root, TreeNode *subRoot)
+    {
+        return solve(root, subRoot);
     }
 };
