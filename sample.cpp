@@ -4,34 +4,36 @@ using namespace std;
 class Solution
 {
 public:
-    int activitySelection(vector<int> start, vector<int> end, int n)
+    int findMinArrowShots(vector<vector<int>> &points)
     {
-        vector<pair<int, int>> v;
 
-        for (int i = 0; i < n; i++)
+        int n = points.size();
+
+        if (n == 1)
         {
-            v.push_back({start[i], end[i]});
+            return 1;
         }
 
-        sort(v.begin(), v.end(), [](pair<int, int> &a, pair<int, int> &b)
-             { return a.second < b.second; });
+        sort(points.begin(), points.end(), [](const vector<int> &a, const vector<int> &b)
+             { return a[1] < b[1]; });
 
         int ans = 1;
-        int e = v[0].second;
+
+        int start = points[0][0];
+        int end = points[0][1];
 
         for (int i = 1; i < n; i++)
         {
-            if (v[i].first > e)
+            if (points[i][0] <= end)
             {
-                ans++;
-                e = v[i].second;
+                start = max(start, points[i][0]);
+                end = min(end, points[i][1]);
             }
             else
             {
-                if (v[i].second < e)
-                {
-                    e = v[i].second;
-                }
+                ans++;
+                start = points[i][0];
+                end = points[i][1];
             }
         }
 
