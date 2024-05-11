@@ -1,42 +1,49 @@
-// https://www.geeksforgeeks.org/problems/number-of-coins1824/1?page=2&company=Morgan%20Stanley&sortBy=submissions
-// can choose a index value many no. of times type Q
-
 #include <bits/stdc++.h>
 using namespace std;
 
 class Solution
 {
 public:
-    int solve(vector<int> &coins, int m, int v, vector<vector<int>> &dp)
+    int canCompleteCircuit(vector<int> &gas, vector<int> &cost)
     {
-        if (m < 0)
-        {
-            return 1e9;
-        }
-        if (v == 0)
-        {
-            return dp[m][v] = 0;
-        }
-        if (dp[m][v] != -1)
-        {
-            return dp[m][v];
-        }
 
-        int take = 1e9;
-        if (coins[m] <= v)
+        int n = gas.size();
+
+        vector<int> v;
+
+        for (int i = 0; i < n; i++)
         {
-            take = 1 + solve(coins, m, v - coins[m], dp);
+            if(gas[i] >= cost[i])
+            {
+                v.push_back(i);
+            }
         }
 
-        int nottake = solve(coins, m - 1, v, dp);
+        for (int i = 0; i < v.size(); i++)
+        {
+            int j = v[i];
+            int sum = 0;
+            int k = 0;
+            while (k < n)
+            {
+                sum += gas[j] - cost[j];
+                if (sum < 0)
+                {
+                    break;
+                }
+                j++;
+                if (j == n)
+                {
+                    j = 0;
+                }
+                k++;
+            }
+            if (k == n)
+            {
+                return v[i];
+            }
+        }
 
-        return dp[m][v] = min(take, nottake);
-    }
-
-    int minCoins(vector<int> &coins, int M, int V)
-    {
-        vector<vector<int>> dp(M, vector<int>(V + 1, -1));
-        int ans = solve(coins, M - 1, V, dp);
-        return ans == 1e9 ? -1 : ans;
+        return -1;
     }
 };
