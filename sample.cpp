@@ -1,63 +1,40 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-struct TreeNode
-{
-    int val;
-    TreeNode *left;
-    TreeNode *right;
-    TreeNode() : val(0), left(nullptr), right(nullptr) {}
-    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
-    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
-};
-
 class Solution
 {
 public:
-    bool sameTree(TreeNode *root, TreeNode *subRoot)
+    int activitySelection(vector<int> start, vector<int> end, int n)
     {
-        if (root == NULL && subRoot == NULL)
+        vector<pair<int, int>> v;
+
+        for (int i = 0; i < n; i++)
         {
-            return true;
-        }
-        if (root == NULL || subRoot == NULL)
-        {
-            return false;
+            v.push_back({start[i], end[i]});
         }
 
-        if (root->val == subRoot->val)
+        sort(v.begin(), v.end(), [](pair<int, int> &a, pair<int, int> &b)
+             { return a.second < b.second; });
+
+        int ans = 1;
+        int e = v[0].second;
+
+        for (int i = 1; i < n; i++)
         {
-            if (sameTree(root->left, subRoot->left) && sameTree(root->right, subRoot->right))
+            if (v[i].first > e)
             {
-                return true;
+                ans++;
+                e = v[i].second;
+            }
+            else
+            {
+                if (v[i].second < e)
+                {
+                    e = v[i].second;
+                }
             }
         }
-        return false;
-    }
 
-    bool solve(TreeNode *root, TreeNode *subRoot)
-    {
-        if (root == NULL && subRoot == NULL)
-        {
-            return true;
-        }
-        if (root == NULL || subRoot == NULL)
-        {
-            return false;
-        }
-
-        if (root->val == subRoot->val)
-        {
-            if (sameTree(root->left, subRoot->left) && sameTree(root->right, subRoot->right))
-            {
-                return true;
-            }
-        }
-        return solve(root->left, subRoot) || solve(root->right, subRoot);
-    }
-
-    bool isSubtree(TreeNode *root, TreeNode *subRoot)
-    {
-        return solve(root, subRoot);
+        return ans;
     }
 };
