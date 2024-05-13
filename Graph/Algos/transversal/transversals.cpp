@@ -1,6 +1,9 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+// use of unordered_set<int> instead of unordered_map for visited will reduce the time complexity
+// use of s.insert(node) and s.find(it) == s.end()
+
 class Solution
 {
 public:
