@@ -4,35 +4,41 @@ using namespace std;
 class Solution
 {
 public:
-    int numDecodings(string s)
+    bool solve(int n, vector<vector<int>> &edges, int source, int destination, unordered_map<int, vector<int>> &adj, unordered_set<int> &s)
     {
-        int n = s.size();
-        vector<int> dp(n + 1);
-        dp[n] = 1;
-
-        for (int idx = n - 1; idx >= 0; --idx)
+        if (source == destination)
         {
-            if (s[idx] == '0')
+            return true;
+        }
+
+        s.insert(source);
+        for (auto it : adj[source])
+        {
+            if (s.find(it) == s.end())
             {
-                dp[idx] = 0;
-            }
-            else
-            {
-                int oneDigitWays = dp[idx + 1];
-                int twoDigitWays = 0;
-                if (idx + 1 < n)
+                if (solve(n, edges, it, destination, adj, s))
                 {
-                    int firstDigit = s[idx] - '0';
-                    int secondDigit = s[idx + 1] - '0';
-                    int combo = firstDigit * 10 + secondDigit;
-                    if (combo <= 26)
-                    {
-                        twoDigitWays = dp[idx + 2];
-                    }
+                    return true;
                 }
-                dp[idx] = oneDigitWays + twoDigitWays;
             }
         }
-        return dp[0];
+
+        return false;
+    }
+    bool validPath(int n, vector<vector<int>> &edges, int source, int destination)
+    {
+        unordered_map<int, vector<int>> adj;
+        for (auto edge : edges)
+        {
+            int u = edge[0];
+            int v = edge[1];
+
+            adj[u].push_back(v);
+            adj[v].push_back(u);
+        }
+
+        unordered_set<int> s;
+
+        return solve(n, edges, source, destination, adj, s);
     }
 };
