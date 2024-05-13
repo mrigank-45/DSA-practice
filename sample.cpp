@@ -4,39 +4,35 @@ using namespace std;
 class Solution
 {
 public:
-    int findMinArrowShots(vector<vector<int>> &points)
+    int numDecodings(string s)
     {
+        int n = s.size();
+        vector<int> dp(n + 1);
+        dp[n] = 1;
 
-        int n = points.size();
-
-        if (n == 1)
+        for (int idx = n - 1; idx >= 0; --idx)
         {
-            return 1;
-        }
-
-        sort(points.begin(), points.end(), [](const vector<int> &a, const vector<int> &b)
-             { return a[1] < b[1]; });
-
-        int ans = 1;
-
-        int start = points[0][0];
-        int end = points[0][1];
-
-        for (int i = 1; i < n; i++)
-        {
-            if (points[i][0] <= end)
+            if (s[idx] == '0')
             {
-                start = max(start, points[i][0]);
-                end = min(end, points[i][1]);
+                dp[idx] = 0;
             }
             else
             {
-                ans++;
-                start = points[i][0];
-                end = points[i][1];
+                int oneDigitWays = dp[idx + 1];
+                int twoDigitWays = 0;
+                if (idx + 1 < n)
+                {
+                    int firstDigit = s[idx] - '0';
+                    int secondDigit = s[idx + 1] - '0';
+                    int combo = firstDigit * 10 + secondDigit;
+                    if (combo <= 26)
+                    {
+                        twoDigitWays = dp[idx + 2];
+                    }
+                }
+                dp[idx] = oneDigitWays + twoDigitWays;
             }
         }
-
-        return ans;
+        return dp[0];
     }
 };
