@@ -4,41 +4,30 @@ using namespace std;
 class Solution
 {
 public:
-    bool solve(int n, vector<vector<int>> &edges, int source, int destination, unordered_map<int, vector<int>> &adj, unordered_set<int> &s)
+    void solve(int n, int &ans, int steps)
     {
-        if (source == destination)
+        if (n == 1)
         {
-            return true;
+            ans = min(ans, steps);
+            return;
         }
 
-        s.insert(source);
-        for (auto it : adj[source])
+        if (n % 3 == 0 && n/3 > 0)
         {
-            if (s.find(it) == s.end())
-            {
-                if (solve(n, edges, it, destination, adj, s))
-                {
-                    return true;
-                }
-            }
+            solve(n / 3, ans, steps + 1);
         }
-
-        return false;
+        else
+        {
+            solve(n - 1, ans, steps + 1);
+        }
     }
-    bool validPath(int n, vector<vector<int>> &edges, int source, int destination)
+    int minimumStep(int n)
     {
-        unordered_map<int, vector<int>> adj;
-        for (auto edge : edges)
-        {
-            int u = edge[0];
-            int v = edge[1];
 
-            adj[u].push_back(v);
-            adj[v].push_back(u);
-        }
+        int ans = INT_MAX;
 
-        unordered_set<int> s;
+        solve(n, ans, 0);
 
-        return solve(n, edges, source, destination, adj, s);
+        return ans;
     }
 };

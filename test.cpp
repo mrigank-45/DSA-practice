@@ -1,56 +1,38 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-#include <iostream>
-#include <vector>
-#include <unordered_map>
-#include <unordered_set>
-
-using namespace std;
-
 class Solution
 {
 public:
-    bool hasPath(vector<vector<int>> &edges, int source, int destination)
+    void solve(int node, int n, int &ans, int steps)
     {
-        unordered_map<int, vector<int>> l;
-
-        // Populate the adjacency list with edges
-        for (const auto &edge : edges)
+        if (node > n)
         {
-            l[edge[0]].push_back(edge[1]);
-            l[edge[1]].push_back(edge[0]);
+            return;
+        }
+        if (node == n)
+        {
+            ans = min(ans, steps);
         }
 
-        unordered_set<int> s;
-
-        // Define DFS function
-        function<bool(int)> dfs = [&](int node)
+        if (node * 3 <= n)
         {
-            // If the current node is the destination, return true
-            if (node == destination)
-            {
-                return true;
-            }
+            solve(node * 3, n, ans, steps + 1);
+        }
+        else
+        {
+            solve(node + 1, n, ans, steps + 1);
+        }
+    }
+    int minimumStep(int n)
+    {
 
-            // Mark the current node as visited
-            s.insert(node);
+        int ans1 = INT_MAX;
+        int ans2 = INT_MAX;
 
-            // Check neighbors of the current node
-            for (int j : l[node])
-            {
-                // If neighbor is not visited and DFS from neighbor is true
-                if (s.find(j) == s.end() && dfs(j))
-                {
-                    return true;
-                }
-            }
+        solve(1, n, ans1, 0);
+        solve(2, n, ans2, 0);
 
-            // If no path found from current node, return false
-            return false;
-        };
-
-        // Start DFS from the source node
-        return dfs(source);
+        return min(ans1, ans2 + 1);
     }
 };
