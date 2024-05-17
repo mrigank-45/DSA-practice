@@ -4,35 +4,66 @@ using namespace std;
 class Solution
 {
 public:
-    void solve(int node, int n, int &ans, int steps)
+    int solve(int n, int i, vector<int> &dp)
     {
-        if (node > n)
+
+        if (i == n)
         {
-            return;
-        }
-        if (node == n)
-        {
-            ans = min(ans, steps);
+            return 1;
         }
 
-        if (node * 3 <= n)
+        if (dp[i] != -1)
         {
-            solve(node * 3, n, ans, steps + 1);
+            return dp[i];
         }
-        else
+
+        int a = 0, b = 0;
+
+        // 1 step
+        if (i + 1 <= n)
         {
-            solve(node + 1, n, ans, steps + 1);
+            a = solve(n, i + 1, dp);
         }
+
+        // 2 step
+        if (i != 0 && i + 2 <= n)
+        {
+            b = solve(n, i + 2, dp);
+        }
+
+        return dp[i] = a + b;
     }
-    int minimumStep(int n)
+    int tabulation(int n)
     {
+        vector<int> dp(n + 1, -1);
 
-        int ans1 = INT_MAX;
-        int ans2 = INT_MAX;
+        dp[n] = 1;
 
-        solve(1, n, ans1, 0);
-        solve(2, n, ans2, 0);
+        for (int i = n - 1; i >= 0; i--)
+        {
+            int a = 0, b = 0;
 
-        return min(ans1, ans2 + 1);
+            // 1 step
+            if (i + 1 <= n)
+            {
+                a = dp[i + 1];
+            }
+
+            // 2 step
+            if (i != 0 && i + 2 <= n)
+            {
+                b = dp[i + 2];
+            }
+
+            dp[i] = a + b;
+        }
+
+        return dp[0];
+    }
+    int nthPoint(int n)
+    {
+        vector<int> dp(n + 1, -1);
+
+        return solve(n, 0, dp);
     }
 };

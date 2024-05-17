@@ -4,29 +4,42 @@ using namespace std;
 class Solution
 {
 public:
-    void solve(int n, int &ans, int steps)
-    {
-        if (n == 1)
-        {
-            ans = min(ans, steps);
-            return;
-        }
-
-        if (n % 3 == 0 && n/3 > 0)
-        {
-            solve(n / 3, ans, steps + 1);
-        }
-        else
-        {
-            solve(n - 1, ans, steps + 1);
-        }
-    }
-    int minimumStep(int n)
+    vector<vector<string>> groupAnagrams(vector<string> &strs)
     {
 
-        int ans = INT_MAX;
+        int n = strs.size();
+        vector<string> strs1 = strs;
 
-        solve(n, ans, 0);
+        for (int i = 0; i < n; i++)
+        {
+            sort(strs1[i].begin(), strs1[i].end());
+        }
+
+        map<string, pair<bool, vector<int>>> mp;
+
+        for (int i = 0; i < n; i++)
+        {
+            if (mp.find(strs1[i]) == mp.end())
+            {
+                mp[strs1[i]] = {true, {i}};
+            }
+            else
+            {
+                mp[strs1[i]].second.push_back(i);
+            }
+        }
+
+        vector<vector<string>> ans;
+
+        for(auto it: mp)
+        {
+            vector<string> temp;
+            for(auto i: it.second.second)
+            {
+                temp.push_back(strs[i]);
+            }
+            ans.push_back(temp);
+        }
 
         return ans;
     }
