@@ -1,42 +1,44 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+struct Node
+{
+    int data;
+    Node *left;
+    Node *right;
+
+    Node(int val)
+    {
+        data = val;
+        left = right = NULL;
+    }
+};
+
 class Solution
 {
 public:
-    int minLaptops(int n, int start[], int end[])
+    void solve(Node *root, long long &ans, long long temp)
     {
-        priority_queue<int, vector<int>, greater<int>> pq;
-
-        vector<pair<int, int>> v;
-
-        for (int i = 0; i < n; i++)
+        if (root->left == NULL && root->right == NULL)
         {
-            v.push_back({start[i], end[i]});
+            ans = max(ans, temp * root->data);
+            return;
         }
 
-        sort(v.begin(), v.end(), [](const auto &a, const auto &b) { return a.first < b.first; });
-
-        int ans = 1;
-
-        for (auto it : v)
+        if (root->left)
         {
-            if (pq.empty())
-            {
-                pq.push(it.second);
-            }
-            else
-            {
-                if (pq.top() <= it.first)
-                {
-                    pq.pop();
-                }
-                pq.push(it.second);
-            }
-
-            ans = max(ans, (int)pq.size());
+            solve(root->left, ans, temp * root->data);
         }
 
-        return ans;
+        if (root->right)
+        {
+            solve(root->right, ans, temp * root->data);
+        }
+    }
+    long long findMaxScore(Node *root)
+    {
+        long long ans = 1;
+
+        solve(root, ans, 1);
     }
 };
