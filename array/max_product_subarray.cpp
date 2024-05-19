@@ -45,7 +45,10 @@ int maxProductSubArray(vector<int> &nums)
     {
         return max(max(maxLeft, maxRight), 0);
     }
-    return max(maxLeft, maxRight);
+    else
+    {
+        return max(maxLeft, maxRight);
+    }
 }
 
 int main()
