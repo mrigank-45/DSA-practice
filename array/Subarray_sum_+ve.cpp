@@ -32,7 +32,7 @@ int main()
             count++;
         }
 
-        // Move forward thw right pointer:
+        // Move forward the right pointer and add it's value
         right++;
         if (right < n)
         {

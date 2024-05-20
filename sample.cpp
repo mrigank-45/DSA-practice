@@ -4,9 +4,31 @@ using namespace std;
 class Solution
 {
 public:
-    int numOfSubsets(int arr[], int N, int K)
+    bool subArrayExists(int arr[], int n)
     {
-        vector<vector<int>> dp(N + 1, vector<int>(K + 1, -1));
+        map<int, int> prefixSumMap;
 
+        int ans = 0;
+        int sum = 0;
+
+        for (int i = 0; i < n; i++)
+        {
+            if(arr[i] == 0) return true;
+            sum += arr[i];
+            if(sum == 0) return true;
+
+            if (prefixSumMap.find(sum) != prefixSumMap.end())
+            {
+                return true;
+                break;
+            }
+
+            if (prefixSumMap.find(sum) == prefixSumMap.end())
+            {
+                prefixSumMap[sum] = i;
+            }
+        }
+
+        return false;
     }
 };
