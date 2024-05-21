@@ -4,31 +4,30 @@ using namespace std;
 class Solution
 {
 public:
-    bool subArrayExists(int arr[], int n)
+    int solve(vector<int> &nums, int n, int i, vector<int> &dp)
     {
-        map<int, int> prefixSumMap;
-
-        int ans = 0;
-        int sum = 0;
-
-        for (int i = 0; i < n; i++)
+        if (i >= n)
         {
-            if(arr[i] == 0) return true;
-            sum += arr[i];
-            if(sum == 0) return true;
-
-            if (prefixSumMap.find(sum) != prefixSumMap.end())
-            {
-                return true;
-                break;
-            }
-
-            if (prefixSumMap.find(sum) == prefixSumMap.end())
-            {
-                prefixSumMap[sum] = i;
-            }
+            return 0;
         }
+        if (dp[i] != -1)
+        {
+            return dp[i];
+        }
+        // include
+        int op1 = nums[i] + solve(nums, n, i + 2, dp);
 
-        return false;
+        // exclude
+        int op2 = solve(nums, n, i + 1, dp);
+
+        return dp[i] = max(op1, op2);
+    }
+    int rob(vector<int> &nums)
+    {
+        int n = nums.size();
+
+        vector<int> dp(n + 1, -1);
+
+        return solve(nums, n, 0, dp);
     }
 };
