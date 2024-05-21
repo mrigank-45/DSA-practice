@@ -4,30 +4,41 @@ using namespace std;
 class Solution
 {
 public:
-    int solve(vector<int> &nums, int n, int i, vector<int> &dp)
+    void dfs(vector<vector<char>> &grid, int i, int j, vector<vector<bool>> &visited)
     {
-        if (i >= n)
+        if (i < 0 || j < 0 || i >= grid.size() || j >= grid[0].size() || grid[i][j] == '0')
         {
-            return 0;
+            return;
         }
-        if (dp[i] != -1)
-        {
-            return dp[i];
-        }
-        // include
-        int op1 = nums[i] + solve(nums, n, i + 2, dp);
 
-        // exclude
-        int op2 = solve(nums, n, i + 1, dp);
+        visited[i][j] = true;
 
-        return dp[i] = max(op1, op2);
+        grid[i][j] = '0';
+        dfs(grid, i + 1, j, visited);
+        dfs(grid, i - 1, j, visited);
+        dfs(grid, i, j + 1, visited);
+        dfs(grid, i, j - 1, visited);
     }
-    int rob(vector<int> &nums)
+
+    int numIslands(vector<vector<char>> &grid)
     {
-        int n = nums.size();
+        int n = grid.size();
+        int m = grid[0].size();
 
-        vector<int> dp(n + 1, -1);
+        int ans = 0;
+        vector<vector<bool>> visited(n, vector<bool>(m, false));
 
-        return solve(nums, n, 0, dp);
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < m; j++)
+            {
+                if (!visited[i][j] && grid[i][j] == '1')
+                {
+                    ans++;
+                    dfs(grid, i, j, visited);
+                }
+            }
+        }
+        return ans;
     }
 };
