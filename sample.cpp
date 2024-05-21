@@ -4,41 +4,28 @@ using namespace std;
 class Solution
 {
 public:
-    void dfs(vector<vector<char>> &grid, int i, int j, vector<vector<bool>> &visited)
+    string largestNumber(vector<int> &nums)
     {
-        if (i < 0 || j < 0 || i >= grid.size() || j >= grid[0].size() || grid[i][j] == '0')
+        vector<string> arr;
+        for (int num : nums)
         {
-            return;
+            arr.push_back(to_string(num));
+        }
+        sort(arr.begin(), arr.end(), [](string &a, string &b)
+             { return a + b > b + a; });
+
+        string ans = "";
+
+        for (string s : arr)
+        {
+            ans += s;
         }
 
-        visited[i][j] = true;
-
-        grid[i][j] = '0';
-        dfs(grid, i + 1, j, visited);
-        dfs(grid, i - 1, j, visited);
-        dfs(grid, i, j + 1, visited);
-        dfs(grid, i, j - 1, visited);
-    }
-
-    int numIslands(vector<vector<char>> &grid)
-    {
-        int n = grid.size();
-        int m = grid[0].size();
-
-        int ans = 0;
-        vector<vector<bool>> visited(n, vector<bool>(m, false));
-
-        for (int i = 0; i < n; i++)
+        if (ans.size() > 0 && ans[0] == '0')
         {
-            for (int j = 0; j < m; j++)
-            {
-                if (!visited[i][j] && grid[i][j] == '1')
-                {
-                    ans++;
-                    dfs(grid, i, j, visited);
-                }
-            }
+            return "0";
         }
+
         return ans;
     }
 };
