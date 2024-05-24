@@ -4,28 +4,36 @@ using namespace std;
 class Solution
 {
 public:
-    string largestNumber(vector<int> &nums)
+    int dp[101][101][201];
+    bool solve(string &s1, string &s2, string &s3, int i, int j, int k)
     {
-        vector<string> arr;
-        for (int num : nums)
+        if (k == s3.size())
         {
-            arr.push_back(to_string(num));
-        }
-        sort(arr.begin(), arr.end(), [](string &a, string &b)
-             { return a + b > b + a; });
-
-        string ans = "";
-
-        for (string s : arr)
-        {
-            ans += s;
+            return (i == s1.size() && j == s2.size());
         }
 
-        if (ans.size() > 0 && ans[0] == '0')
+        if (dp[i][j][k] != -1)
         {
-            return "0";
+            return dp[i][j][k];
         }
 
-        return ans;
+        bool c1 = false, c2 = false;
+        if (i < s1.size() && s1[i] == s3[k])
+        {
+            c1 = solve(s1, s2, s3, i + 1, j, k + 1);
+        }
+
+        if (j < s2.size() && s2[j] == s3[k])
+        {
+            c2 = solve(s1, s2, s3, i, j + 1, k + 1);
+        }
+
+        return dp[i][j][k] = c1 || c2;
+    }
+
+    bool isInterleave(string s1, string s2, string s3)
+    {
+        memset(dp, -1, sizeof(dp));
+        return solve(s1, s2, s3, 0, 0, 0);
     }
 };
