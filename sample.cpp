@@ -1,39 +1,46 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+struct TreeNode
+{
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode() : val(0), left(nullptr), right(nullptr) {}
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+};
+
 class Solution
 {
 public:
-    int dp[101][101][201];
-    bool solve(string &s1, string &s2, string &s3, int i, int j, int k)
+    void solve(TreeNode *root, string s, vector<string> &ans)
     {
-        if (k == s3.size())
+        if (root->left == NULL && root->right == NULL)
         {
-            return (i == s1.size() && j == s2.size());
+            s = s + to_string(root->val);
+            ans.push_back(s);
+            return;
         }
-
-        if (dp[i][j][k] != -1)
+        
+        s = s + to_string(root->val) + "->";
+        if (root->left != NULL)
         {
-            return dp[i][j][k];
+            solve(root->left, s, ans);
         }
-
-        bool c1 = false, c2 = false;
-        if (i < s1.size() && s1[i] == s3[k])
+        if (root->right != NULL)
         {
-            c1 = solve(s1, s2, s3, i + 1, j, k + 1);
+            solve(root->right, s, ans);
         }
-
-        if (j < s2.size() && s2[j] == s3[k])
-        {
-            c2 = solve(s1, s2, s3, i, j + 1, k + 1);
-        }
-
-        return dp[i][j][k] = c1 || c2;
     }
 
-    bool isInterleave(string s1, string s2, string s3)
+    vector<string> binaryTreePaths(TreeNode *root)
     {
-        memset(dp, -1, sizeof(dp));
-        return solve(s1, s2, s3, 0, 0, 0);
+        vector<string> ans;
+        if (root == NULL)
+        {
+            return ans;
+        }
+        solve(root, "", ans);
     }
 };
