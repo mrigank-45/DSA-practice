@@ -4,48 +4,37 @@ using namespace std;
 class Solution
 {
 public:
-    int smallestSubstring(string S)
+    int solve(int n, int curr, int temp)
     {
-        unordered_map<char, int> mp;
-        mp['0'] = 0;
-        mp['1'] = 0;
-        mp['2'] = 0;
-        int i = 0;
-        int j = 0;
-        int n = S.size();
-        int ans = INT_MAX;
-
-        while (j < n)
+        if (curr > n)
         {
-            mp[S[j]]++;
-
-            while (i < j)
-            {
-                if (mp[S[i]] > 1)
-                {
-                    mp[S[i]]--;
-                    i++;
-                }
-                else
-                {
-                    break;
-                }
-            }
-
-            if (mp['0'] >= 1 && mp['1'] >= 1 && mp['2'] >= 1)
-            {
-                ans = min(ans, j - i + 1);
-            }
-            j++;
+            return 10000;
         }
 
-        if (ans == INT_MAX)
+        if (curr == n)
         {
-            return -1;
+            return 0;
         }
-        else
+
+        // Copy
+        int copySteps = 10000;
+        if (curr != temp)
         {
-            return ans;
+            copySteps = 1 + solve(n, curr, curr);
         }
+
+        // Paste
+        int pasteSteps = 10000;
+        if (temp != 0)
+        {
+            pasteSteps = 1 + solve(n, curr + temp, temp);
+        }
+
+        return min(copySteps, pasteSteps);
+    }
+
+    int minSteps(int n)
+    {
+        return solve(n, 1, 0);
     }
 };

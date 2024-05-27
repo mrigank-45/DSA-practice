@@ -4,66 +4,43 @@ using namespace std;
 class Solution
 {
 public:
-    int smallestSubstring(string S)
+    int dp[2001][2001];
+    int solve(int n, int curr, int temp)
     {
-        int a = 0, b = 0, c = 0;
-        int i = 0;
-        int j = 0;
-        int n = S.size();
-        int ans = INT_MAX;
-
-        while (j < n)
+        if (curr > n)
         {
-            if (S[j] == '0')
-            {
-                a++;
-            }
-            else if (S[j] == '1')
-            {
-                b++;
-            }
-            else if (S[j] == '2')
-            {
-                c++;
-            }
-
-            while (i < j)
-            {
-                if (S[i] == '0' && a > 1)
-                {
-                    a--;
-                    i++;
-                }
-                else if (S[i] == '1' && b > 1)
-                {
-                    b--;
-                    i++;
-                }
-                else if (S[i] == '2' && c > 1)
-                {
-                    c--;
-                    i++;
-                }
-                else
-                {
-                    break;
-                }
-            }
-
-            if (a >= 1 && b >= 1 && c >= 1)
-            {
-                ans = min(ans, j - i + 1);
-            }
-            j++;
+            return INT_MAX;
         }
 
-        if (ans == INT_MAX)
+        if (curr == n)
         {
-            return -1;
+            return 0;
         }
-        else
+
+        if (dp[curr][temp] != -1)
         {
-            return ans;
+            return dp[curr][temp];
         }
+
+        // Copy
+        int copySteps = INT_MAX;
+        if (curr != temp)
+        {
+            copySteps = 1 + solve(n, curr, curr);
+        }
+
+        // Paste
+        int pasteSteps = 1 + solve(n, curr + temp, temp);
+
+        dp[curr][temp] = min(copySteps, pasteSteps);
+
+        return dp[curr][temp];
+    }
+
+    int minSteps(int n)
+    {
+        memset(dp, -1, sizeof(dp));
+
+        return solve(n, 1, 0);
     }
 };
