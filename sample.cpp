@@ -4,37 +4,42 @@ using namespace std;
 class Solution
 {
 public:
-    int solve(int n, int curr, int temp)
+    long long int dp[77][2000][2000];
+    long long int solve(long long int n, long long int curr, long long int temp)
     {
-        if (curr > n)
+        if (n == 0LL)
         {
-            return 10000;
+            return curr;
         }
 
-        if (curr == n)
+        if (dp[n][curr][temp] != -1LL)
         {
-            return 0;
+            return dp[n][curr][temp];
         }
 
-        // Copy
-        int copySteps = 10000;
-        if (curr != temp)
+        long long int c1 = 0LL, c2 = 0LL, c3 = 0LL;
+
+        // key 1
+        c1 = solve(n - 1LL, curr + 1LL, temp);
+
+        // key 2 and 3
+        if (n >= 2LL)
         {
-            copySteps = 1 + solve(n, curr, curr);
+            c2 = solve(n - 2LL, curr, curr);
         }
 
-        // Paste
-        int pasteSteps = 10000;
-        if (temp != 0)
-        {
-            pasteSteps = 1 + solve(n, curr + temp, temp);
-        }
+        // key 4
+        c3 = solve(n - 1LL, curr + temp, temp);
 
-        return min(copySteps, pasteSteps);
+        dp[n][curr][temp] = max(c1, max(c2, c3));
+
+        return dp[n][curr][temp];
     }
 
-    int minSteps(int n)
+    long long int optimalKeys(int n)
     {
-        return solve(n, 1, 0);
+        memset(dp, -1LL, sizeof(dp));
+        long long int n1 = (long long int)n;
+        return solve(n1, 0LL, 0LL);
     }
 };
