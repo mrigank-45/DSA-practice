@@ -1,66 +1,65 @@
-#include <iostream>
-#include <vector>
-#include <algorithm>
-#define MOD 1000000007
+#include <bits/stdc++.h>
 using namespace std;
 
-struct FoodItem
+class Solution
 {
-    int price;
-    int protein;
-};
-
-int main()
-{
-    int N, M, K;
-    cin >> N >> M >> K;
-
-    vector<FoodItem> items(N);
-
-    for (int i = 0; i < N; ++i)
+public:
+    bool outOfBounds(int i, int j, int n, int m)
     {
-        cin >> items[i].price;
+        return i < 0 || j < 0 || i >= n || j >= m;
     }
 
-    for (int i = 0; i < N; ++i)
+    int solve(vector<vector<char>> &mat, string target, int i, int j, int n, int m, int k)
     {
-        cin >> items[i].protein;
-    }
-
-    vector<vector<vector<int>>> dp(N + 1, vector<vector<int>>(M + 1, vector<int>(K + 1, 0)));
-
-    for (int i = 1; i <= N; ++i)
-    {
-        int price = items[i - 1].price;
-        int half_price = price / 2;
-        int protein = items[i - 1].protein;
-
-        for (int j = 0; j <= M; ++j)
+        if(mat[i][j] == '0') return 0;
+        if (k == target.size())
         {
-            for (int k = 0; k <= K; ++k)
+            return 1;
+        }
+
+        int ans = 0;
+
+        char c = mat[i][j];
+        mat[i][j] = '0';
+
+        if (!outOfBounds(i, j + 1, n, m) && mat[i][j + 1] == target[k])
+        {
+            ans += solve(mat, target, i, j + 1, n, m, k + 1);
+        }
+        if (!outOfBounds(i, j - 1, n, m) && mat[i][j - 1] == target[k])
+        {
+            ans += solve(mat, target, i, j - 1, n, m, k + 1);
+        }
+        if (!outOfBounds(i + 1, j, n, m) && mat[i + 1][j] == target[k])
+        {
+            ans += solve(mat, target, i + 1, j, n, m, k + 1);
+        }
+        if (!outOfBounds(i - 1, j, n, m) && mat[i - 1][j] == target[k])
+        {
+            ans += solve(mat, target, i - 1, j, n, m, k + 1);
+        }
+
+        mat[i][j] = c;
+
+        return ans;
+    }
+    int findOccurrence(vector<vector<char>> &mat, string target)
+    {
+        int n = mat.size();
+        int m = mat[0].size();
+        int count = 0;
+
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < m; j++)
             {
-                dp[i][j][k] = dp[i - 1][j][k];
-
-                if (j >= price)
+                if (mat[i][j] == target[0])
                 {
-                    dp[i][j][k] = max(dp[i][j][k], dp[i - 1][j - price][k] + protein);
-                }
-
-                if (k > 0 && j >= half_price)
-                {
-                    dp[i][j][k] = max(dp[i][j][k], dp[i - 1][j - half_price][k - 1] + protein);
+                    count += solve(mat, target, i, j, n, m, 1);
                 }
             }
         }
+
+        return count;
     }
-
-    int max_protein = 0;
-    for (int k = 0; k <= K; ++k)
-    {
-        max_protein = max(max_protein, dp[N][M][k]);
-    }
-
-    cout << max_protein << endl;
-
-    return 0;
-}
+};
