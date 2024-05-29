@@ -1,104 +1,66 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#define MOD 1000000007
 using namespace std;
 
-struct TreeNode
+struct FoodItem
 {
-    int val;
-    TreeNode *left;
-    TreeNode *right;
-    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+    int price;
+    int protein;
 };
 
-class Codec
+int main()
 {
-public:
-    // Encodes a tree to a single string.
-    string serialize(TreeNode *root)
+    int N, M, K;
+    cin >> N >> M >> K;
+
+    vector<FoodItem> items(N);
+
+    for (int i = 0; i < N; ++i)
     {
-        queue<TreeNode *> q;
-        string s = "";
-
-        string null = "null";
-        if (!root)
-        {
-            return s;
-        }
-        q.push(root);
-
-        while (!q.empty())
-        {
-            TreeNode *temp = q.front();
-            q.pop();
-            if (temp != NULL)
-            {
-                s += to_string(temp->val) + ",";
-                q.push(temp->left);
-                q.push(temp->right);
-            }
-            else
-            {
-                s += null + ",";
-            }
-        }
-        return s;
+        cin >> items[i].price;
     }
 
-    string next_element(string &s)
+    for (int i = 0; i < N; ++i)
     {
-        char c = s[0];
-        string ans;
-
-        while (c != ',')
-        {
-            ans.push_back(c);
-            s.erase(s.begin());
-            c = s[0];
-        }
-        s.erase(s.begin());
-        return ans;
+        cin >> items[i].protein;
     }
 
-    // Decodes your encoded s to tree.
-    TreeNode *deserialize(string s)
+    vector<vector<vector<int>>> dp(N + 1, vector<vector<int>>(M + 1, vector<int>(K + 1, 0)));
+
+    for (int i = 1; i <= N; ++i)
     {
-        if (s == "")
-            return NULL;
+        int price = items[i - 1].price;
+        int half_price = price / 2;
+        int protein = items[i - 1].protein;
 
-        queue<TreeNode *> q;
-        string temp = next_element(s);
-
-        TreeNode *root = new TreeNode(stoi(temp));
-        q.push(root);
-
-        while (!q.empty())
+        for (int j = 0; j <= M; ++j)
         {
-            TreeNode *x = q.front();
-            q.pop();
+            for (int k = 0; k <= K; ++k)
+            {
+                dp[i][j][k] = dp[i - 1][j][k];
 
-            string left = next_element(s);
-            string right = next_element(s);
-            
-            if (left == "null")
-                x->left = NULL;
-            else
-            {
-                TreeNode *l = new TreeNode(stoi(left));
-                x->left = l;
-                q.push(l);
-            }
+                if (j >= price)
+                {
+                    dp[i][j][k] = max(dp[i][j][k], dp[i - 1][j - price][k] + protein);
+                }
 
-            if (right == "null")
-            {
-                x->right = NULL;
-            }
-            else
-            {
-                TreeNode *r = new TreeNode(stoi(right));
-                x->right = r;
-                q.push(r);
+                if (k > 0 && j >= half_price)
+                {
+                    dp[i][j][k] = max(dp[i][j][k], dp[i - 1][j - half_price][k - 1] + protein);
+                }
             }
         }
-
-        return root;
     }
-};
+
+    int max_protein = 0;
+    for (int k = 0; k <= K; ++k)
+    {
+        max_protein = max(max_protein, dp[N][M][k]);
+    }
+
+    cout << max_protein << endl;
+
+    return 0;
+}
