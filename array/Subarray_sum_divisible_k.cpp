@@ -1,3 +1,4 @@
+// Subarray Sums Divisible by K
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -30,7 +31,7 @@ public:
 
             mp[rem]++;
         }
-
+        
         return count;
     }
 };
