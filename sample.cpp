@@ -4,33 +4,52 @@ using namespace std;
 class Solution
 {
 public:
-    int subarraysDivByK(vector<int> &nums, int k)
+    int firstMissingPositive(vector<int> &nums)
     {
         int n = nums.size();
-        int sum = 0;
-        int count = 0;
 
-        unordered_map<int, int> mp;
-        mp[0] = 1;
+        if (n == 0)
+            return 1;
+
+        sort(nums.begin(), nums.end());
+
+        int ans = 0;
 
         for (int i = 0; i < n; i++)
         {
-            sum += nums[i];
-            int rem = sum % k;
-
-            if (rem < 0)
+            if (nums[i] <= 0)
             {
-                rem = rem + k;
+                continue;
             }
-
-            if (mp.find(rem) != mp.end())
+            else
             {
-                count += mp[rem];
+                if (ans == 0 && nums[i] != 1)
+                {
+                    break;
+                }
+                else if (ans == 0 && nums[i] == 1)
+                {
+                    ans++;
+                    continue;
+                }
+                else
+                {
+                    if (i > 0 && nums[i] == nums[i - 1] + 1)
+                    {
+                        ans++;
+                    }
+                    else if (i > 0 && nums[i] == nums[i - 1])
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
             }
-
-            mp[rem]++;
         }
 
-        return count;
+        return ans + 1;
     }
 };
