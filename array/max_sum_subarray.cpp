@@ -32,7 +32,7 @@ long long maxSubarraySum(int arr[], int n) {
 
 int main()
 {
-    int arr[] = { -2,-3,-1,-5};
+    int arr[] = {4, -2, 8, -12, 9};
     int n = sizeof(arr) / sizeof(arr[0]);
     long long maxSum = maxSubarraySum(arr, n);
     cout << "The maximum subarray sum is: " << maxSum << endl;

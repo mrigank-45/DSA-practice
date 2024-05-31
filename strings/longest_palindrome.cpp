@@ -21,17 +21,17 @@ int longestPalSubstr(string str)
     {
         low = i - 1;
         high = i + 1;
-        while (high < n && str[high] == str[i]) // increment 'high'
+        while (high < n && str[high] == str[i]) // check equals in right direction
         {
             high++;
         }
 
-        while (low >= 0 && str[low] == str[i]) // decrement 'low'
+        while (low >= 0 && str[low] == str[i]) // check equals in left direction
         {
             low--;
         }
 
-        while (low >= 0 && high < n && str[low] == str[high])
+        while (low >= 0 && high < n && str[low] == str[high]) // till equal in both side
         {
             low--;
             high++;
