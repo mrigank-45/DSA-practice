@@ -4,52 +4,13 @@ using namespace std;
 class Solution
 {
 public:
-    int firstMissingPositive(vector<int> &nums)
+    string multiply(string s1, string s2)
     {
-        int n = nums.size();
 
-        if (n == 0)
-            return 1;
+        long long int n1 = stoll(s1);
+        long long int n2 = stoll(s2);
 
-        sort(nums.begin(), nums.end());
-
-        int ans = 0;
-
-        for (int i = 0; i < n; i++)
-        {
-            if (nums[i] <= 0)
-            {
-                continue;
-            }
-            else
-            {
-                if (ans == 0 && nums[i] != 1)
-                {
-                    break;
-                }
-                else if (ans == 0 && nums[i] == 1)
-                {
-                    ans++;
-                    continue;
-                }
-                else
-                {
-                    if (i > 0 && nums[i] == nums[i - 1] + 1)
-                    {
-                        ans++;
-                    }
-                    else if (i > 0 && nums[i] == nums[i - 1])
-                    {
-                        continue;
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-            }
-        }
-
-        return ans + 1;
+        long long int n = n1 * n2;
+        return to_string(n);
     }
 };
