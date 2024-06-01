@@ -1,64 +1,53 @@
 #include <bits/stdc++.h>
 using namespace std;
-struct Node
-{
-    int data;
-    Node *left, *right;
-};
 
 class Solution
 {
 public:
-    map<Node *, Node *> parent_map;
-    int ans = INT_MAX;
-    void makeParent(Node *root, Node *parent)
+    bool isOutOfBounds(int i, int j, int n, int m)
     {
-        if (root == NULL)
-            return;
-        parent_map[root] = parent;
-        makeParent(root->left, root);
-        makeParent(root->right, root);
+        return i < 0 || j < 0 || i >= n || j >= m;
     }
-    Node *find_node(Node *root, int val)
-    {
-        if (root == NULL)
-        {
-            return NULL;
+    int dfs(vector<vector<int>>& grid, int i, int j) {
+        if (grid[i][j] == 0) {
+            return 0;
         }
-        if (root->data == val)
-        {
-            return root;
+        
+        int gold = grid[i][j];
+        grid[i][j] = 0;
+        
+        int maxGold = 0;
+        vector<pair<int, int>> directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+        
+        for (auto& dir : directions) {
+            int new_i = i + dir.first;
+            int new_j = j + dir.second;
+            
+            if (!isOutOfBounds(new_i, new_j, grid.size(), grid[0].size()) && grid[new_i][new_j] != 0) {
+                maxGold = max(maxGold, dfs(grid, new_i, new_j));
+            }
         }
-        if (find_node(root->left, val) != NULL)
-        {
-            return find_node(root->left, val);
-        }
-
-        return find_node(root->right, val);
+        
+        grid[i][j] = gold; 
+        return maxGold + gold;
     }
-    void dfs(Node *root, int b, int dis, Node *prev)
+    int getMaximumGold(vector<vector<int>> &grid)
     {
-        if (root == NULL)
-            return;
-        if (root->data == b)
+        int n = grid.size();
+        int m = grid[0].size();
+
+        int ans = 0;
+
+        for (int i = 0; i < n; i++)
         {
-            ans = min(ans, dis);
-            return;
+            for (int j = 0; j < m; j++)
+            {
+                if (grid[i][j] != 0)
+                {
+                    ans = max(ans, dfs(grid, i, j));
+                }
+            }
         }
-
-        if (root->left != prev)
-            dfs(root->left, b, dis + 1, root);
-        if (root->right != prev)
-            dfs(root->right, b, dis + 1, root);
-        if (parent_map[root] != prev)
-            dfs(parent_map[root], b, dis + 1, root);
-    }
-    int findDist(Node *root, int a, int b)
-    {
-        makeParent(root, NULL);
-
-        Node *target = find_node(root, a);
-        dfs(target, b, 0, NULL);
 
         return ans;
     }
