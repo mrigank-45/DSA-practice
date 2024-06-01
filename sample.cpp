@@ -1,33 +1,65 @@
 #include <bits/stdc++.h>
 using namespace std;
+struct Node
+{
+    int data;
+    Node *left, *right;
+};
 
 class Solution
 {
 public:
-    int find(int k, int n)
+    map<Node *, Node *> parent_map;
+    int ans = INT_MAX;
+    void makeParent(Node *root, Node *parent)
     {
-        if (n == 0 || n == 1)
-            return n; // if no. of floor 0 , 1 return n:
-        if (k == 1)
-            return n; // if 1 egg return number of floor
-        int ans = 1000000;
-        for (int i = 1; i <= n; i++) // try from 1 to n floor , drop every floor and find minimum
+        if (root == NULL)
+            return;
+        parent_map[root] = parent;
+        makeParent(root->left, root);
+        makeParent(root->right, root);
+    }
+    Node *find_node(Node *root, int val)
+    {
+        if (root == NULL)
         {
-            int temp = 1 + max(find(k - 1, i - 1), find(k, n - i)); // maximum for worst case
-            ans = min(ans, temp);                                   // minimum attempts from maximum temp
+            return NULL;
+        }
+        if (root->data == val)
+        {
+            return root;
+        }
+        if (find_node(root->left, val) != NULL)
+        {
+            return find_node(root->left, val);
         }
 
-        /*
-           Here we have k eggs and n floor
-           if we drop from i  (i=1 to n):
-            i) egg break , now we remain k-1 eggs and i-1 floor beacase after i(included) floor all the eggs will also break
-           ii) egg not break , now we remain k eggs and n-i floor because before i (included) all eggs will be remain
-         */
-        return ans;
+        return find_node(root->right, val);
     }
-    int superEggDrop(int K, int N)
+    void dfs(Node *root, int b, int dis, Node *prev)
     {
-        // K -> egg , N -> floor
-        return find(K, N);
+        if (root == NULL)
+            return;
+        if (root->data == b)
+        {
+            ans = min(ans, dis);
+            return;
+        }
+
+        if (root->left != prev)
+            dfs(root->left, b, dis + 1, root);
+        if (root->right != prev)
+            dfs(root->right, b, dis + 1, root);
+        if (parent_map[root] != prev)
+            dfs(parent_map[root], b, dis + 1, root);
+    }
+    int findDist(Node *root, int a, int b)
+    {
+        makeParent(root, NULL);
+
+        Node *target = find_node(root, a);
+        dfs(target, b, 0, NULL);
+
+        return ans;
     }
 };
