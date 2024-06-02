@@ -1,54 +1,46 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+struct Node
+{
+    int data;
+    Node *left;
+    Node *right;
+
+    Node(int data)
+    {
+        data = data;
+        left = right = NULL;
+    }
+};
+
 class Solution
 {
 public:
-    bool isOutOfBounds(int i, int j, int n, int m)
+    pair<bool, int> checkBST(Node *root, long mini, long maxi, int k)
     {
-        return i < 0 || j < 0 || i >= n || j >= m;
-    }
-    int dfs(vector<vector<int>>& grid, int i, int j) {
-        if (grid[i][j] == 0) {
-            return 0;
-        }
-        
-        int gold = grid[i][j];
-        grid[i][j] = 0;
-        
-        int maxGold = 0;
-        vector<pair<int, int>> directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
-        
-        for (auto& dir : directions) {
-            int new_i = i + dir.first;
-            int new_j = j + dir.second;
-            
-            if (!isOutOfBounds(new_i, new_j, grid.size(), grid[0].size()) && grid[new_i][new_j] != 0) {
-                maxGold = max(maxGold, dfs(grid, new_i, new_j));
-            }
-        }
-        
-        grid[i][j] = gold; 
-        return maxGold + gold;
-    }
-    int getMaximumGold(vector<vector<int>> &grid)
-    {
-        int n = grid.size();
-        int m = grid[0].size();
-
-        int ans = 0;
-
-        for (int i = 0; i < n; i++)
+        if (root == NULL)
         {
-            for (int j = 0; j < m; j++)
-            {
-                if (grid[i][j] != 0)
-                {
-                    ans = max(ans, dfs(grid, i, j));
-                }
-            }
+            return {true, 0};
         }
 
-        return ans;
+        if (root->data > mini && root->data < maxi)
+        {
+            pair<bool, int> left = checkBST(root->left, mini, root->data, k + 1);
+            pair<bool, int> right = checkBST(root->right, root->data, maxi, k + 1);
+            return {left.first && right.first,  left.second + right.second + 1};
+        }
+        else
+        {
+            return {false, k + 1};
+        }
+    }
+    int largestBst(Node *root)
+    {
+        pair<bool, int> p = checkBST(root, LONG_MIN, LONG_MAX, 0);
+        if(p.first)
+            return p.second;
+        else
+            return 1;
     }
 };
