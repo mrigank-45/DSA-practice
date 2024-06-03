@@ -1,56 +1,54 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// struct TreeNode
-// {
-//     int val;
-//     struct TreeNode *left;
-//     struct TreeNode *right;
-// };
-
 class Solution
 {
 public:
-    map<int, int> vis;
-    int checkBST(int root, long min, long max, int left, int n)
+    bool dfs(vector<vector<char>> &board, string word, int i, int j, int index, int n, int m, int l, vector<vector<int>> &vis, vector<vector<int>> &dir)
     {
-        if (left == 0)
+        if (index == l)
         {
-            return 1;
+            return true;
         }
-
-        if (root > min && root < max)
+        for (int d = 0; d < 4; d++)
         {
-            int ans = 1;
-
-            for (int i = 1; i <= n; i++)
+            int ni = i + dir[d][0];
+            int nj = j + dir[d][1];
+            if (ni >= 0 && nj >= 0 && ni < n && nj < m && vis[ni][nj] == 0 && board[ni][nj] == word[index])
             {
-                if (vis[i] == 0)
+                vis[ni][nj] = 1;
+                if (dfs(board, word, ni, nj, index + 1, n, m, l, vis, dir))
                 {
-                    vis[i] = 1;
-                    int c1 = checkBST(i, min, root, left - 1 - 1, n);
-                    int c2 = checkBST(i, root, max, left - 1, n);
-                    vis[i] = 0;
-                    ans += c1 + c2;
+                    return true;
+                }
+                vis[ni][nj] = 0;
+            }
+        }
+        return false;
+    }
+
+    bool exist(vector<vector<char>> &board, string word)
+    {
+        int n = board.size();
+        int m = board[0].size();
+        int l = word.length();
+        vector<vector<int>> vis(n, vector<int>(m, 0));
+        vector<vector<int>> dir = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < m; j++)
+            {
+                if (board[i][j] == word[0])
+                {
+                    vis[i][j] = 1;
+                    if (dfs(board, word, i, j, 1, n, m, l, vis, dir))
+                    {
+                        return true;
+                    }
+                    vis[i][j] = 0;
                 }
             }
-            return ans;
         }
-        else
-        {
-            return 0;
-        }
-    }
-    int numTrees(int n)
-    {
-        int ans = 1;
-        for (int i = 1; i <= n; i++)
-        {
-            vis[i] = 1;
-            ans + checkBST(i, LONG_MIN, LONG_MAX, n, n);
-            vis[i] = 0;
-        }
-
-        return ans;
+        return false;
     }
 };
