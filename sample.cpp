@@ -1,39 +1,69 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-struct Node
+struct TreeNode
 {
-    int data;
-    Node *left, *right;
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode() : val(0), left(nullptr), right(nullptr) {}
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
 };
 
 class Solution
 {
 public:
-    int solve(Node *node)
+    map<int, int> mp;
+
+    void levelOrderTransversal(TreeNode *root)
     {
-        if (node == NULL)
-        {
-            return 0;
-        }
-        if (node->left == NULL && node->right == NULL)
-        {
-            int temp = node->data;
-            node->data = 0;
-            return temp;
-        }
+        queue<TreeNode *> q;
+        q.push(root);
+        int i = 1;
 
-        // calls
-        int left = solve(node->left);
-        int right = solve(node->right);
+        while (!q.empty())
+        {
+            int size = q.size();
 
-        int temp = node->data;
-        node->data = left + right;
-        return temp + left + right;
-        
+            int ans = 0;
+            for (int i = 0; i < size; i++)
+            {
+
+                TreeNode *frontTreeNode = q.front();
+                q.pop();
+
+                ans += frontTreeNode->val;
+
+                if (frontTreeNode->left)
+                    q.push(frontTreeNode->left);
+
+                if (frontTreeNode->right)
+                    q.push(frontTreeNode->right);
+            }
+            mp[i] = ans;
+            i++;
+        }
     }
-    void toSumTree(Node *node)
+    int maxLevelSum(TreeNode *root)
     {
-        int sum = solve(node);
+        if (root == NULL)
+        {
+            return 1;
+        }
+        levelOrderTransversal(root);
+
+        int maxSum = INT_MIN;
+        int maxLevel = 0;
+        for (auto i : mp)
+        {
+            if (i.second > maxSum)
+            {
+                maxSum = i.second;
+                maxLevel = i.first;
+            }
+        }
+
+        return maxLevel;
     }
 };
