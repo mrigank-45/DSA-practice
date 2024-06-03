@@ -1,46 +1,56 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-struct Node
-{
-    int data;
-    Node *left;
-    Node *right;
-
-    Node(int data)
-    {
-        data = data;
-        left = right = NULL;
-    }
-};
+// struct TreeNode
+// {
+//     int val;
+//     struct TreeNode *left;
+//     struct TreeNode *right;
+// };
 
 class Solution
 {
 public:
-    pair<bool, int> checkBST(Node *root, long mini, long maxi, int k)
+    map<int, int> vis;
+    int checkBST(int root, long min, long max, int left, int n)
     {
-        if (root == NULL)
+        if (left == 0)
         {
-            return {true, 0};
+            return 1;
         }
 
-        if (root->data > mini && root->data < maxi)
+        if (root > min && root < max)
         {
-            pair<bool, int> left = checkBST(root->left, mini, root->data, k + 1);
-            pair<bool, int> right = checkBST(root->right, root->data, maxi, k + 1);
-            return {left.first && right.first,  left.second + right.second + 1};
+            int ans = 1;
+
+            for (int i = 1; i <= n; i++)
+            {
+                if (vis[i] == 0)
+                {
+                    vis[i] = 1;
+                    int c1 = checkBST(i, min, root, left - 1 - 1, n);
+                    int c2 = checkBST(i, root, max, left - 1, n);
+                    vis[i] = 0;
+                    ans += c1 + c2;
+                }
+            }
+            return ans;
         }
         else
         {
-            return {false, k + 1};
+            return 0;
         }
     }
-    int largestBst(Node *root)
+    int numTrees(int n)
     {
-        pair<bool, int> p = checkBST(root, LONG_MIN, LONG_MAX, 0);
-        if(p.first)
-            return p.second;
-        else
-            return 1;
+        int ans = 1;
+        for (int i = 1; i <= n; i++)
+        {
+            vis[i] = 1;
+            ans + checkBST(i, LONG_MIN, LONG_MAX, n, n);
+            vis[i] = 0;
+        }
+
+        return ans;
     }
 };
