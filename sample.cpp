@@ -1,40 +1,19 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-struct TreeNode
-{
-    int val;
-    TreeNode *left;
-    TreeNode *right;
-    TreeNode() : val(0), left(nullptr), right(nullptr) {}
-    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
-    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
-};
-
 class Solution
 {
 public:
-    TreeNode *trimBST(TreeNode *root, int low, int high)
+    string largestDivisible(string s)
     {
-        if (!root)
+        int flag = 0;
+        sort(s.begin(), s.end());
+        reverse(s.begin(), s.end());
+        do
         {
-            return root;
-        }
-
-        if (root->val >= low && root->val <= high)
-        {
-            root->left = trimBST(root->left, low, high);
-            root->right = trimBST(root->right, low, high);
-            return root;
-        }
-
-        if (root->val < low)
-        {
-            return trimBST(root->right, low, high);
-        }
-        else
-        {
-            return trimBST(root->left, low, high);
-        }
+            if (stoi(s) % 17 == 0 && s[0] != '0')
+                return s;
+        } while (prev_permutation(s.begin(), s.end()));
+        return "Not Possible";
     }
 };
