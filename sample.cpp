@@ -4,31 +4,35 @@ using namespace std;
 class Solution
 {
 public:
-    int solve(vector<int> &nums, int i, vector<int> &dp)
+    vector<vector<int>> threeSum(vector<int> &nums)
     {
-        if (i == nums.size() - 1)
+        sort(nums.begin(),nums.end());
+        unordered_map<int,vector<int>> mp;
+
+        vector<vector<int>> res;
+
+        for(int i = 0; i < nums.size(); i++)
         {
-            return 0;
+            mp[nums[i]].push_back(i);
         }
 
-        if (dp[i] != -1)
+        for(int i = 0; i < nums.size() - 1; i++)
         {
-            return dp[i];
-        }
-
-        int ans = 10000;
-        for (int j = 1; j <= nums[i] && i + j < nums.size(); j++)
-        {
-            if ((nums[i + j] == 0 && i + j == nums.size() - 1) || nums[i+j] != 0)
+            for(int j = i+1; j < nums.size(); j++)
             {
-                ans = min(ans, 1 + solve(nums, i + j, dp));
+                int sum = nums[i] + nums[j];
+                if(mp.find(-sum) != mp.end())
+                {
+                    vector<int> temp = mp[-sum];
+                    for(auto it: temp){
+                        vector<int> temp1 = {nums[i],nums[j],nums[it]};
+                        sort(temp1.begin(),temp1.end());
+                        res.push_back(temp1);
+                    }
+                }
             }
         }
-        return dp[i] = ans;
-    }
-    int jump(vector<int> &nums)
-    {
-        vector<int> dp(nums.size(), -1);
-        return solve(nums, 0, dp);
+
+        return res;
     }
 };
