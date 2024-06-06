@@ -4,35 +4,42 @@ using namespace std;
 class Solution
 {
 public:
-    vector<vector<int>> threeSum(vector<int> &nums)
+    vector<int> maxSlidingWindow(vector<int> &nums, int k)
     {
-        sort(nums.begin(),nums.end());
-        unordered_map<int,vector<int>> mp;
+        deque<pair<int, int>> dq;
+        int n = nums.size();
 
-        vector<vector<int>> res;
+        vector<int> ans;
 
-        for(int i = 0; i < nums.size(); i++)
+        // first window
+        for (int i = 0; i < k; i++)
         {
-            mp[nums[i]].push_back(i);
-        }
-
-        for(int i = 0; i < nums.size() - 1; i++)
-        {
-            for(int j = i+1; j < nums.size(); j++)
+            while (!dq.empty() && dq.back().first < nums[i])
             {
-                int sum = nums[i] + nums[j];
-                if(mp.find(-sum) != mp.end())
-                {
-                    vector<int> temp = mp[-sum];
-                    for(auto it: temp){
-                        vector<int> temp1 = {nums[i],nums[j],nums[it]};
-                        sort(temp1.begin(),temp1.end());
-                        res.push_back(temp1);
-                    }
-                }
+                dq.pop_back();
             }
+
+            dq.push_back({nums[i], i});
+        }
+        ans.push_back(dq.front().first);
+
+        for (int i = k; i < n; i++)
+        {
+            while (!dq.empty() && dq.front().second <= i - k)
+            {
+                dq.pop_front();
+            }
+
+            while (!dq.empty() && dq.back().first < nums[i])
+            {
+                dq.pop_back();
+            }
+
+            dq.push_back({nums[i], i});
+
+            ans.push_back(dq.front().first);
         }
 
-        return res;
+        return ans;
     }
 };
