@@ -4,40 +4,41 @@ using namespace std;
 class Solution
 {
 public:
-    int maxIndexDiff(int a[], int n)
+    int maxScore(vector<vector<int>> &grid)
     {
-        int leftMin[n];
-        int rightMax[n];
+        int n = grid.size();
+        int m = grid[0].size();
 
-        leftMin[0] = a[0];
-        for (int i = 1; i < n; i++)
+        vector<vector<int>> dp(n, vector<int>(m, 0));
+
+        // Fill the DP table starting from each cell
+        for (int i = 0; i < n; i++)
         {
-            leftMin[i] = min(a[i], leftMin[i - 1]);
-        }
-
-        rightMax[n - 1] = a[n - 1];
-        for (int j = n - 2; j >= 0; j--)
-        {
-            rightMax[j] = max(a[j], rightMax[j + 1]);
-        }
-
-        int i = 0;
-        int j = 0;
-        int maxDiff = -1;
-
-        while (i < n && j < n)
-        {
-            if (leftMin[i] <= rightMax[j])
+            for (int j = 0; j < m; j++)
             {
-                maxDiff = max(maxDiff, j - i);
-                j = j + 1;
-            }
-            else
-            {
-                i = i + 1;
+                // Initialize the score for the current cell
+                int score = 0;
+
+                // Iterate over the columns to the right
+                for (int k = j + 1; k < m; k++)
+                {
+                    score += grid[i][k] - grid[i][k - 1];
+                    dp[i][k] = max(dp[i][k], dp[i][k - 1] + score);
+                }
+
+                // Reset the score
+                score = 0;
+
+                // Iterate over the rows below
+                for (int k = i + 1; k < n; k++)
+                {
+                    score += grid[k][j] - grid[k - 1][j];
+                    dp[k][j] = max(dp[k][j], dp[k - 1][j] + score);
+                }
             }
         }
 
-        return maxDiff;
+        // The answer will be stored in the bottom-right cell of the DP table
+        return dp[n - 1][m - 1];
     }
 };

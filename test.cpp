@@ -4,74 +4,46 @@ using namespace std;
 class Solution
 {
 public:
-    int maxProduct(vector<int> &nums)
+    int solve(vector<vector<int>> &grid, int i, int j, int n, int m, int score, vector<vector<int>> &dp)
     {
-        int maxLeft = nums[0];
-        int maxRight = nums[0];
+        int ans = INT_MIN;
 
-        int prod = 1;
-
-        bool zeroPresent = false;
-
-        for (auto i : nums)
+        if (dp[i][j] != -1)
         {
-            if (i != 0 && prod > INT_MAX / i)
-            {
-                prod = prod;
-                cout << "reached" << endl;
-            }
-            else if (i != 0 && prod < INT_MIN / i)
-            {
-                prod = prod;
-                cout << "reached" << endl;
-            }
-            else
-            {
-                prod *= i;
-            }
-            if (i == 0)
-            {
-                prod = 1;
-                zeroPresent = true;
-                continue;
-            }
-            maxLeft = max(maxLeft, prod);
+            return dp[i][j];
         }
 
-        prod = 1;
-
-        for (int j = nums.size() - 1; j >= 0; j--)
+        for (int k = j + 1; k < m; k++)
         {
-            if (nums[j] != 0 && prod > INT_MAX / nums[j])
-            {
-                prod = prod;
-                cout << "reached" << endl;
-            }
-            else if (nums[j] != 0 && prod < INT_MIN / nums[j])
-            {
-                prod = prod;
-                cout << "reached" << endl;
-            }
-            else
-            {
-                prod *= nums[j];
-            }
-            if (nums[j] == 0)
-            {
-                prod = 1;
-                zeroPresent = true;
-                continue;
-            }
-            maxRight = max(maxRight, prod);
+            ans = max(ans, score + grid[i][k] - grid[i][j]);
+            ans = max(ans, solve(grid, i, k, n, m, score + grid[i][k] - grid[i][j], dp));
         }
 
-        if (zeroPresent)
+        for (int k = i + 1; k < n; k++)
         {
-            return max(max(maxLeft, maxRight), 0);
+            ans = max(ans, score + grid[k][j] - grid[i][j]);
+            ans = max(ans, solve(grid, k, j, n, m, score + grid[k][j] - grid[i][j], dp));
         }
-        else
+
+        return dp[i][j] = ans;
+    }
+
+    int maxScore(vector<vector<int>> &grid)
+    {
+        int n = grid.size();
+        int m = grid[0].size();
+
+        int ans = INT_MIN;
+
+        for (int i = 0; i < n; i++)
         {
-            return max(maxLeft, maxRight);
+            for (int j = 0; j < m; j++)
+            {
+                vector<vector<int>> dp(n, vector<int>(m, -1));
+                ans = max(ans, solve(grid, i, j, n, m, 0, dp));
+            }
         }
+
+        return ans;
     }
 };
