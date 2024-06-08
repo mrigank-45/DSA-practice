@@ -4,30 +4,56 @@ using namespace std;
 class Solution
 {
 public:
-    int solve(int price[], int i, int len, int n, vector<vector<int>> &dp)
+    void markBorderConnected(vector<vector<char>> &board, int i, int j)
     {
-        if (i == n)
+        if (i < 0 || i >= board.size() || j < 0 || j >= board[0].size() || board[i][j] != 'O')
         {
-            return 0;
+            return;
         }
-
-        if (dp[i][len] != -1)
-        {
-            return dp[i][len];
-        }
-
-        int ans;
-        int c1 = price[len - 1] + solve(price, i, 0, n, dp);
-        int c2 = solve(price, i + 1, len + 1, n, dp);
-
-        ans = max(c1, c2);
-
-        return dp[i][len] = ans;
+        board[i][j] = '1';
+        markBorderConnected(board, i - 1, j);
+        markBorderConnected(board, i + 1, j);
+        markBorderConnected(board, i, j - 1);
+        markBorderConnected(board, i, j + 1);
     }
-    int cutRod(int price[], int n)
+
+    void solve(vector<vector<char>> &board)
     {
-        // 2d DP
-        vector<vector<int>> dp(n + 2, vector<int>(n + 2, -1));
-        return solve(price, 0, 1, n, dp);
+        int n = board.size();
+        if (n == 0)
+            return;
+        int m = board[0].size();
+
+        // Mark all 'O's on the border and connected to border
+        for (int i = 0; i < n; i++)
+        {
+            if (board[i][0] == 'O')
+                markBorderConnected(board, i, 0);
+            if (board[i][m - 1] == 'O')
+                markBorderConnected(board, i, m - 1);
+        }
+        for (int j = 0; j < m; j++)
+        {
+            if (board[0][j] == 'O')
+                markBorderConnected(board, 0, j);
+            if (board[n - 1][j] == 'O')
+                markBorderConnected(board, n - 1, j);
+        }
+
+        // Process the entire board to capture surrounded regions
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < m; j++)
+            {
+                if (board[i][j] == 'O')
+                {
+                    board[i][j] = 'X'; // Capture surrounded region
+                }
+                else if (board[i][j] == '1')
+                {
+                    board[i][j] = 'O'; // Restore border-connected region
+                }
+            }
+        }
     }
 };

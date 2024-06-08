@@ -58,10 +58,14 @@ public:
                 i++;
             if (i != l)
             {
+                // use a as 0, b as 1 and so on
                 adj[s1[i] - 'a'].push_back(s2[i] - 'a');
             }
         }
+        // get the topo sort fron already build function
         vector<int> ans = topoSort(n, adj);
+
+        // make final string
         string s = "";
         for (int i = 0; i < ans.size(); i++)
         {
