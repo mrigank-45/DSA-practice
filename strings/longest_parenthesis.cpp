@@ -1,3 +1,4 @@
+// Longest Valid Parentheses
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -7,7 +8,7 @@ public:
         int n=s.size();
 
         stack<int>st;
-        st.push(-1);
+        st.push(-1);  // represents base index till when parathesis is not valid
         int maxx=0;
 
         for(int i=0;i<n;i++)
