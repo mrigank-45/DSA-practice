@@ -4,46 +4,30 @@ using namespace std;
 class Solution
 {
 public:
-    int solve(vector<vector<int>> &grid, int i, int j, int n, int m, int score, vector<vector<int>> &dp)
+    int solve(int price[], int i, int len, int n, vector<vector<int>> &dp)
     {
-        int ans = INT_MIN;
-
-        if (dp[i][j] != -1)
+        if (i == n)
         {
-            return dp[i][j];
+            return 0;
         }
 
-        for (int k = j + 1; k < m; k++)
+        if (dp[i][len] != -1)
         {
-            ans = max(ans, score + grid[i][k] - grid[i][j]);
-            ans = max(ans, solve(grid, i, k, n, m, score + grid[i][k] - grid[i][j], dp));
+            return dp[i][len];
         }
 
-        for (int k = i + 1; k < n; k++)
-        {
-            ans = max(ans, score + grid[k][j] - grid[i][j]);
-            ans = max(ans, solve(grid, k, j, n, m, score + grid[k][j] - grid[i][j], dp));
-        }
+        int ans;
+        int c1 = price[len - 1] + solve(price, i, 0, n, dp);
+        int c2 = solve(price, i + 1, len + 1, n, dp);
 
-        return dp[i][j] = ans;
+        ans = max(c1, c2);
+
+        return dp[i][len] = ans;
     }
-
-    int maxScore(vector<vector<int>> &grid)
+    int cutRod(int price[], int n)
     {
-        int n = grid.size();
-        int m = grid[0].size();
-
-        int ans = INT_MIN;
-
-        for (int i = 0; i < n; i++)
-        {
-            for (int j = 0; j < m; j++)
-            {
-                vector<vector<int>> dp(n, vector<int>(m, -1));
-                ans = max(ans, solve(grid, i, j, n, m, 0, dp));
-            }
-        }
-
-        return ans;
+        // 2d DP
+        vector<vector<int>> dp(n + 2, vector<int>(n + 2, -1));
+        return solve(price, 0, 1, n, dp);
     }
 };

@@ -4,40 +4,64 @@ using namespace std;
 class Solution
 {
 public:
-    int solve(int i, int j, string &str1, string &str2, vector<vector<int>> &dp, int n)
+    bool possible(vector<int> &bloomDay, int m, int k, int mid)
     {
-        if (i == n || j ==n)
+        int n = bloomDay.size();
+        int flowers = 0;
+        int res = 0;
+
+        for (int i = 0; i < n; i++)
         {
-            return 0;
+            if (bloomDay[i] <= mid)
+            {
+                flowers++;
+                if (flowers == k)
+                {
+                    res++;
+                    flowers = 0;
+                }
+            }
+            else
+            {
+                flowers = 0;
+            }
         }
 
-        if (dp[i][j] != -1)
+        if (res >= m)
         {
-            return dp[i][j];
-        }
-
-        int ans;
-        if (str1[i] == str2[j] && i != j)
-        { 
-            // take both for s1 and s2 since equal and index not same
-            ans = 1 + solve(i + 1, j + 1, str1, str2, dp, n);
+            return true;
         }
         else
         {
-            // take for s1
-            int c1 = solve(i + 1, j, str1, str2, dp, n);
-            // take for s2
-            int c2 = solve(i, j + 1, str1, str2, dp, n);
+            return false;
+        }
+    }
+    int minDays(vector<int> &bloomDay, int m, int k)
+    {
+        if (m * k > bloomDay.size())
+        {
+            return -1;
+        }
+        int s = 0;
+        int e = *max_element(bloomDay.begin(), bloomDay.end());
 
-            ans = max(c1, c2);
+        int mid = s + (e - s) / 2;
+        int ans = e;
+
+        while (s <= e)
+        {
+            if (possible(bloomDay, m, k, mid))
+            {
+                ans = min(ans, mid);
+                e = mid;
+            }
+            else
+            {
+                s = mid + 1;
+            }
+            mid = s + (e - s) / 2;
         }
 
-        return dp[i][j] = ans;
-    }
-    int LongestRepeatingSubsequence(string str)
-    {
-        int n = str.size();
-        vector<vector<int>> dp(n + 1, vector<int>(n + 1, -1));
-        return solve(0, 0, str, str, dp, n);
+        return ans;
     }
 };
