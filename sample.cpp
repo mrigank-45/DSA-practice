@@ -1,43 +1,52 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-struct TreeNode
+struct Node
 {
     int val;
-    TreeNode *left;
-    TreeNode *right;
-    TreeNode() : val(0), left(nullptr), right(nullptr) {}
-    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
-    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+    Node *left;
+    Node *right;
+    Node *next;
+    Node() : val(0), left(NULL), right(NULL), next(NULL) {}
+
+    Node(int _val) : val(_val), left(NULL), right(NULL), next(NULL) {}
+
+    Node(int _val, Node *_left, Node *_right, Node *_next)
+        : val(_val), left(_left), right(_right), next(_next) {}
 };
 
 class Solution
 {
 public:
-    string solve(TreeNode *root, vector<TreeNode *> &ans, unordered_map<string, int> &mp)
+    void solve(Node *root, unordered_map<int, vector<Node *>> &mp, int level)
     {
         if (root == NULL)
         {
-            return "#";
-        }
-        string temp = to_string(root->val) + "," + solve(root->left, ans, mp) + "," + solve(root->right, ans, mp);
-
-        if (mp[temp] == 1)
-        {
-            ans.push_back(root);
+            return;
         }
 
-        mp[temp]++;
+        mp[level].push_back(root);
 
-        return temp;
+        solve(root->left, mp, level + 1);
+        solve(root->right, mp, level + 1);
+
+        return;
     }
-
-    vector<TreeNode *> findDuplicateSubtrees(TreeNode *root)
+    Node *connect(Node *root)
     {
-        vector<TreeNode *> ans;
-        unordered_map<string, int> mp;
-        solve(root, ans, mp);
+        unordered_map<int, vector<Node *>> mp;
+        solve(root, mp, 0);
 
-        return ans;
+        for (auto it : mp)
+        {
+            vector<Node *> v = it.second;
+            for (int i = 0; i < v.size() - 1; i++)
+            {
+                v[i]->next = v[i + 1];
+            }
+            v[v.size() - 1]->next = NULL;
+        }
+
+        return root;
     }
 };
