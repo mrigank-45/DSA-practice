@@ -4,9 +4,9 @@ using namespace std;
 class Solution
 {
 public:
-    int solve(int i, int j, string s1, string s2, vector<vector<int>> dp)
+    int solve(string s, int i, int j, vector<vector<int>> dp)
     {
-        if (i == -1 || j == -1)
+        if (i >= j)
         {
             return 0;
         }
@@ -16,97 +16,56 @@ public:
             return dp[i][j];
         }
 
-        if (s1[i] == s2[j])
+        if (s[i] == s[j])
         {
-            return dp[i][j] = 1 + solve(i - 1, j - 1, s1, s2, dp);
+            return dp[i][j] = solve(s, i + 1, j - 1, dp);
         }
         else
         {
-            return dp[i][j] = max(solve(i - 1, j, s1, s2, dp), solve(i, j - 1, s1, s2, dp));
+            return dp[i][j] = 1 + min(solve(s, i + 1, j, dp), solve(s, i, j - 1, dp));
         }
     }
-    int tabulation1(int n1, int n2, string s1, string s2)
+    int tabulation(string s)
     {
-        vector<vector<int>> dp(n1 + 1, vector<int>(n2 + 1, 0)); 
-
-        for (int i = 1; i <= n1; i++) 
+        int n = s.size();
+        vector<vector<int>> dp(n + 1, vector<int>(n + 1, 0));
+        
+        // base case
+        for(int i = 0; i < n + 1; i++)
         {
-            for (int j = 1; j <= n2; j++)
+            for(int j = 0; j < n + 1; j++)
             {
-                if (s1[i - 1] == s2[j - 1]) 
-                {
-                    dp[i][j] = 1 + dp[i - 1][j - 1]; 
-                }
-                else 
-                {
-                    dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]); 
+                if(i>=j){
+                    dp[i][j] = 0;
                 }
             }
         }
-
-        return dp[n1][n2]; // Length of LCS
-    }
-    int tabulaton(int n1, int n2, string s1, string s2)
-    {
-        vector<vector<int>> dp(n1 + 1, vector<int>(n2 + 1, -1));
-
-        // calls
-        for (int i = 0; i < n1; i++)
+        
+        // table fill
+        for (int gap = 1; gap < n; gap++)
         {
-            for (int j = 0; j < n2; j++)
+            for (int i = 0, j = gap; j < n; i++, j++)
             {
-                if (i == 0 || j == 0)
+                if (s[i] == s[j])
                 {
-                    if (s1[i] == s2[j])
-                    {
-                        dp[i][j] = 1;
-                    }
-                    else
-                    {
-                        if (i == 0 && j != 0)
-                        {
-                            dp[i][j] = dp[i][j - 1];
-                        }
-                        else if (j == 0 && i != 0)
-                        {
-                            dp[i][j] = dp[i - 1][j];
-                        }
-                        else
-                        {
-                            return 0;
-                        }
-                    }
+                    dp[i][j] = dp[i + 1][j - 1];
                 }
                 else
                 {
-                    if (s1[i] == s2[j])
-                    {
-                        dp[i][j] = dp[i - 1][j - 1];
-                    }
-                    else
-                    {
-                        dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);
-                    }
+                    dp[i][j] = 1 + min(dp[i + 1][j], dp[i][j - 1]);
                 }
             }
         }
 
-        return dp[n1 - 1][n2 - 1];
+        return dp[0][n - 1];
     }
-
-    int longestPalindromeSubseq(string s)
+    int minInsertions(string s)
     {
-        string s1 = s;
-        string s2 = s;
+        int n = s.size();
 
-        reverse(s2.begin(), s2.end());
+        // vector<vector<int>> dp(n, vector<int>(n, -1));
+        // return solve(s, 0, n - 1, dp);
 
-        int n1 = s1.size();
-        int n2 = s2.size();
-
-        // vector<vector<int>> dp(n1 + 1, vector<int>(n2 + 1, -1));
-        // dp[i][j] = solve(n1 - 1, n2 - 1, s1, s2, dp);
-
-        return tabulaton(n1, n2, s1, s2);
+        return tabulation(s);
     }
 };
