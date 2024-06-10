@@ -4,62 +4,109 @@ using namespace std;
 class Solution
 {
 public:
-    string add_strings(string s1, string s2)
+    int solve(int i, int j, string s1, string s2, vector<vector<int>> dp)
     {
-        int n1 = s1.size(), n2 = s2.size();
-        int i = n1 - 1, j = n2 - 1, carry = 0;
-        string res = "";
-
-        while (i >= 0 || j >= 0 || carry)
+        if (i == -1 || j == -1)
         {
-            int sum = 0;
-            if (i >= 0)
-            {
-                sum += s1[i] - '0';
-                i--;
-            }
-            if (j >= 0)
-            {
-                sum += s2[j] - '0';
-                j--;
-            }
-            sum += carry;
-            carry = sum / 10;
-            sum = sum % 10;
-            res += to_string(sum);
+            return 0;
         }
 
-        reverse(res.begin(), res.end());
-        return res;
+        if (dp[i][j] != -1)
+        {
+            return dp[i][j];
+        }
+
+        if (s1[i] == s2[j])
+        {
+            return dp[i][j] = 1 + solve(i - 1, j - 1, s1, s2, dp);
+        }
+        else
+        {
+            return dp[i][j] = max(solve(i - 1, j, s1, s2, dp), solve(i, j - 1, s1, s2, dp));
+        }
+    }
+    int tabulation1(int n1, int n2, string s1, string s2)
+    {
+        vector<vector<int>> dp(n1 + 1, vector<int>(n2 + 1, 0)); 
+
+        for (int i = 1; i <= n1; i++) 
+        {
+            for (int j = 1; j <= n2; j++)
+            {
+                if (s1[i - 1] == s2[j - 1]) 
+                {
+                    dp[i][j] = 1 + dp[i - 1][j - 1]; 
+                }
+                else 
+                {
+                    dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]); 
+                }
+            }
+        }
+
+        return dp[n1][n2]; // Length of LCS
+    }
+    int tabulaton(int n1, int n2, string s1, string s2)
+    {
+        vector<vector<int>> dp(n1 + 1, vector<int>(n2 + 1, -1));
+
+        // calls
+        for (int i = 0; i < n1; i++)
+        {
+            for (int j = 0; j < n2; j++)
+            {
+                if (i == 0 || j == 0)
+                {
+                    if (s1[i] == s2[j])
+                    {
+                        dp[i][j] = 1;
+                    }
+                    else
+                    {
+                        if (i == 0 && j != 0)
+                        {
+                            dp[i][j] = dp[i][j - 1];
+                        }
+                        else if (j == 0 && i != 0)
+                        {
+                            dp[i][j] = dp[i - 1][j];
+                        }
+                        else
+                        {
+                            return 0;
+                        }
+                    }
+                }
+                else
+                {
+                    if (s1[i] == s2[j])
+                    {
+                        dp[i][j] = dp[i - 1][j - 1];
+                    }
+                    else
+                    {
+                        dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);
+                    }
+                }
+            }
+        }
+
+        return dp[n1 - 1][n2 - 1];
     }
 
-    string solve(int arr[], int n)
+    int longestPalindromeSubseq(string s)
     {
-        sort(arr, arr + n);
+        string s1 = s;
+        string s2 = s;
 
-        string s1 = "", s2 = "";
-        for (int i = 0; i < n; i++)
-        {
-            if (i % 2 == 0)
-            {
-                s1 += to_string(arr[i]);
-            }
-            else
-            {
-                s2 += to_string(arr[i]);
-            }
-        }
+        reverse(s2.begin(), s2.end());
 
-        string res = add_strings(s1, s2);
+        int n1 = s1.size();
+        int n2 = s2.size();
 
-        for (int i = 0; i < res.size(); i++)
-        {
-            if (res[i] != '0')
-            {
-                return res.substr(i);
-            }
-        }
+        // vector<vector<int>> dp(n1 + 1, vector<int>(n2 + 1, -1));
+        // dp[i][j] = solve(n1 - 1, n2 - 1, s1, s2, dp);
 
-        return "0";
+        return tabulaton(n1, n2, s1, s2);
     }
 };
