@@ -1,3 +1,4 @@
+// Binary Tree Maximum Path Sum | Leetcode
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -20,10 +21,14 @@ public:
         {
             return 0;
         }
+
+        // neglect left or right sum if it is less than 0
         int lMax = max(dfs(root->left, ans), 0);
         int rMax = max(dfs(root->right, ans), 0);
+
         ans = max(ans, lMax + rMax + root->val);
-        return max(lMax, rMax) + root->val;
+
+        return (max(lMax, rMax) + root->val);
     }
 
     int maxPathSum(TreeNode *root)

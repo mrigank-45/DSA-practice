@@ -1,59 +1,91 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+struct TreeNode
+{
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode() : val(0), left(nullptr), right(nullptr) {}
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+};
+
 class Solution
 {
 public:
-    void markBorderConnected(vector<vector<char>> &board, int i, int j)
+    void mapping(TreeNode *root, map<TreeNode *, TreeNode *> &mp)
     {
-        if (i < 0 || i >= board.size() || j < 0 || j >= board[0].size() || board[i][j] != 'O')
+        if (root == NULL)
         {
             return;
         }
-        board[i][j] = '1';
-        markBorderConnected(board, i - 1, j);
-        markBorderConnected(board, i + 1, j);
-        markBorderConnected(board, i, j - 1);
-        markBorderConnected(board, i, j + 1);
+
+        if (root->left)
+        {
+            mp[root->left] = root;
+            mapping(root->left, mp);
+        }
+
+        if (root->right)
+        {
+            mp[root->right] = root;
+            mapping(root->right, mp);
+        }
     }
-
-    void solve(vector<vector<char>> &board)
+    void solve(TreeNode *root, map<TreeNode *, TreeNode *> &mp, int &ans, TreeNode *prev, map<TreeNode *, bool> &visited, int sum = 0)
     {
-        int n = board.size();
-        if (n == 0)
+        if (root == NULL)
+        {
             return;
-        int m = board[0].size();
-
-        // Mark all 'O's on the border and connected to border
-        for (int i = 0; i < n; i++)
-        {
-            if (board[i][0] == 'O')
-                markBorderConnected(board, i, 0);
-            if (board[i][m - 1] == 'O')
-                markBorderConnected(board, i, m - 1);
-        }
-        for (int j = 0; j < m; j++)
-        {
-            if (board[0][j] == 'O')
-                markBorderConnected(board, 0, j);
-            if (board[n - 1][j] == 'O')
-                markBorderConnected(board, n - 1, j);
         }
 
-        // Process the entire board to capture surrounded regions
-        for (int i = 0; i < n; i++)
+        sum += root->val;
+        ans = max(ans, sum);
+
+        if (root->left && root->left != prev)
         {
-            for (int j = 0; j < m; j++)
+            solve(root->left, mp, ans, root, visited, sum);
+            if (!visited[root->left])
             {
-                if (board[i][j] == 'O')
-                {
-                    board[i][j] = 'X'; // Capture surrounded region
-                }
-                else if (board[i][j] == '1')
-                {
-                    board[i][j] = 'O'; // Restore border-connected region
-                }
+                visited[root->left] = true;
+                solve(root->left, mp, ans, NULL, visited, 0);
             }
         }
+
+        if (root->right && root->right != prev)
+        {
+            solve(root->right, mp, ans, root, visited, sum);
+            if (!visited[root->right])
+            {
+                visited[root->right] = true;
+                solve(root->right, mp, ans, NULL, visited, 0);
+            }
+        }
+
+        if (mp[root] && mp[root] != prev)
+        {
+            solve(mp[root], mp, ans, root, visited, sum);
+            if (!visited[mp[root]])
+            {
+                visited[mp[root]] = true;
+                solve(mp[root], mp, ans, NULL, visited, 0);
+            }
+        }
+    }
+    int maxPathSum(TreeNode *root)
+    {
+        int ans = INT_MIN;
+
+        // node to parent node
+        map<TreeNode *, TreeNode *> mp;
+        mp[root] = NULL;
+        mapping(root, mp);
+
+        map<TreeNode *, bool> visited;
+        visited[root] = true;
+        solve(root, mp, ans, NULL, visited, 0);
+
+        return ans;
     }
 };
