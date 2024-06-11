@@ -6,7 +6,7 @@ using namespace std;
 
 class Solution
 {
-private:
+public:
     bool dfsCheck(int node, vector<int> adj[], int vis[], int pathVis[])
     {
         vis[node] = 1;
@@ -30,8 +30,6 @@ private:
         pathVis[node] = 0;
         return false;
     }
-
-public:
     // Function to detect cycle in a directed graph by DFS
     bool isCyclic(int V, vector<int> adj[])
     {
