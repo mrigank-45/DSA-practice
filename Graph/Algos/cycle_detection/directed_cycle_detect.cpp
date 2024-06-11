@@ -7,15 +7,13 @@ using namespace std;
 class Solution
 {
 public:
-    bool dfsCheck(int node, vector<int> adj[], int vis[], int pathVis[])
+    bool dfsCheck(int node, unordered_map<int, vector<int>> &adj,  unordered_map<int,bool> &vis, unordered_map<int,bool> &pathVis)
     {
         vis[node] = 1;
         pathVis[node] = 1;
 
-        // traverse for adjacent nodes
         for (auto it : adj[node])
         {
-            // when the node is not visited
             if (!vis[it])
             {
                 if (dfsCheck(it, adj, vis, pathVis) == true)
@@ -30,11 +28,12 @@ public:
         pathVis[node] = 0;
         return false;
     }
+    
     // Function to detect cycle in a directed graph by DFS
-    bool isCyclic(int V, vector<int> adj[])
+    bool isCyclic(int V, unordered_map<int, vector<int>> &adj)
     {
-        int vis[V] = {0};
-        int pathVis[V] = {0};
+        unordered_map<int,bool> vis;
+        unordered_map<int,bool> pathVis;
 
         for (int i = 0; i < V; i++)
         {
