@@ -4,62 +4,47 @@ using namespace std;
 class Solution
 {
 public:
-    bool dfsCheck(int node, unordered_map<int, vector<int>> &adj,  unordered_map<int,bool> &vis, unordered_map<int,bool> &pathVis)
+    bool areKAnagrams(string str1, string str2, int k)
     {
-        vis[node] = 1;
-        pathVis[node] = 1;
-
-        for (auto it : adj[node])
-        {
-            if (!vis[it])
-            {
-                if (dfsCheck(it, adj, vis, pathVis) == true)
-                    return true;
-            }
-            else if (vis[it] && pathVis[it])
-            {
-                return true;
-            }
-        }
-
-        pathVis[node] = 0;
-        return false;
-    }
-    bool isCyclic(int V, unordered_map<int, vector<int>> &adj)
-    {
-        unordered_map<int,bool> vis;
-        unordered_map<int,bool> pathVis;
-
-        for (int i = 0; i < V; i++)
-        {
-            if (!vis[i])
-            {
-                if (dfsCheck(i, adj, vis, pathVis) == true)
-                    return true;
-            }
-        }
-        return false;
-    }
-    bool canFinish(int numCourses, vector<vector<int>> &prerequisites)
-    {
-
-        unordered_map<int, vector<int>> adj;
-
-        for (int i = 0; i < prerequisites.size(); i++)
-        {
-            int u = prerequisites[i][0];
-            int v = prerequisites[i][1];
-
-            adj[u].push_back(v);
-        }
-
-        if (isCyclic(numCourses, adj))
+        if (str1.length() != str2.length())
         {
             return false;
         }
-        else
+        map<char, int> mp1;
+        map<char, int> mp2;
+
+        for (int i = 0; i < str1.length(); i++)
+        {
+            mp1[str1[i]]++;
+            mp2[str2[i]]++;
+        }
+
+        int a = 0;
+        int b = 0;
+
+        for (auto i : mp1)
+        {
+            if (i.second > mp2[i.first])
+            {
+                a += i.second - mp2[i.first];
+            }
+        }
+
+        for (auto i : mp2)
+        {
+            if (i.second > mp1[i.first])
+            {
+                b += i.second - mp1[i.first];
+            }
+        }
+
+        if (a == b && a <= k)
         {
             return true;
+        }
+        else
+        {
+            return false;
         }
     }
 };
