@@ -1,50 +1,40 @@
+// K-Similar Strings
+// it is imp to note that we cannot make dp[i] for memo as we are swapping the strings and the strings are changing, hence dp[s1]
 #include <bits/stdc++.h>
 using namespace std;
 
 class Solution
 {
 public:
-    bool areKAnagrams(string str1, string str2, int k)
+    unordered_map<string, int> m;
+    int helper(string &s1, string &s2, int index)
     {
-        if (str1.length() != str2.length())
+        if (m.find(s1) != m.end())
         {
-            return false;
-        }
-        map<char, int> mp1;
-        map<char, int> mp2;
-
-        for (int i = 0; i < str1.length(); i++)
-        {
-            mp1[str1[i]]++;
-            mp2[str2[i]]++;
+            return m[s1];
         }
 
-        int a = 0;
-        int b = 0;
+        int ans = INT_MAX;
 
-        for (auto i : mp1)
+        while (s1[index] == s2[index])
         {
-            if (i.second > mp2[i.first])
+            index++;
+        }
+        for (int i = index + 1; i < s1.size(); i++)
+        {
+            if (s1[i] == s2[index])
             {
-                a += i.second - mp2[i.first];
+                swap(s1[i], s1[index]);
+                ans = min(ans, 1 + helper(s1, s2, index + 1));
+                swap(s1[i], s1[index]);
             }
         }
 
-        for (auto i : mp2)
-        {
-            if (i.second > mp1[i.first])
-            {
-                b += i.second - mp1[i.first];
-            }
-        }
-
-        if (a == b && a <= k)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return m[s1] = ans;
+    }
+    int kSimilarity(string s1, string s2)
+    {
+        m[s2] = 0;
+        return helper(s1, s2, 0);
     }
 };
