@@ -1,40 +1,51 @@
-// K-Similar Strings
-// it is imp to note that we cannot make dp[i] for memo as we are swapping the strings and the strings are changing, hence dp[s1]
 #include <bits/stdc++.h>
 using namespace std;
 
 class Solution
 {
 public:
-    unordered_map<string, int> m;
-    int helper(string &s1, string &s2, int index)
+    string smallestNumber(string pattern)
     {
-        if (m.find(s1) != m.end())
-        {
-            return m[s1];
-        }
+        int n = pattern.size();
 
-        int ans = INT_MAX;
+        vector<int> temp(n + 1, 0);
 
-        while (s1[index] == s2[index])
+        for (int i = 0; i < n; i++)
         {
-            index++;
-        }
-        for (int i = index + 1; i < s1.size(); i++)
-        {
-            if (s1[i] == s2[index])
+            int j = i;
+            int cnt = 0;
+            while (j < n && pattern[j] == 'D')
             {
-                swap(s1[i], s1[index]);
-                ans = min(ans, 1 + helper(s1, s2, index + 1));
-                swap(s1[i], s1[index]);
+                j++;
+                cnt++;
+            }
+            temp[i] = cnt;
+        }
+
+        int mini = 1;
+        string ans = "";
+
+        for (int i = 0; i <= n; i++)
+        {
+            if (i != 0 && pattern[i - 1] == 'D') // pattern[i-1] == 'D'
+            {
+                ans.push_back(ans.back() - 1);
+            }
+            else
+            {
+                if (temp[i] == 0)  // pattern[i] == 'I'
+                {
+                    ans += to_string(mini);
+                    mini++;
+                }
+                else // pattern[i] == 'D' and pattern[i-1] == 'I'
+                {
+                    ans += to_string(mini + temp[i]);
+                    mini = mini + temp[i] + 1;
+                }
             }
         }
 
-        return m[s1] = ans;
-    }
-    int kSimilarity(string s1, string s2)
-    {
-        m[s2] = 0;
-        return helper(s1, s2, 0);
+        return ans;
     }
 };
