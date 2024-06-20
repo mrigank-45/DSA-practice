@@ -19,6 +19,7 @@ public:
             if (nums[index] - nums[j] == diff)
             {
                 ans = max(ans, 1 + solve(j, diff, nums));
+                break;
             }
         }
         return ans;
@@ -31,7 +32,7 @@ public:
         {
             return 0;
         }
-        if (dp[index].count(diff))
+        if (dp[index][diff])
         {
             return dp[index][diff];
         }
@@ -41,6 +42,7 @@ public:
             if (nums[index] - nums[j] == diff)
             {
                 ans = max(ans, 1 + solve1(j, diff, nums, dp));
+                break;
             }
         }
         return dp[index][diff] = ans;
@@ -56,13 +58,13 @@ public:
         }
         unordered_map<int, int> dp[n + 1];
         int ans = 0;
-        for (int i = 0; i < n; i++)
+        for (int i = 1; i < n; i++)
         {
             for (int j = 0; j < i; j++)
             {
                 int diff = nums[i] - nums[j];
                 int count = 1;
-                if (dp[j].count(diff))
+                if (dp[j][diff])
                 {
                     count = dp[j][diff];
                 }

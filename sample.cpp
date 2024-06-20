@@ -4,46 +4,36 @@ using namespace std;
 class Solution
 {
 public:
-    int threeSumClosest(vector<int> &nums, int target)
+    void dfs(int i, int j, int n, int m, vector<vector<char>> &grid)
     {
-        int n = nums.size();
-        sort(nums.begin(), nums.end());
-
-        vector<int> output;
-
-        for (int i = 0; i <= n - 3; i++)
+        if(i<0 || j<0 || i>=n || j>=m || grid[i][j] == 'O')
         {
-            int low = i + 1;
-            int high = n - 1;
-
-            while (low < high)
-            {
-                int sum = nums[i] + nums[low] + nums[high];
-
-                if (sum == target)
-                {
-                    return sum;
-                }
-                else if (sum < target)
-                {
-                    output.push_back(sum);
-                    low++;
-                }
-                else
-                {
-                    output.push_back(sum);
-                    high--;
-                }
-            }
+            return;
         }
 
-        int ans = output[0];
+        grid[i][j] = 'O';
 
-        for (int i = 1; i < output.size(); i++)
+        dfs(i+1, j, n, m, grid);
+        dfs(i-1, j, n, m, grid);
+        dfs(i, j+1, n, m, grid);
+        dfs(i, j-1, n, m, grid);
+    }
+    int xShape(vector<vector<char>> &grid)
+    {
+        int n = grid.size();
+        int m = grid[0].size();
+
+        int ans = 0;
+
+        for (int i = 0; i < n; i++)
         {
-            if (abs(output[i] - target) < abs(ans - target))
+            for (int j = 0; j < m; j++)
             {
-                ans = output[i];
+                if (grid[i][j] == 'X')
+                {
+                    ans++;
+                    dfs(i, j, n, m, grid);
+                }
             }
         }
 
