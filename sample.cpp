@@ -4,48 +4,55 @@ using namespace std;
 class Solution
 {
 public:
-    string smallestNumber(string pattern)
+    int minStepToReachTarget(vector<int> &KnightPos, vector<int> &TargetPos, int n)
     {
-        int n = pattern.size();
+        int startX = KnightPos[0] - 1;
+        int startY = KnightPos[1] - 1;
+        int endX = TargetPos[0] - 1;
+        int endY = TargetPos[1] - 1;
 
-        vector<int> temp(n + 1, 0);
+        vector<int> dx = {2, 2, -2, -2, 1, 1, -1, -1};
+        vector<int> dy = {1, -1, 1, -1, 2, -2, 2, -2};
 
-        for (int i = 0; i < n; i++)
+        queue<pair<int, int>> q;
+        vector<vector<bool>> visited(n, vector<bool>(n, false));
+
+        q.push({startX, startY});
+        visited[startX][startY] = true;
+
+        int steps = 0;
+
+        while (!q.empty())
         {
-            int j = i;
-            int cnt = 0;
-            while (j < n && pattern[j] == 'D')
+            int size = q.size();
+
+            for (int k = 0; k < size; k++)
             {
-                j++;
-                cnt++;
+                auto temp = q.front();
+                int x = temp.first;
+                int y = temp.second;
+                q.pop();
+
+                if (x == endX && y == endY)
+                {
+                    return steps;
+                }
+
+                for (int i = 0; i < 8; i++)
+                {
+                    int newX = x + dx[i];
+                    int newY = y + dy[i];
+
+                    if (newX >= 0 && newX < n && newY >= 0 && newY < n && !visited[newX][newY])
+                    {
+                        q.push({newX, newY});
+                        visited[newX][newY] = true;
+                    }
+                }
             }
-            temp[i] = cnt;
+            steps++;
         }
 
-        int mini = 1;
-        string ans = "";
-
-        for (int i = 0; i <= n; i++)
-        {
-            if (i != 0 && pattern[i - 1] == 'D') // pattern[i-1] == 'D'
-            {
-                ans.push_back(ans.back() - 1);
-            }
-            else
-            {
-                if (temp[i] == 0)  // pattern[i] == 'I'
-                {
-                    ans += to_string(mini);
-                    mini++;
-                }
-                else // pattern[i] == 'D' and pattern[i-1] == 'I'
-                {
-                    ans += to_string(mini + temp[i]);
-                    mini = mini + temp[i] + 1;
-                }
-            }
-        }
-
-        return ans;
+        return -1;
     }
 };
