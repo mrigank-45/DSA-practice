@@ -4,55 +4,49 @@ using namespace std;
 class Solution
 {
 public:
-    int minStepToReachTarget(vector<int> &KnightPos, vector<int> &TargetPos, int n)
+    int threeSumClosest(vector<int> &nums, int target)
     {
-        int startX = KnightPos[0] - 1;
-        int startY = KnightPos[1] - 1;
-        int endX = TargetPos[0] - 1;
-        int endY = TargetPos[1] - 1;
+        int n = nums.size();
+        sort(nums.begin(), nums.end());
 
-        vector<int> dx = {2, 2, -2, -2, 1, 1, -1, -1};
-        vector<int> dy = {1, -1, 1, -1, 2, -2, 2, -2};
+        vector<int> output;
 
-        queue<pair<int, int>> q;
-        vector<vector<bool>> visited(n, vector<bool>(n, false));
-
-        q.push({startX, startY});
-        visited[startX][startY] = true;
-
-        int steps = 0;
-
-        while (!q.empty())
+        for (int i = 0; i <= n - 3; i++)
         {
-            int size = q.size();
+            int low = i + 1;
+            int high = n - 1;
 
-            for (int k = 0; k < size; k++)
+            while (low < high)
             {
-                auto temp = q.front();
-                int x = temp.first;
-                int y = temp.second;
-                q.pop();
+                int sum = nums[i] + nums[low] + nums[high];
 
-                if (x == endX && y == endY)
+                if (sum == target)
                 {
-                    return steps;
+                    return sum;
                 }
-
-                for (int i = 0; i < 8; i++)
+                else if (sum < target)
                 {
-                    int newX = x + dx[i];
-                    int newY = y + dy[i];
-
-                    if (newX >= 0 && newX < n && newY >= 0 && newY < n && !visited[newX][newY])
-                    {
-                        q.push({newX, newY});
-                        visited[newX][newY] = true;
-                    }
+                    output.push_back(sum);
+                    low++;
+                }
+                else
+                {
+                    output.push_back(sum);
+                    high--;
                 }
             }
-            steps++;
         }
 
-        return -1;
+        int ans = output[0];
+
+        for (int i = 1; i < output.size(); i++)
+        {
+            if (abs(output[i] - target) < abs(ans - target))
+            {
+                ans = output[i];
+            }
+        }
+
+        return ans;
     }
 };
