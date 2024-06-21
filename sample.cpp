@@ -4,39 +4,71 @@ using namespace std;
 class Solution
 {
 public:
-    void dfs(int i, int j, int n, int m, vector<vector<char>> &grid)
+    long long numberOfPairs(vector<int> &nums1, vector<int> &nums2, int k)
     {
-        if(i<0 || j<0 || i>=n || j>=m || grid[i][j] == 'O')
+        int n = nums1.size();
+        int m = nums2.size();
+
+        for (int i = 0; i < m; i++)
         {
-            return;
+            nums2[i] = nums2[i] * k;
         }
 
-        grid[i][j] = 'O';
-
-        dfs(i+1, j, n, m, grid);
-        dfs(i-1, j, n, m, grid);
-        dfs(i, j+1, n, m, grid);
-        dfs(i, j-1, n, m, grid);
-    }
-    int xShape(vector<vector<char>> &grid)
-    {
-        int n = grid.size();
-        int m = grid[0].size();
-
-        int ans = 0;
+        unordered_map<int, int> mp1;
+        unordered_map<int, int> mp2;
 
         for (int i = 0; i < n; i++)
         {
-            for (int j = 0; j < m; j++)
-            {
-                if (grid[i][j] == 'X')
-                {
-                    ans++;
-                    dfs(i, j, n, m, grid);
-                }
-            }
+            mp1[nums1[i]]++;
         }
 
-        return ans;
+        for (int i = 0; i < m; i++)
+        {
+            mp2[nums2[i]]++;
+        }
+
+        vector<int> v1;
+        vector<int> v2;
+
+        for (auto x : mp1)
+        {
+            v1.push_back(x.first);
+        }
+
+        for (auto x : mp2)
+        {
+            v2.push_back(x.first);
+        }
+
+        sort(v1.begin(), v1.end());
+        sort(v2.begin(), v2.end());
+
+        int i = 0, j = 0;
+        long long int cnt = 0;
+        n = v1.size(), m = v2.size();
+
+        while (j < m)
+        {
+            while (i < n && v1[i] < v2[j])
+            {
+                i++;
+            }
+
+            int temp = i;
+
+            while (i < n)
+            {
+                if (v1[i] % v2[j] == 0)
+                {
+                    cnt = cnt + (long long)mp1[v1[i]] * (long long)mp2[v2[j]];
+                }
+                i++;
+            }
+
+            i = temp;
+            j++;
+        }
+
+        return cnt;
     }
 };

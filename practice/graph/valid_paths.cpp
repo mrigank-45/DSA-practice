@@ -12,11 +12,9 @@ public:
     {
         vector<bool> prime(n + 1);
 
-        // Initialize all numbers as potential prime numbers (true).
         if (n > 1)
             fill(prime.begin() + 2, prime.end(), true);
 
-        // Sieve of Eratosthenes algorithm: Mark multiples of each prime number as non-prime.
         for (int i = 2; i <= n; ++i)
             if (prime[i])
                 for (int j = i + i; j <= n; j += i)
