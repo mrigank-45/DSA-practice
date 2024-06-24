@@ -1,74 +1,50 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <string>
+
 using namespace std;
 
-class Solution
+string findOriginalString(const string &modifiedStr)
 {
-public:
-    long long numberOfPairs(vector<int> &nums1, vector<int> &nums2, int k)
+    string str = "";
+    for (char ch : modifiedStr)
     {
-        int n = nums1.size();
-        int m = nums2.size();
-
-        for (int i = 0; i < m; i++)
+        if (ch != 'i')
         {
-            nums2[i] = nums2[i] * k;
+            str += ch;
         }
-
-        unordered_map<int, int> mp1;
-        unordered_map<int, int> mp2;
-
-        for (int i = 0; i < n; i++)
-        {
-            mp1[nums1[i]]++;
-        }
-
-        for (int i = 0; i < m; i++)
-        {
-            mp2[nums2[i]]++;
-        }
-
-        vector<int> v1;
-        vector<int> v2;
-
-        for (auto x : mp1)
-        {
-            v1.push_back(x.first);
-        }
-
-        for (auto x : mp2)
-        {
-            v2.push_back(x.first);
-        }
-
-        sort(v1.begin(), v1.end());
-        sort(v2.begin(), v2.end());
-
-        int i = 0, j = 0;
-        long long int cnt = 0;
-        n = v1.size(), m = v2.size();
-
-        while (j < m)
-        {
-            while (i < n && v1[i] < v2[j])
-            {
-                i++;
-            }
-
-            int temp = i;
-
-            while (i < n)
-            {
-                if (v1[i] % v2[j] == 0)
-                {
-                    cnt = cnt + (long long)mp1[v1[i]] * (long long)mp2[v2[j]];
-                }
-                i++;
-            }
-
-            i = temp;
-            j++;
-        }
-
-        return cnt;
     }
-};
+
+    if (str.length() % 2 == 1)
+    {
+        return "notpossible";
+    }
+    else
+    {
+        // get the first half of string
+        string firstHalf = str.substr(0, str.length() / 2);
+
+        // get second half
+        string secondHalf = str.substr(str.length() / 2);
+
+        int len = firstHalf.length();
+
+        int n = modifiedStr.length() - len;
+
+        // get first n of modifiedStr
+        string ans = modifiedStr.substr(0, n);
+
+        return ans;
+
+        
+    }
+}
+
+int main()
+{
+    string modifiedStr = "izizibibzzbb";
+
+    string originalStr = findOriginalString(modifiedStr);
+    cout << originalStr << endl;
+
+    return 0;
+}
