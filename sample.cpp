@@ -3,48 +3,22 @@
 
 using namespace std;
 
-string findOriginalString(const string &modifiedStr)
+int findCoins(int n)
 {
-    string str = "";
-    for (char ch : modifiedStr)
+    int ans = 0;
+    for (int i = 1; i <= n; i++)
     {
-        if (ch != 'i')
-        {
-            str += ch;
-        }
+        ans += n / i;
     }
-
-    if (str.length() % 2 == 1)
-    {
-        return "notpossible";
-    }
-    else
-    {
-        // get the first half of string
-        string firstHalf = str.substr(0, str.length() / 2);
-
-        // get second half
-        string secondHalf = str.substr(str.length() / 2);
-
-        int len = firstHalf.length();
-
-        int n = modifiedStr.length() - len;
-
-        // get first n of modifiedStr
-        string ans = modifiedStr.substr(0, n);
-
-        return ans;
-
-        
-    }
+    return ans;
 }
 
 int main()
 {
-    string modifiedStr = "izizibibzzbb";
+    int n;
+    cin >> n;
 
-    string originalStr = findOriginalString(modifiedStr);
-    cout << originalStr << endl;
+    cout << findCoins(n) << endl;
 
     return 0;
 }
