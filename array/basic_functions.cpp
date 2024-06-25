@@ -7,19 +7,16 @@ int main()
 
     swap(arr[0], arr[1]);
     reverse(arr, arr + 3);
-    next_permutation(arr, arr + 3);
-    sort(arr, arr + 3);
 
-    // for (int i = 0; i < 3; i++)
-    // {
-    //     if (arr[i] == 5)
-    //     {
-    //         continue;
-    //         cout << "not breaking" << endl;
-    //     }
-    //     break;
-    //     cout << "not breaking 2" << endl;
-    // }
+    // next_permutation returns true if arr can rearrange as a lexicographically greater permutation, else false
+    do
+    {
+        // will return false when arr = {5, 2, 1}
+        cout << arr[0] << " " << arr[1] << " " << arr[2] << "\n";
+    } while (next_permutation(arr, arr + 3));
+    // similarly prev_permutation(arr, arr + 3)
+
+    sort(arr, arr + 3);
 
     return 0;
 }
