@@ -24,7 +24,7 @@ public:
 
         // {node,level}
         queue<pair<TreeNode *, int>> q;
-        q.push(make_pair(root, 0));
+        q.push({root, 0});
 
         while (!q.empty())
         {
@@ -36,11 +36,11 @@ public:
             }
             if (p.first->right)
             {
-                q.push(make_pair(p.first->right, p.second + 1));
+                q.push({p.first->right, p.second + 1});
             }
             if (p.first->left)
             {
-                q.push(make_pair(p.first->left, p.second + 1));
+                q.push({p.first->left, p.second + 1});
             }
             // for left view, go to left first then right
         }

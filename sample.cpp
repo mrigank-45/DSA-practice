@@ -1,24 +1,57 @@
-#include <iostream>
-#include <string>
-
+#include <bits/stdc++.h>
 using namespace std;
 
-int findCoins(int n)
+struct TreeNode
 {
-    int ans = 0;
-    for (int i = 1; i <= n; i++)
+    int val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+};
+
+class Solution
+{
+public:
+    vector<int> rightSideView(TreeNode *root)
     {
-        ans += n / i;
+        vector<int> ans;
+        if (root == NULL)
+        {
+            return ans;
+        }
+
+        // {level, value of node}
+        map<int, int> m;
+
+        // {node,level}
+        queue<pair<TreeNode *, int>> q;
+        q.push({root, 0});
+
+        while (!q.empty())
+        {
+            int size = q.size();
+
+            for (int i = 0; i < size; i++)
+            {
+                pair<TreeNode *, int> p = q.front();
+                q.pop();
+                if (m.find(p.second) == m.end())
+                {
+                    m[p.second] = p.first->val;
+                }
+                if (p.first->right)
+                {
+                    q.push({p.first->right, p.second + 1});
+                }
+                if (p.first->left)
+                {
+                    q.push({p.first->left, p.second + 1});
+                }
+            }
+        }
+        for (auto i : m)
+        {
+            ans.push_back(i.second);
+        }
+        return ans;
     }
-    return ans;
-}
-
-int main()
-{
-    int n;
-    cin >> n;
-
-    cout << findCoins(n) << endl;
-
-    return 0;
-}
+};
