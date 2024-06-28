@@ -8,16 +8,14 @@ using namespace std;
 class DisjointSet
 {
 public:
-    vector<int> rank, parent, size;
+    vector<int> rank, parent;
     DisjointSet(int n)
     {
         rank.resize(n + 1, 0);
         parent.resize(n + 1);
-        size.resize(n + 1);
         for (int i = 0; i <= n; i++)
         {
             parent[i] = i;
-            size[i] = 1;
         }
     }
 
@@ -88,15 +86,3 @@ public:
         return -1;
     }
 };
-
-int main()
-{
-
-    int V = 9;
-    vector<vector<int>> edge = {{0, 1}, {0, 2}, {0, 3}, {1, 2}, {2, 3}, {4, 5}, {5, 6}, {7, 8}};
-
-    Solution obj;
-    int ans = obj.Solve(V, edge);
-    cout << "The number of operations needed: " << ans << endl;
-    return 0;
-}

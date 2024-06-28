@@ -1,7 +1,7 @@
 // Finds minimum distance from a src node to all the nodes.
 // ALGO: Use a min heap (pair<distance,node>), and somewhat like BFS, till heap is not empty, push neighbours(non-visited) if minimum distance array(ans) can be updated.
 // Applicable to DAGs (fails in -ve weighted graphs)
-// TC: O((V + E)logV)
+// TC: O(E*logV)
 
 #include <bits/stdc++.h>
 using namespace std;
@@ -58,3 +58,5 @@ vector<int> dijkstra(vector<vector<int>> &edge, int vertices, int edges, int sou
 
     return Solve(adjList, vertices, source);
 }
+
+// NOTE: in Qs, instead of distance[u], we use the dis from the heap in the if condition.

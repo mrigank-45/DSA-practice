@@ -1,4 +1,4 @@
-// Number of Ways to Arrive at Destination : Given a graph, Return the number of ways you can arrive at your destination in the shortest amount of time. 
+// Number of Ways to Arrive at Destination (Leetcode)
 // Use dijkstra algo, maintain a ways array, whenevr shorter or equal distance is encountered, update the ways array.
 
 #include <bits/stdc++.h>
@@ -18,12 +18,9 @@ public:
         }
 
         // Defining a priority queue (min heap).
-        priority_queue<pair<int, int>,
-                       vector<pair<int, int>>, greater<pair<int, int>>>
-            pq;
+        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
 
-        // Initializing the dist array and the ways array
-        // along with their first indices.
+        // Initializing the dist array and the ways array along with their first indices.
         vector<int> dist(n, INT_MAX), ways(n, 0);
         dist[0] = 0;
         ways[0] = 1;
@@ -32,8 +29,7 @@ public:
         // Define modulo value
         int mod = (int)(1e9 + 7);
 
-        // Iterate through the graph with the help of priority queue
-        // just as we do in Dijkstra's Algorithm.
+        // Iterate through the graph with the help of priority queue just as we do in Dijkstra's Algorithm.
         while (!pq.empty())
         {
             int dis = pq.top().first;

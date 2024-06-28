@@ -8,9 +8,9 @@ using namespace std;
 int bellmonFord(int n, int m, int src, int dest, vector<vector<int>> &edges)
 {
     // Create a vector to store the distances from source.
-    vector<int> d(n + 1, INT_MAX);
+    vector<int> distance(n + 1, INT_MAX);
     // Distance of source to source is 0.
-    d[src] = 0;
+    distance[src] = 0;
 
     // Apply bellmanford algorithm.
     for (int i = 1; i < n; i++)  // (n-1) times
@@ -21,13 +21,13 @@ int bellmonFord(int n, int m, int src, int dest, vector<vector<int>> &edges)
             int v = edges[j][1];
             int w = edges[j][2];
 
-            if ((d[u] + w) < d[v])
+            if ((distance[u] + w) < distance[v])
             {
-                d[v] = d[u] + w;
+                distance[v] = distance[u] + w;
             }
         }
     }
 
     // Return the distance of destination.
-    return d[dest];
+    return distance[dest];
 }
