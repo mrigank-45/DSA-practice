@@ -6,7 +6,6 @@ using namespace std;
 class Solution
 {
 public:
-    // Function to generate a vector of boolean values where prime[i] is true if 'i' is prime.
     // Sieve algo
     vector<bool> genPrimes(int n)
     {
@@ -23,6 +22,9 @@ public:
         return prime;
     }
 
+    // At a particular node, we have cur[0] and cur[1] which is used to update the ans.
+    // cur[0] represents no. of paths in this tree which do not contain any prime node.
+    // cur[1] represents no. of paths in this tree which contain only one prime node.
     vector<int> dfs(int node, int parent, vector<bool> isPrime, long long int &ans, vector<vector<int>> adj)
     {
         // Since indexing starts from 1
@@ -38,14 +40,19 @@ public:
                 continue;
             }
             vector<int> v = dfs(y, node, isPrime, ans, adj);
+
+            // by doing both, we are also considering the paths which begin at any one child subtree and end at any other child subtree of this node
             ans += (long long)v[0] * cur[1];
             ans += (long long)v[1] * cur[0];
-            cur[prime] += v[0];
 
-            // If the current node is not prime, update the count for prime nodes.
-            if (!prime)
+            if (prime)
             {
-                cur[1 + prime] += v[1];
+                cur[1] += v[0];
+            }
+            else
+            {
+                cur[0] += v[0];
+                cur[1] += v[1];
             }
         }
 

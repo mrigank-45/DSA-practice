@@ -1,57 +1,37 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-struct TreeNode
-{
-    int val;
-    struct TreeNode *left;
-    struct TreeNode *right;
-};
-
 class Solution
 {
 public:
-    vector<int> rightSideView(TreeNode *root)
+    vector<bool> seive(int n)
     {
-        vector<int> ans;
-        if (root == NULL)
+        vector<bool> prime(n + 1, true);
+
+        prime[0] = prime[1] = false;
+
+        for (int i = 2; i <= n; i++)
         {
-            return ans;
-        }
-
-        // {level, value of node}
-        map<int, int> m;
-
-        // {node,level}
-        queue<pair<TreeNode *, int>> q;
-        q.push({root, 0});
-
-        while (!q.empty())
-        {
-            int size = q.size();
-
-            for (int i = 0; i < size; i++)
+            if (prime[i])
             {
-                pair<TreeNode *, int> p = q.front();
-                q.pop();
-                if (m.find(p.second) == m.end())
+                for (int j = i + i; j <= n; j += i)
                 {
-                    m[p.second] = p.first->val;
-                }
-                if (p.first->right)
-                {
-                    q.push({p.first->right, p.second + 1});
-                }
-                if (p.first->left)
-                {
-                    q.push({p.first->left, p.second + 1});
+                    prime[j] = false;
                 }
             }
         }
-        for (auto i : m)
+        return prime;
+    }
+    long long countPaths(int n, vector<vector<int>> &edges)
+    {
+        vector<bool> prime = seive(n);
+
+        map<int, vector<int>> adj;
+
+        for (auto edge : edges)
         {
-            ans.push_back(i.second);
+            adj[edge[0]].push_back(edge[1]);
+            adj[edge[1]].push_back(edge[0]);
         }
-        return ans;
     }
 };

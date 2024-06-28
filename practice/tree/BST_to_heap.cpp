@@ -34,8 +34,7 @@ public:
 
         BSTToMaxHeap(root->right);
 
-        // copy data at index 'i' of 'arr' to
-        // the node
+        // copy data at index 'i' of 'arr' to the node
         root->data = arr[i];
         i++;
     }
