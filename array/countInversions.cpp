@@ -4,13 +4,6 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-/*
-    Time Complexity: O( N * log ( N ) )
-    Space Complexity: O( N )
-
-    Where 'N' is the length of the array 'A'.
-*/
-
 int modifiedMerge(vector<int>& a, vector<int>& temp, int left, int mid, int right)
 {
     int inversionCount = 0;
