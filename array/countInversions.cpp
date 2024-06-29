@@ -4,15 +4,13 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int modifiedMerge(vector<int>& a, vector<int>& temp, int left, int mid, int right)
+int modifiedMerge(vector<int>& a, vector<int>& temp, int start, int mid, int end)
 {
     int inversionCount = 0;
 
-    int i = left, j = mid, k = left;
+    int i = start, j = mid, k = start;
 
-    // The smaller element of both the half is stores in
-    // 'temp' array.
-    while ((i <= mid - 1) and (j <= right)) {
+    while ((i <= mid - 1) and (j <= end)) {
         if (a[i] <= a[j]) {
             temp[k] = a[i];
             k++, i++;
@@ -36,53 +34,43 @@ int modifiedMerge(vector<int>& a, vector<int>& temp, int left, int mid, int righ
     }
 
     // Copy rest of the right half elements.
-    while (j <= right) {
+    while (j <= end) {
         temp[k] = a[j];
         k++, j++;
     }
 
     // Update the elements of array 'A'.
-    for (i = left ; i <= right ; i++)
+    for (i = start ; i <= end ; i++)
         a[i] = temp[i];
 
     // Return the 'inversionCount'.
     return inversionCount;
 }
 
-int modifiedMergeSort(vector<int>& a, vector<int>& temp, int left, int right)
+int modifiedMergeSort(vector<int>& a, vector<int>& temp, int start, int end)
 {
     int mid, inversionCount = 0;
-    if (right > left)
+    if (end > start)
     {
-        // Calculate 'mid' to divide the array into two
-        // parts.
-        mid = (left + right) / 2;
+        mid = (start + end) / 2;
 
-        // Sort the left half.
-        inversionCount += modifiedMergeSort(a, temp, left, mid);
+        inversionCount += modifiedMergeSort(a, temp, start, mid);
 
-        // Sort the right half.
-        inversionCount += modifiedMergeSort(a, temp, mid + 1, right);
+        inversionCount += modifiedMergeSort(a, temp, mid + 1, end);
 
-        // Merge both the halves and count the number of
-        // inversions.
-        inversionCount += modifiedMerge(a, temp, left, mid + 1, right);
+        // Merge both the halves and count the number of inversions.
+        inversionCount += modifiedMerge(a, temp, start, mid + 1, end);
     }
 
-    // Return the 'inversionCount'.
     return inversionCount;
 }
 
 int numberOfInversions(vector<int>&a, int n) {
 
     int answer = 0;
+    vector<int>temp(n); // created to simple store the sorted array temporarily
 
-    // Initialize an array 'temp' of length 'N'.
-    vector<int>temp(n);
-
-    // Call Merge Sort and store the answer.
     answer = modifiedMergeSort(a, temp, 0, n - 1);
 
-    // Return the 'answer' here.
     return answer;
 }
