@@ -1,47 +1,31 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-struct Node
-{
-    int data;
-    Node *left, *right;
-};
-
 class Solution
 {
 public:
-    bool flag = 1;
-    int solve(Node *root)
+    int count(int n)
     {
-        if (root == NULL)
+        int cnt = 0;
+        while (n>0)
         {
-            return 0;
+            if (n & 1)
+            {
+                cnt++;
+            }
+            n = n >> 1;
         }
-
-        if (root->left == NULL && root->right == NULL)
-        {
-            return root->data;
-        }
-
-        int leftSum = solve(root->left);
-        int rightSum = solve(root->right);
-
-        if (root->data != leftSum + rightSum)
-        {
-            flag = 0;
-        }
-
-        return root->data + leftSum + rightSum;
+        return cnt;
     }
-    bool isSumTree(Node *root)
+    vector<int> countBits(int n)
     {
-        if (root == NULL || (root->left == NULL && root->right == NULL))
+        vector<int> ans(n + 1, 0);
+
+        for (int i = 1; i <= n; i++)
         {
-            return true;
+            ans[i] = count(i);
         }
 
-        int temp = solve(root);
-
-        return flag;
+        return ans;
     }
 };
