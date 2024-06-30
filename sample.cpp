@@ -4,28 +4,43 @@ using namespace std;
 class Solution
 {
 public:
-    int count(int n)
+    long long int solve(string s, int k)
     {
+        int n = s.size();
+        int i = 0;
+        int j = 0;
         int cnt = 0;
-        while (n>0)
+        long long int ans = 0;
+        // map<int, int> mp;
+        vector<int> mp(26, 0);
+
+        while (j < n)
         {
-            if (n & 1)
+            mp[s[j] - 'a']++;
+
+            if (mp[s[j] - 'a'] == 1)
             {
                 cnt++;
             }
-            n = n >> 1;
-        }
-        return cnt;
-    }
-    vector<int> countBits(int n)
-    {
-        vector<int> ans(n + 1, 0);
 
-        for (int i = 1; i <= n; i++)
-        {
-            ans[i] = count(i);
+            while (cnt > k)
+            {
+                mp[s[i] - 'a']--;
+                if (mp[s[i] - 'a'] == 0)
+                {
+                    cnt--;
+                }
+                i++;
+            }
+
+            ans = ans + j - i + 1;
+            j++;
         }
 
         return ans;
+    }
+    long long int substrCount(string s, int k)
+    {
+        return solve(s, k) - solve(s, k - 1);
     }
 };
