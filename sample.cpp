@@ -1,46 +1,61 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+struct TreeNode
+{
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode() : val(0), left(nullptr), right(nullptr) {}
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+};
+
 class Solution
 {
 public:
-    long long int solve(string s, int k)
+    bool isCousins(TreeNode *root, int x, int y)
     {
-        int n = s.size();
-        int i = 0;
-        int j = 0;
-        int cnt = 0;
-        long long int ans = 0;
-        // map<int, int> mp;
-        vector<int> mp(26, 0);
+        map<int, pair<int, int>> mp;
 
-        while (j < n)
+        mp[root->val] = {0, -1};
+
+        queue<TreeNode *> q;
+
+        q.push(root);
+
+        int d = 0;
+
+        while (!q.empty())
         {
-            mp[s[j] - 'a']++;
+            int size = q.size();
+            d++;
 
-            if (mp[s[j] - 'a'] == 1)
+            for (int i = 0; i < size; i++)
             {
-                cnt++;
-            }
+                TreeNode *node = q.front();
+                q.pop();
 
-            while (cnt > k)
-            {
-                mp[s[i] - 'a']--;
-                if (mp[s[i] - 'a'] == 0)
+                if (node->left != NULL)
                 {
-                    cnt--;
+                    mp[node->left->val] = {d, node->val};
+                    q.push(node->left);
                 }
-                i++;
+
+                if (node->right != NULL)
+                {
+                    mp[node->right->val] = {d, node->val};
+                    q.push(node->right);
+                }
             }
-
-            ans = ans + j - i + 1;
-            j++;
         }
-
-        return ans;
-    }
-    long long int substrCount(string s, int k)
-    {
-        return solve(s, k) - solve(s, k - 1);
+        if (mp[x].first == mp[y].first && mp[x].second != mp[y].second)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 };
