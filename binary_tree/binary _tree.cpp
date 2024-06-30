@@ -47,8 +47,6 @@ vector<vector<int>> levelOrderTransversal(node *root)
     queue<node *> q;
     q.push(root);
 
-    bool leftToRight = true;
-
     while (!q.empty())
     {
         int size = q.size();
