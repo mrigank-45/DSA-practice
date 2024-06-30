@@ -4,31 +4,39 @@ using namespace std;
 class Solution
 {
 public:
-    int dp[1001][101][2];
-    int solve(vector<int> &prices, int i, int k, int buy, int n)
+    int findMidSum(int ar1[], int ar2[], int n)
     {
-        if (i == n || k == 0)
+        vector<int> v;
+
+        int i = 0, j = 0;
+
+        while (i < n && j < n)
         {
-            return 0;
-        }
-        if (dp[i][k][buy] != -1)
-        {
-            return dp[i][k][buy];
+            if (ar1[i] < ar2[j])
+            {
+                v.push_back(ar1[i]);
+                i++;
+            }
+            else
+            {
+                v.push_back(ar2[j]);
+                j++;
+            }
         }
 
-        if (buy)
+        while (i < n)
         {
-            return dp[i][k][buy] = max(-prices[i] + solve(prices, i + 1, k, 0, n), solve(prices, i + 1, k, 1, n));
+            v.push_back(ar1[i]);
+            i++;
         }
-        else
+        while (j < n)
         {
-            return dp[i][k][buy] = max(prices[i] + solve(prices, i + 1, k - 1, 1, n), solve(prices, i + 1, k, 0, n));
+            v.push_back(ar2[j]);
+            j++;
         }
-    }
-    int maxProfit(int k, vector<int> &prices)
-    {
-        int n = prices.size();
-        memset(dp, -1, sizeof(dp));
-        return solve(prices, 0, k, 1, n);
+
+        int n3 = v.size();
+
+        return v[n3 / 2] + v[n3 / 2 - 1];
     }
 };
