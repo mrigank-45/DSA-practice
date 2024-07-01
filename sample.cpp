@@ -4,46 +4,33 @@ using namespace std;
 class Solution
 {
 public:
-    int solve(vector<vector<char>> &arr, int queries)
+    int countTriplets(vector<int> nums)
     {
-        unordered_map<char, vector<char>> mp;
+        int n = nums.size();
+        if(n<=2) return 0;
+        int ans = 0;
+        map<int, vector<int>> mp;
 
-        for (int i = 0; i < arr.size(); i++)
+        for (int i = 0; i < n; i++)
         {
-            char lesser, greater;
-            if (arr[i][1] == '>')
+            for (int j = i + 1; j < n; j++)
             {
-                greater = arr[i][0];
-                lesser = arr[i][2];
-            }
-            else
-            {
-                greater = arr[i][2];
-                lesser = arr[i][0];
-            }
-            mp[greater].push_back(lesser);
-            if (mp[lesser].size() > 1)
-            {
-                for (auto it : mp[lesser])
+                if (nums[j] > nums[i])
                 {
-                    mp[greater].push_back(it);
+                    mp[i].push_back(j);
                 }
             }
         }
 
-        for (int i = 0; i < queries; i++)
+        for (int i = 0; i < n; i++)
         {
-            char a, b;
-            cin >> a >> b;
-            if (find(mp[a].begin(), mp[a].end(), b) != mp[a].end())
+            vector<int> v = mp[i];
+            for (int j = 0; j < v.size(); j++)
             {
-                cout << "YES" << endl;
+                ans = ans + mp[v[j]].size();
             }
-            else
-            {
-                cout << "NO" << endl;
-            }
-
         }
+
+        return ans;
     }
 };
