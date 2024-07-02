@@ -4,61 +4,60 @@ using namespace std;
 class Solution
 {
 public:
-    bool allowed(int val, int arr[], int n, int d)
+    int missingInteger(vector<int> &nums)
     {
-        int sum = 0;
-        int cnt = 1;
-        for (int i = 0; i < n; i++)
+        int n = nums.size();
+        int start = 0;
+        int len = 1;
+        pair<int, int> res = {0, 0};
+
+        for (int i = 1; i < n; i++)
         {
-            if (sum > val)
+            if (nums[i] == nums[i - 1] + 1)
             {
-                return false;
-            }
-            if (sum + arr[i] > val)
-            {
-                cnt++;
-                sum = arr[i];
+                if (i == n - 1)
+                {
+                    if (i - start + 1 >= len)
+                    {
+                        res = {start, i};
+                    }
+                }
+                continue;
             }
             else
             {
-                sum += arr[i];
+                if (i - start > len)
+                {
+                    res = {start, i - 1};
+                    len = i - start;
+                    cout<<i<<endl;
+                    cout << res.first << " " << res.second << endl;
+                }
+                start = i;
             }
         }
-        return sum<=val && cnt <= d;
-    }
-
-    int leastWeightCapacity(int arr[], int n, int d)
-    {
-        if(n == 1){
-            return arr[0];
-        }
-
-        int mini = INT_MAX;
-        for (int i = 0; i < n; i++)
-        {
-            mini = min(mini, arr[i]);
-        }
         int sum = 0;
+
+        for (int i = res.first; i <= res.second; i++)
+        {
+            sum += nums[i];
+        }
+
+        map<int, int> mp;
         for (int i = 0; i < n; i++)
         {
-            sum += arr[i];
+            mp[nums[i]]++;
         }
-        if(d == 1){
-            return sum;
-        }
-        int s = mini, e = sum;
-        int ans = 0;
-        while (s < e)
+        int ans = sum;
+        while (1)
         {
-            int mid = (s + e) / 2;
-            if (allowed(mid, arr, n, d))
+            if (mp.find(ans) == mp.end())
             {
-                ans = mid;
-                e = mid;
+                return ans;
             }
             else
             {
-                s = mid + 1;
+                ans++;
             }
         }
         return ans;
