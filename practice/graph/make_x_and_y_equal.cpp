@@ -1,6 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+// compare function is needed as first we want to process the element which has less operation till now in queue{x, op};
 struct ComparePairs
 {
     bool operator()(pair<int, int> &p1, pair<int, int> &p2) const
@@ -22,9 +23,7 @@ public:
         }
 
         pair<int, int> p;
-        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int,int>>> q;
-        unordered_map<int, int> m;
-        m[x] = 1;
+        priority_queue<pair<int, int>, vector<pair<int, int>>, ComparePairs> q;
 
         q.push({x, 0});
         int curr, op;
