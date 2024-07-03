@@ -4,146 +4,67 @@ using namespace std;
 class Solution
 {
 public:
-    int maximumSetSize(vector<int> &nums1, vector<int> &nums2)
+    vector<int> beautifulIndices(string s, string a, string b, int k)
     {
-        int n = nums1.size();
-        int cnt1 = n / 2, cnt2 = n / 2;
+        int l1 = a.size();
+        int l2 = b.size();
+        vector<int> v1;
+        vector<int> v2;
 
-        unordered_map<int, int> mp1;
-        unordered_map<int, int> mp2;
+        for (int i = 0; i <= s.size() - l1; i++)
+        {
+            if (s.substr(i, l1) == a)
+            {
+                v1.push_back(i);
+            }
+        }
+        for (int i = 0; i <= s.size() - l2; i++)
+        {
+            if (s.substr(i, l2) == b)
+            {
+                v2.push_back(i);
+            }
+        }
+        sort(v1.begin(), v1.end());
+        sort(v2.begin(), v2.end());
+        vector<int> ans;
 
-        for (int i = 0; i < n; i++)
+        for (int i = 0; i < v1.size(); i++)
         {
-            mp1[nums1[i]]++;
-        }
-        for (int i = 0; i < n; i++)
-        {
-            mp2[nums2[i]]++;
-        }
-
-        // Step 1
-        for (auto it : mp1)
-        {
-            if (cnt1 == 0)
+            auto justSmall = lower_bound(v2.begin(), v2.end(), v1[i]);
+            if (justSmall != v2.end())
             {
-                break;
-            }
-
-            if (it.second > 1)
-            {
-                if (it.second - 1 > cnt1)
+                int index = *justSmall;
+                cout<<index<<endl;
+                if (abs(index - v1[i]) <= k)
                 {
-                    mp1[it.first] -= cnt1;
-                    cnt1 = 0;
-                }
-                else
-                {
-                    cnt1 -= it.second - 1;
-                    mp1[it.first] = 1;
+                    ans.push_back(v1[i]);
+                    continue;
                 }
             }
-        }
-        for (auto it : mp2)
-        {
-            if (cnt2 == 0)
+            if (justSmall != v2.begin())
             {
-                break;
-            }
-
-            if (it.second > 1)
-            {
-                if (it.second - 1 > cnt2)
+                justSmall--;
+                int index = *justSmall;
+                cout<<index<<endl;
+                if (abs(index - v1[i]) <= k)
                 {
-                    mp2[it.first] -= cnt2;
-                    cnt2 = 0;
+                    ans.push_back(v1[i]);
+                    continue;
                 }
-                else
+            }
+            auto justBig = upper_bound(v2.begin(), v2.end(), v1[i]);
+            if (justBig != v2.end())
+            {
+                int index = *justBig;
+                if (abs(index - v1[i]) <= k)
                 {
-                    cnt2 -= it.second - 1;
-                    mp2[it.first] = 1;
+                    ans.push_back(v1[i]);
+                    continue;
                 }
             }
         }
-
-        // step 2
-        if (cnt1 > 0)
-        {
-            for (auto it : mp1)
-            {
-                if (cnt1 == 0)
-                {
-                    break;
-                }
-                if (mp2.find(it.first) != mp2.end() && mp2[it.first] > 0)
-                {
-                    mp1[it.first] = 0;
-                    cnt1--;
-                }
-            }
-        }
-        if (cnt2 > 0)
-        {
-            for (auto it : mp2)
-            {
-                if (cnt2 == 0)
-                {
-                    break;
-                }
-                if (mp1.find(it.first) != mp1.end() && mp1[it.first] > 0)
-                {
-                    mp2[it.first] = 0;
-                    cnt2--;
-                }
-            }
-        }
-
-        // step 3
-        if (cnt1 > 0)
-        {
-            for (auto it : mp1)
-            {
-                if (cnt1 == 0)
-                {
-                    break;
-                }
-                if (it.second > 0)
-                {
-                    mp1[it.first] = 0;
-                    cnt1--;
-                }
-            }
-        }
-        if (cnt2 > 0)
-        {
-            for (auto it : mp2)
-            {
-                if (cnt2 == 0)
-                {
-                    break;
-                }
-                if (it.second > 0)
-                {
-                    mp2[it.first] = 0;
-                    cnt2--;
-                }
-            }
-        }
-
-        unordered_set<int> s;
-        for (auto it : mp1)
-        {
-            if (it.second > 0)
-            {
-                s.insert(it.first);
-            }
-        }
-        for (auto it : mp2)
-        {
-            if (it.second > 0)
-            {
-                s.insert(it.first);
-            }
-        }
-        return s.size();
+        sort(ans.begin(), ans.end());
+        return ans;
     }
 };
