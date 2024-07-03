@@ -31,32 +31,32 @@ public:
 
         for (int i = 0; i < v1.size(); i++)
         {
-            auto justSmall = lower_bound(v2.begin(), v2.end(), v1[i]);
-            if (justSmall != v2.end())
-            {
-                int index = *justSmall;
-                cout<<index<<endl;
-                if (abs(index - v1[i]) <= k)
-                {
-                    ans.push_back(v1[i]);
-                    continue;
-                }
-            }
-            if (justSmall != v2.begin())
-            {
-                justSmall--;
-                int index = *justSmall;
-                cout<<index<<endl;
-                if (abs(index - v1[i]) <= k)
-                {
-                    ans.push_back(v1[i]);
-                    continue;
-                }
-            }
-            auto justBig = upper_bound(v2.begin(), v2.end(), v1[i]);
+            auto justBig = lower_bound(v2.begin(), v2.end(), v1[i]);
             if (justBig != v2.end())
             {
                 int index = *justBig;
+                cout<<index<<endl;
+                if (abs(index - v1[i]) <= k)
+                {
+                    ans.push_back(v1[i]);
+                    continue;
+                }
+            }
+            if (justBig != v2.begin())
+            {
+                justBig--;
+                int index = *justBig;
+                cout<<index<<endl;
+                if (abs(index - v1[i]) <= k)
+                {
+                    ans.push_back(v1[i]);
+                    continue;
+                }
+            }
+            auto justSmall = upper_bound(v2.begin(), v2.end(), v1[i]);
+            if (justSmall != v2.end())
+            {
+                int index = *justSmall;
                 if (abs(index - v1[i]) <= k)
                 {
                     ans.push_back(v1[i]);
