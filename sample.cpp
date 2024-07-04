@@ -27,22 +27,8 @@ public:
         {
             int val = pq.top();
             pq.pop();
-            if (flag / 8 == 0)
-            {
-                cnt += val;
-            }
-            else if (flag / 8 == 1)
-            {
-                cnt += val * 2;
-            }
-            else if (flag / 8 == 2)
-            {
-                cnt += val * 3;
-            }
-            else
-            {
-                cnt += val * 4;
-            }
+            int temp = flag / 8 + 1;
+            cnt += val * temp;
             flag++;
         }
         return cnt;
