@@ -4,67 +4,55 @@ using namespace std;
 class Solution
 {
 public:
-    vector<int> beautifulIndices(string s, string a, string b, int k)
+    int countSetBits(int val)
     {
-        int l1 = a.size();
-        int l2 = b.size();
-        vector<int> v1;
-        vector<int> v2;
-
-        for (int i = 0; i <= s.size() - l1; i++)
+        int cnt = 0;
+        while (val)
         {
-            if (s.substr(i, l1) == a)
+            if (val & 1)
             {
-                v1.push_back(i);
+                cnt++;
+            }
+            val = val >> 1;
+        }
+        return cnt;
+    }
+    bool canSortArray(vector<int> &nums)
+    {
+        int n = nums.size();
+        map<int, int> mp;
+        for (int i = 0; i < n; i++)
+        {
+            mp[nums[i]] = countSetBits(nums[i]);
+        }
+        int i = 0;
+        while (i < n - 1)
+        {
+            if (nums[i] > nums[i + 1])
+            {
+                if (mp[nums[i]] != mp[nums[i + 1]])
+                {
+                    break;
+                }
+                while (i < n - 1 && nums[i] > nums[i + 1] && mp[nums[i]] == mp[nums[i + 1]])
+                {
+                    swap(nums[i], nums[i + 1]);
+                    i++;
+                }
+                i = 0;
+            }
+            else
+            {
+                i++;
             }
         }
-        for (int i = 0; i <= s.size() - l2; i++)
+        if (is_sorted(nums.begin(), nums.end()))
         {
-            if (s.substr(i, l2) == b)
-            {
-                v2.push_back(i);
-            }
+            return true;
         }
-        sort(v1.begin(), v1.end());
-        sort(v2.begin(), v2.end());
-        vector<int> ans;
-
-        for (int i = 0; i < v1.size(); i++)
+        else
         {
-            auto justBig = lower_bound(v2.begin(), v2.end(), v1[i]);
-            if (justBig != v2.end())
-            {
-                int index = *justBig;
-                cout<<index<<endl;
-                if (abs(index - v1[i]) <= k)
-                {
-                    ans.push_back(v1[i]);
-                    continue;
-                }
-            }
-            if (justBig != v2.begin())
-            {
-                justBig--;
-                int index = *justBig;
-                cout<<index<<endl;
-                if (abs(index - v1[i]) <= k)
-                {
-                    ans.push_back(v1[i]);
-                    continue;
-                }
-            }
-            auto justSmall = upper_bound(v2.begin(), v2.end(), v1[i]);
-            if (justSmall != v2.end())
-            {
-                int index = *justSmall;
-                if (abs(index - v1[i]) <= k)
-                {
-                    ans.push_back(v1[i]);
-                    continue;
-                }
-            }
+            return false;
         }
-        sort(ans.begin(), ans.end());
-        return ans;
     }
 };
