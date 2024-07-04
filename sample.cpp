@@ -4,55 +4,41 @@ using namespace std;
 class Solution
 {
 public:
-    int countSetBits(int val)
-    {
-        int cnt = 0;
-        while (val)
-        {
-            if (val & 1)
-            {
-                cnt++;
-            }
-            val = val >> 1;
-        }
-        return cnt;
-    }
-    bool canSortArray(vector<int> &nums)
+    int minimumArrayLength(vector<int> &nums)
     {
         int n = nums.size();
         map<int, int> mp;
         for (int i = 0; i < n; i++)
         {
-            mp[nums[i]] = countSetBits(nums[i]);
+            mp[nums[i]]++;
         }
-        int i = 0;
-        while (i < n - 1)
+        sort(nums.begin(), nums.end());
+        int val = nums[0];
+        int cnt = mp[nums[0]];
+        if (val == 2 && cnt > 50000)
         {
-            if (nums[i] > nums[i + 1])
+            return 1;
+        }
+        for (int i = cnt; i < n; i++)
+        {
+            if (nums[i] % val != 0)
             {
-                if (mp[nums[i]] != mp[nums[i + 1]])
-                {
-                    break;
-                }
-                while (i < n - 1 && nums[i] > nums[i + 1] && mp[nums[i]] == mp[nums[i + 1]])
-                {
-                    swap(nums[i], nums[i + 1]);
-                    i++;
-                }
-                i = 0;
+                cnt--;
             }
-            else
+            if (cnt == 0 || cnt == 1)
             {
-                i++;
+                cnt = 1;
+                break;
             }
         }
-        if (is_sorted(nums.begin(), nums.end()))
+
+        if (cnt % 2 == 0)
         {
-            return true;
+            return cnt / 2;
         }
         else
         {
-            return false;
+            return cnt / 2 + 1;
         }
     }
 };
