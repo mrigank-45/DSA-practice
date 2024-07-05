@@ -4,31 +4,42 @@ using namespace std;
 class Solution
 {
 public:
-    long long flowerGame(int n, int m)
+    long long maximumSubarraySum(vector<int> &nums, int k)
     {
-        int e = 0, o = 0;
-        if (n % 2 == 0)
+        long long ans = LONG_MIN;
+        int n = nums.size();
+        vector<long long> preSum(n, nums[0]);
+        for (int i = 1; i < n; i++)
         {
-            e = n / 2;
-            o = n / 2;
+            preSum[i] = preSum[i - 1] + nums[i];
         }
-        else
+
+        map<int, vector<int>> mp;
+        for (int i = 0; i < n; i++)
         {
-            e = ((n - 1) / 2);
-            o = ((n - 1) / 2) + 1;
+            mp[nums[i]].push_back(i);
         }
-        int ans = 0;
-        for (int i = 1; i <= m; i++)
+
+        for (int i = 0; i < n; i++)
         {
-            if (i % 2 == 0)
+            int val1 = nums[i] - k;
+            int val2 = nums[i] + k;
+
+            if (mp.find(val1) != mp.end())
             {
-                ans += o;
+                for (auto idx : mp[val1])
+                {
+                    ans = max(ans, i < idx ? preSum[idx] - preSum[i] + nums[i] : preSum[i] - preSum[idx] + nums[idx]);
+                }
             }
-            else
+            if (mp.find(val2) != mp.end())
             {
-                ans += e;
+                for (auto idx : mp[val1])
+                {
+                    ans = max(ans, i < idx ? preSum[idx] - preSum[i] + nums[i] : preSum[i] - preSum[idx] + nums[idx]);
+                }
             }
         }
-        return ans;
+        return ans == LONG_MIN ? 0 : ans;
     }
 };

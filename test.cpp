@@ -1,17 +1,42 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int main()
+class Solution
 {
-     map<int, int> mp;
-     mp[2] = 5;
-     mp[8] = 7;
-     mp[3] = 1;
-
-     for (auto it : mp)
+public:
+     long long maximumSubarraySum(vector<int> &nums, int k)
      {
-          cout << it.first << ": " << it.second << endl;
-     }
+          long long ans = LONG_MIN;
+          int n = nums.size();
+          vector<long long> preSum(n, nums[0]);
+          for (int i = 1; i < n; i++)
+          {
+               preSum[i] = preSum[i - 1] + nums[i];
+          }
 
-     return 0;
-}
+          map<int, vector<int>> mp;
+
+          for (int i = 0; i < n; i++)
+          {
+               int val1 = nums[i] - k;
+               int val2 = nums[i] + k;
+
+               if (mp.find(val1) != mp.end())
+               {
+                    for (auto idx : mp[val1])
+                    {
+                         ans = max(ans, preSum[i] - preSum[idx] + nums[idx]);
+                    }
+               }
+               if (mp.find(val2) != mp.end())
+               {
+                    for (auto idx : mp[val2])
+                    {
+                         ans = max(ans, preSum[i] - preSum[idx] + nums[idx]);
+                    }
+               }
+               mp[nums[i]].push_back(i);
+          }
+          return ans == LONG_MIN ? 0 : ans;
+     }
+};
