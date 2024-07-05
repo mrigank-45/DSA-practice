@@ -4,66 +4,54 @@ using namespace std;
 class Solution
 {
 public:
-    int bfs(int i, int k, map<int, vector<int>> &mp, int n)
+    int maximumLength(vector<int> &nums)
     {
-        unordered_map<int, bool> vis;
-        queue<int> q;
-
-        q.push(i);
-        vis[i] = true;
-
-        while (!q.empty() && k > 0)
+        int n = nums.size();
+        map<int, int> mp;
+        for (int i = 0; i < n; i++)
         {
-            int size = q.size();
-            for (int i = 0; i < size; i++)
+            mp[nums[i]]++;
+        }
+        int ans = 1;
+        for (auto it : mp)
+        {
+            if (it.second < 2 || it.first == 1)
             {
-                int node = q.front();
-                q.pop();
-
-                for (auto it : mp[node])
+                continue;
+            }
+            else
+            {
+                int cnt = 2;
+                int k = 2;
+                while (1)
                 {
-                    if (!vis[it])
+                    if (pow(it.first, k) <= INT_MAX && mp[pow(it.first, k)] > 1)
                     {
-                        q.push(it);
-                        vis[it] = true;
+                        cnt += 2;
+                        k = k + k;
+                    }
+                    else if (pow(it.first, k) <= INT_MAX && mp[pow(it.first, k)] == 1)
+                    {
+                        cnt++;
+                        break;
+                    }
+                    else
+                    {
+                        cnt--;
+                        break;
                     }
                 }
+                ans = max(ans, cnt);
             }
-            k--;
         }
-        return q.size();
-    }
-
-    vector<int> countOfPairs(int n, int x, int y)
-    {
-        map<int, vector<int>> mp;
-
-        for (int i = 0; i < n - 1; i++)
+        if (mp[1] % 2 == 0)
         {
-            mp[i].push_back(i + 1);
-            mp[i + 1].push_back(i);
+            ans = max(ans, mp[1] - 1);
         }
-        if (x - 1 != y || y - 1 != x)
+        else
         {
-            mp[x - 1].push_back(y - 1);
-            mp[y - 1].push_back(x - 1);
+            ans = max(ans, mp[1]);
         }
-
-        vector<int> res(n, 0);
-        for (int k = 1; k <= n; k++)
-        {
-            int temp = 0;
-            for (int i = 0; i < n; i++)
-            {
-                int out = bfs(i, k, mp, n);
-                if (k == 2)
-                {
-                    cout << out << endl;
-                }
-                temp += out;
-            }
-            res[k - 1] = temp;
-        }
-        return res;
+        return ans;
     }
 };
