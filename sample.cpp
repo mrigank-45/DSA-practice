@@ -4,29 +4,35 @@ using namespace std;
 class Solution
 {
 public:
-    string longestPrefix(string s)
+    bool isPalindrome(string s)
     {
-        string ans = "";
-        vector<int> pos(s.size(), 0);
-        int i = 0, j = 1;
-        while (j < s.size())
+        int n = s.size();
+        for (int i = 0; i < n / 2; i++)
         {
-            if (s[i] == s[j])
+            if (s[i] != s[n - i - 1])
+                return false;
+        }
+        return true;
+    }
+    string shortestPalindrome(string s)
+    {
+        int n = s.size();
+        int k = 0;
+        for (int i = 1; i <= n; i++)
+        {
+            if (isPalindrome(s.substr(0, i)))
             {
-                pos[j] = i + 1;
-                i++;
-                j++;
-            }
-            else if (i)
-            {
-                i = pos[i - 1];
-            }
-            else
-            {
-                j++;
+                k = i;
             }
         }
-        ans = s.substr(0, i);
+        if (k == n)
+        {
+            return s;
+        }
+
+        string temp = s.substr(k);
+        reverse(temp.begin(), temp.end());
+        string ans = temp + s;
         return ans;
     }
 };

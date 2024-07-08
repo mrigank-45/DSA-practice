@@ -10,6 +10,7 @@ public:
     {
         int n = s.size();
         // creating lps (longest prefix suffix) array using kmp algorithm
+        // TC: O(n)
         int i = 1, j = 0;
         vector<int> lps(n, 0);
         while (i < n)
