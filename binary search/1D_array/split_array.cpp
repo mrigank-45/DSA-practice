@@ -1,9 +1,13 @@
+// Split Array Largest Sum | Leetcode
+
 #include <bits/stdc++.h>
 using namespace std;
 
 class Solution
 {
 public:
+    // here we are not checking if val sum is possible in this array, instead ->
+    // check if this val is the max sum this array can achieve in k partitions
     bool solve(vector<int> &a, int val, int n, int k)
     {
         int sc = 1;
@@ -15,7 +19,7 @@ public:
                 sc++;
                 sum = a[i];
                 if (sc > k || a[i] > val)
-                    return false; 
+                    return false;
             }
             else
             {
