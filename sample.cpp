@@ -4,68 +4,80 @@ using namespace std;
 class Solution
 {
 public:
-    int maxPalindromesAfterOperations(vector<string> &words)
+    int countMatchingSubarrays(vector<int> &nums, vector<int> &pattern)
     {
-        map<char, int> mp;
-        vector<int> sizes;
-        for (auto val : words)
-        {
-            sizes.push_back(val.length());
-            for (auto &s : val)
-                mp[s]++;
-        }
+        int n = nums.size();
+        int m = pattern.size();
+        int i = 0, prev = 0, k = 0;
+        int cnt = 0;
 
-        sort(sizes.begin(), sizes.end());
-
-        int even = 0;
-        int odd = 0;
-        for (auto val : mp)
+        while (i < n - 1)
         {
-            if (val.second % 2)
+            if (pattern[k] == 1)
             {
-                even += (val.second - 1);
-                odd++;
-            }
-            else
-            {
-                even += val.second;
-            }
-        }
-        int ans = 0;
-
-        for (int i = 0; i < sizes.size(); i++)
-        {
-            if (sizes[i] % 2)
-            {
-                if (even >= sizes[i] - 1)
+                if (nums[i] < nums[i + 1])
                 {
-                    if (even == (sizes[i] - 1) && odd < 1)
-                        continue;
-                    ans++;
-
-                    if (odd >= 1)
+                    i++;
+                    k++;
+                    if (k == m)
                     {
-                        odd--;
+                        cnt++;
+                        k = 0;
+                        i = prev + 1;
+                        prev = i;
                     }
-                    else
+                }
+                else
+                {
+                    i = prev + 1;
+                    prev = i;
+                    k = 0;
+                }
+            }
+            else if (pattern[k] == -1)
+            {
+                if (nums[i] > nums[i + 1])
+                {
+                    i++;
+                    k++;
+                    if (k == m)
                     {
-                        even -= 2;
-                        odd++;
+                        cnt++;
+                        k = 0;
+                        i = prev + 1;
+                        prev = i;
                     }
-
-                    even -= ((sizes[i] - 1));
+                }
+                else
+                {
+                    i = prev + 1;
+                    prev = i;
+                    k = 0;
                 }
             }
             else
             {
-                if (even >= (sizes[i]))
+                if (nums[i] == nums[i + 1])
                 {
-
-                    ans++;
-                    even -= (sizes[i]);
+                    i++;
+                    k++;
+                    if (k == m)
+                    {
+                        cnt++;
+                        k = 0;
+                        i = prev + 1;
+                        prev = i;
+                    }
+                }
+                else
+                {
+                    i = prev + 1;
+                    prev = i;
+                    k = 0;
                 }
             }
         }
-        return ans;
+
+        return cnt;
     }
 };
