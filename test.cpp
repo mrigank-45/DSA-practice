@@ -1,37 +1,54 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int main()
+vector<int> computeLPSArray(string pattern)
 {
-    string s = "cabbacabbadc";
-    int n = s.size();
-
-    int i = 1, j = 0;
-    vector<int> lps(n, 0);
-    while (i < n)
+    vector<int> lps(pattern.length(), 0);
+    int len = 0;
+    int i = 1;
+    while (i < pattern.length())
     {
-        if (s[i] == s[j])
+        if (pattern[i] == pattern[len])
         {
-            lps[i] = j + 1;
+            len++;
+            lps[i] = len;
             i++;
-            j++;
         }
         else
         {
-            if (j > 0)
+            if (len != 0)
             {
-                j = lps[j - 1];
+                len = lps[len - 1];
             }
             else
             {
-                lps[i] == 0;
+                lps[i] = 0;
                 i++;
             }
         }
     }
-    for (int i = 0; i < lps.size(); i++)
+    return lps;
+}
+int KMPSearch(string text, string pattern)
+{
+    vector<int> lps = computeLPSArray(pattern);
+
+    string temp = pattern + "#" + text;
+    int n = temp.length();
+    int m = pattern.length();
+    int cnt = 0;
+
+    for (int i = m; i < n; i++)
     {
-        cout<<lps[i]<<" ";
+        if (lps[i] == m)
+            cnt++;
     }
-    cout<<endl<<lps[n-1];
+    return cnt;
+}
+
+int main()
+{
+    string s1 = "abcdbc";
+    string s2 = "bc";
+    cout << KMPSearch(s1, s2) << endl;
 }
