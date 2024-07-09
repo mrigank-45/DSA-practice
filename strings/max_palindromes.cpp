@@ -1,3 +1,5 @@
+// Maximum Palindromes After Operations
+
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -16,7 +18,7 @@ public:
         }
 
         sort(sizes.begin(), sizes.end());
-
+        
         int even = 0;
         int odd = 0;
         for (auto val : mp)
@@ -32,7 +34,8 @@ public:
             }
         }
         int ans = 0;
-
+        
+        // check for many this length palindromes can be formed
         for (int i = 0; i < sizes.size(); i++)
         {
             if (sizes[i] % 2)
