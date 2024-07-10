@@ -4,79 +4,65 @@ using namespace std;
 class Solution
 {
 public:
-    vector<int> computeLPSArray(string pattern)
+    int solve(int i, int j, int score, vector<int> &nums, vector<vector<int>> &dp)
     {
-        vector<int> lps(pattern.length(), 0);
-        int len = 0;
-        int i = 1;
-        while (i < pattern.length())
+        if (i >= j)
         {
-            if (pattern[i] == pattern[len])
-            {
-                len++;
-                lps[i] = len;
-                i++;
-            }
-            else
-            {
-                if (len != 0)
-                {
-                    len = lps[len - 1];
-                }
-                else
-                {
-                    lps[i] = 0;
-                    i++;
-                }
-            }
+            return 0;
         }
-        return lps;
+
+        if (dp[i][j] != -1)
+            return dp[i][j];
+
+        int ans = 0;
+
+        if (nums[i] + nums[j] == score)
+        {
+            ans = max(ans, 1 + solve(i + 1, j - 1, score, nums, dp));
+        }
+        if (nums[i] + nums[i + 1] == score)
+        {
+            ans = max(ans, 1 + solve(i + 2, j, score, nums, dp));
+        }
+        if (nums[j] + nums[j - 1] == score)
+        {
+            ans = max(ans, 1 + solve(i, j - 2, score, nums, dp));
+        }
+
+        return dp[i][j] = ans;
+
     }
-    int KMPSearch(string text, string pattern)
+    int maxOperations(vector<int> &nums)
     {
-    }
-
-    int countMatchingSubarrays(vector<int> &nums, vector<int> &pattern)
-    {
-        string word = "";
-        for (int i = 1; i < nums.size(); i++)
+        int n = nums.size();
+        
+        bool flag = true;
+        for (int i = 0; i < n; i++)
         {
-            if (nums[i - 1] == nums[i])
+            if (nums[i] != nums[0])
             {
-                word += "B";
-            }
-            else if (nums[i - 1] > nums[i])
-            {
-                word += "A";
-            }
-            else
-            {
-                word += "C";
+                flag = false;
+                break;
             }
         }
-
-        string pat = "";
-        for (int i : pattern)
+        if (flag)
         {
-            if (i == 0)
-                pat += "B";
-            else if (i == -1)
-                pat += "A";
-            else if (i == 1)
-                pat += "C";
+            return n / 2;
         }
+        int size = max(nums[0] + nums[1],max(nums[0] + nums[n - 1], nums[n - 1] + nums[n - 2]));
 
-        string temp = pat + "#" + word;
-        int n = temp.length();
-        int m = pat.length();
-        int cnt = 0;
-        vector<int> lps = computeLPSArray(temp);
 
-        for (int i = m; i < n; i++)
-        {
-            if (lps[i] == m)
-                cnt++;
-        }
-        return cnt;
+        int ans = 0;
+
+        vector<vector<int>> dp1(n + 1, vector<int>(n + 1, -1));
+        ans = max(ans, 1 + solve(1, n - 2, nums[0] + nums[n - 1], nums, dp1));
+
+        vector<vector<int>> dp2(n + 1, vector<int>(n + 1, -1));
+        ans = max(ans, 1 + solve(2, n - 1, nums[0] + nums[1], nums, dp2));
+
+        vector<vector<int>> dp3(n + 1, vector<int>(n + 1, -1));
+        ans = max(ans, 1 + solve(0, n - 3, nums[n - 1] + nums[n - 2], nums, dp3));
+
+        return ans;
     }
 };
