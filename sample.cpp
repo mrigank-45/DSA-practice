@@ -4,40 +4,72 @@ using namespace std;
 class Solution
 {
 public:
-    int dfs(int i, int last, int n, const vector<int> &nums, unordered_map<string, int> &dp)
+    vector<int> z_fn(string &s)
     {
-        if (i >= n)
-            return 0;
-
-        string key = to_string(last) + "-" + to_string(i);
-        if (dp.find(key) != dp.end())
-            return dp[key];
-
-        if (nums[i] < last)
-            return dfs(i + 1, last, n, nums, dp);
-        int take = 0;
-
-        if (nums[i] == last)
-            take = max(1 + dfs(i + 1, nums[i] + 1, n, nums, dp), take);
-        if (nums[i] == last + 1)
-            take = max(1 + dfs(i + 1, nums[i], n, nums, dp), take);
-
-        dp[key] = take;
-        return take;
+        int n = s.size(), l = 0, r = 0;
+        vector<int> z(n);
+        for (int i = 1; i < n; i++)
+        {
+            if (i > r)
+            {
+                l = r = i;
+                while (r < n && s[r] == s[r - l])
+                    r++;
+                z[i] = r - l;
+                r--;
+            }
+            else
+            {
+                int cur = i - l;
+                if (z[cur] + i < r + 1)
+                    z[i] = z[cur];
+                else
+                {
+                    l = i;
+                    while (r < n && s[r] == s[r - l])
+                        r++;
+                    z[i] = r - l;
+                    r--;
+                }
+            }
+        }
+        return z;
     }
-
-    int maxSelectedElements(vector<int> &nums)
+    long long countPrefixSuffixPairs(vector<string> &words)
     {
-        int n = nums.size();
-        sort(nums.begin(), nums.end());
-        unordered_map<string, int> dp;
-
-        int res = 1;
+        int n = words.size();
+        map<string, vector<int>> mp;
+        long long cnt = 0;
         for (int i = 0; i < n; i++)
         {
-            res = max(res, max(dfs(i + 1, nums[i], n, nums, dp) + 1, dfs(i + 1, nums[i] + 1, n, nums, dp) + 1));
+            string s = words[i];
+            vector<int> z = z_fn(s);
+            mp[s] = z;
+        }
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = i + 1; j < n; j++)
+            {
+                if (words[i].size() > words[j].size())
+                {
+                    continue;
+                }
+                if (words[i].size() == words[j].size())
+                {
+                    if (words[i] == words[j])
+                    {
+                        cnt++;
+                    }
+                    continue;
+                }
+                string temp = words[j].substr(0, words[i].size());
+                if(temp == words[i] && mp[words[j]][words[j].size() - words[i].size()] == words[i].size())
+                {
+                    cnt++;
+                }
+            }
         }
 
-        return res;
+        return cnt;
     }
 };

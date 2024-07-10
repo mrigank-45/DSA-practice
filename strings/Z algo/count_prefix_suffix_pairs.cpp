@@ -1,3 +1,6 @@
+// Count Prefix and Suffix Pairs II
+// By calculating all the prefixes of the string and checking if this string is already present in the map, we are avoiding nested loops for calculating pairs.
+
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -40,7 +43,7 @@ public:
             int n = s.size();
             for (int i = n - 1; i >= 0; i--)
             {
-                temp.push_back(s[n - i - 1]); // calculate all the prefixes of the string
+                temp.push_back(s[n - i - 1]);        // calculate all the prefixes of the string
                 if (z[i] == n - i && mp.count(temp)) // check if the prefix is also a suffix and this string has occured before
                 {
                     res += mp[temp];
@@ -48,7 +51,7 @@ public:
             }
             if (mp.count(s))
                 res += mp[s];
-            
+
             mp[s]++;
         }
 
