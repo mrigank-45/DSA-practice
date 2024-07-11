@@ -4,39 +4,61 @@ using namespace std;
 class Solution
 {
 public:
-    int longestCommonPrefix(vector<int> &arr1, vector<int> &arr2)
+    int solve(vector<int> &nums, int n, map<int, bool> &mp,  map<string,int> &dp, string temp)
     {
-        int n = arr1.size(), m = arr2.size();
-        map<string, int> mp;
-
-        for (int i = 0; i < m; i++)
-        {
-            string temp = "";
-            string s = to_string(arr2[i]);
-            for (int j = 0; j < s.size(); j++)
-            {
-                temp += s[j];
-                mp[temp]++;
-            }
-        }
+        bool flag = false;
         int ans = 0;
+
+        if(dp.count(temp))
+        {
+            return dp[temp];
+        }
+
         for (int i = 0; i < n; i++)
         {
-            string temp = "";
-            string s = to_string(arr1[i]);
-            for (int j = 0; j < s.size(); j++)
+            if (!mp[i])
             {
-                temp += s[j];
-                if (mp[temp] > 0)
+                int coins = nums[i];
+                int j = i - 1;
+                while (mp[j] && j >= 0)
                 {
-                    ans = max(ans, (int)temp.size());
+                    j--;
                 }
-            }
-            if (mp[temp] > 0)
-            {
-                ans = max(ans, (int)temp.size());
+                if (j != -1)
+                {
+                    coins *= nums[j];
+                }
+                j = i + 1;
+                while (mp[j] && j < n)
+                {
+                    j++;
+                }
+                if (j != n)
+                {
+                    coins *= nums[j];
+                }
+                mp[i] = true;
+                ans = max(ans, coins + solve(nums, n, mp, dp, temp + to_string(i)));
+                mp[i] = false;
+                flag = true;
             }
         }
-        return ans;
+        if (flag)
+        {
+            return dp[temp] = ans;
+        }
+        else
+        {
+            return dp[temp] = 0;
+        }
+    }
+    int maxCoins(vector<int> &nums)
+    {
+        int n = nums.size();
+
+        map<int, bool> mp;
+        map<string,int> dp;
+
+        return solve(nums, n, mp, dp, "");
     }
 };
