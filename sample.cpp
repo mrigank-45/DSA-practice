@@ -4,61 +4,36 @@ using namespace std;
 class Solution
 {
 public:
-    int solve(vector<int> &nums, int n, map<int, bool> &mp,  map<string,int> &dp, string temp)
+    int minOperations(vector<int> &nums, int k)
     {
-        bool flag = false;
+        long long n = nums.size();
         int ans = 0;
 
-        if(dp.count(temp))
+        priority_queue<long long, vector<long long>, greater<long long>> pq;
+        for (long long i = 0; i < n; i++)
         {
-            return dp[temp];
+            pq.push(nums[i]);
         }
 
-        for (int i = 0; i < n; i++)
+        while (!pq.empty())
         {
-            if (!mp[i])
+            if (pq.top() >= k)
             {
-                int coins = nums[i];
-                int j = i - 1;
-                while (mp[j] && j >= 0)
-                {
-                    j--;
-                }
-                if (j != -1)
-                {
-                    coins *= nums[j];
-                }
-                j = i + 1;
-                while (mp[j] && j < n)
-                {
-                    j++;
-                }
-                if (j != n)
-                {
-                    coins *= nums[j];
-                }
-                mp[i] = true;
-                ans = max(ans, coins + solve(nums, n, mp, dp, temp + to_string(i)));
-                mp[i] = false;
-                flag = true;
+                break;
             }
+            if (pq.size() == 1)
+            {
+                ans = -1;
+                break;
+            }
+            long long a = pq.top();
+            pq.pop();
+            long long b = pq.top();
+            pq.pop();
+            long long temp = min(a, b) * 2 + max(a, b);
+            pq.push(temp);
+            ans++;
         }
-        if (flag)
-        {
-            return dp[temp] = ans;
-        }
-        else
-        {
-            return dp[temp] = 0;
-        }
-    }
-    int maxCoins(vector<int> &nums)
-    {
-        int n = nums.size();
-
-        map<int, bool> mp;
-        map<string,int> dp;
-
-        return solve(nums, n, mp, dp, "");
+        return ans;
     }
 };

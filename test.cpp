@@ -4,27 +4,67 @@ using namespace std;
 class Solution
 {
 public:
-    int func(vector<int> &v, vector<vector<int>> &dp, int i, int j)
+    int earliestSecondToMarkIndices(vector<int> &nums, vector<int> &changeIndices)
     {
-        if (i > j)
-            return 0;
-        if (dp[i][j] != -1)
-            return dp[i][j];
-        int ans = 0;
-        for (int k = i; k <= j; k++)
+        int n = nums.size();
+        int m = changeIndices.size();
+        for (int i = 0; i < m; i++)
         {
-            int num = v[i - 1] * v[k] * v[j + 1] + func(v, dp, i, k - 1) + func(v, dp, k + 1, j);
-            ans = max(ans, num);
+            changeIndices[i] = changeIndices[i] - 1;
         }
-        return dp[i][j] = ans;
-    }
+        map<int, int> need;
+        map<int, int> last;
+        map<int, bool> vis;
 
-    int maxCoins(vector<int> &v)
-    {
-        int n = v.size();
-        v.push_back(1);
-        v.insert(v.begin(), 1);
-        vector<vector<int>> dp(n + 1, vector<int>(n + 1, -1));
-        return func(v, dp, 1, n);
+        for (int i = 0; i < n; i++)
+        {
+            need[i] = nums[i];
+            vis[i] = false;
+        }
+        for (int i = 0; i < m; i++)
+        {
+            last[changeIndices[i]] = i;
+        }
+        for (int i = 0; i < n; i++)
+        {
+            if (last.find(i) == last.end())
+            {
+                return -1;
+            }
+        }
+
+        int k = 0, cnt = 0;
+
+        while (k < m)
+        {
+            if (nums[changeIndices[k]] == 0 && vis[changeIndices[k]] == false)
+            {
+                k++;
+                cnt++;
+                vis[changeIndices[k]] = true;
+                if (cnt == n)
+                {
+                    return k;
+                }
+                continue;
+            }
+            int extra = INT_MAX, index = 0;
+            for (int i = 0; i < n; i++)
+            {
+                if(need[i] == 0) continue; 
+                int temp = last[i] - k - need[i];
+                if(temp < 0) return -1;
+                if (temp < extra)
+                {
+                    extra = temp;
+                    index = i;
+                }
+            }
+            nums[index]--;
+            need[index]--;
+            k++;
+        }
+
+        return -1;
     }
 };
