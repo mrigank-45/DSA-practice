@@ -4,81 +4,60 @@ using namespace std;
 class Solution
 {
 public:
-    int helper(map<int, vector<pair<int, int>>> &adj, int node, int k, int parent, int val)
+    void dfs(vector<vector<int>> &h, vector<vector<bool>> &vis, int i, int j)
     {
-        int ans = 0;
-        for (auto edge : adj[node])
-        {
-            if (edge.first == parent)
-                continue;
-            if ((val + edge.second) % k == 0)
-            {
-                ans += 1 + helper(adj, edge.first, k, node, val + edge.second);
-            }
-            else
-            {
-                ans += helper(adj, edge.first, k, node, val + edge.second);
-            }
-        }
-        return ans;
+
+        int m = h.size();
+        int n = h[0].size();
+
+        vis[i][j] = true;
+        // up
+        if (i - 1 >= 0 && vis[i - 1][j] != true && h[i - 1][j] >= h[i][j])
+            dfs(h, vis, i - 1, j);
+        // down
+        if (i + 1 < m && vis[i + 1][j] != true && h[i + 1][j] >= h[i][j])
+            dfs(h, vis, i + 1, j);
+        // left
+        if (j - 1 >= 0 && vis[i][j - 1] != true && h[i][j - 1] >= h[i][j])
+            dfs(h, vis, i, j - 1);
+        // right
+        if (j + 1 < n && vis[i][j + 1] != true && h[i][j + 1] >= h[i][j])
+            dfs(h, vis, i, j + 1);
     }
 
-    vector<int> countPairsOfConnectableServers(vector<vector<int>> &edges, int signalSpeed)
+    vector<vector<int>> pacificAtlantic(vector<vector<int>> &heights)
     {
-        int n = edges.size() + 1;
-        int k = signalSpeed;
-        map<int, vector<pair<int, int>>> adj;
 
-        for (auto edge : edges)
+        vector<vector<int>> ans;
+        int m = heights.size();
+        int n = heights[0].size();
+
+        vector<vector<bool>> pacific(m, vector<bool>(n));
+        vector<vector<bool>> atlantic(m, vector<bool>(n));
+
+        for (int i = 0; i < m; i++)
         {
-            adj[edge[0]].push_back({edge[1], edge[2]});
-            adj[edge[1]].push_back({edge[0], edge[2]});
+
+            dfs(heights, pacific, i, 0);
+            dfs(heights, atlantic, i, n - 1);
         }
 
-        map<int, vector<int>> valid;
-        for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++)
         {
-            for (auto edge : adj[i])
-            {
-                if (edge.second % k == 0)
-                {
-                    valid[i].push_back(1 + helper(adj, edge.first, k, i, edge.second));
-                }
-                else
-                {
-                    valid[i].push_back(helper(adj, edge.first, k, i, edge.second));
-                }
-            }
+
+            dfs(heights, pacific, 0, j);
+            dfs(heights, atlantic, m - 1, j);
         }
 
-        vector<int> ans(n, 0);
-
-        for (auto it : valid)
+        for (int i = 0; i < m; i++)
         {
-            int temp = 0;
-            vector<int> v = it.second;
-            if (v.size() == 0)
-            {
-                ans[it.first] = 0;
-                continue;
-            }
-            for (int i = 0; i < v.size(); i++)
+            for (int j = 0; j < n; j++)
             {
 
-                if (v[i] == 0)
-                    continue;
-                for (int j = i + 1; j < v.size(); j++)
-                {
-
-                    if (v[j] == 0)
-                        continue;
-
-                    temp += v[i] * v[j];
-                }
+                if (pacific[i][j] && atlantic[i][j]) 
+                    ans.push_back({i, j});           
             }
-            ans[it.first] = temp;
         }
-
         return ans;
     }
 };
