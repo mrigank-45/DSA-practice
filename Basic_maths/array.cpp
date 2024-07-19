@@ -12,6 +12,8 @@ int main()
  
     int lower = *lower_bound(v.begin(), v.end(), 7); // gives iterator to element equal to or greater than val, else gives v.end()
     int upper = *upper_bound(v.begin(), v.end(), 10); // gives iterator to element greater than val, else gives v.end()
+
+    int cnt = v.end() - upper_bound(v.begin(), v.end(), 6); // gives count of elements greater than val
  
     cout << "lower_bound for 6 is "
          << (lower) << '\n';

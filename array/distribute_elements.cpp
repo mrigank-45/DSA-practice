@@ -1,3 +1,5 @@
+// Distribute Elements Into Two Arrays II
+
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -20,8 +22,9 @@ public:
         {
             auto ub1 = upper_bound(arr1Sorted.begin(), arr1Sorted.end(), nums[i]);
             auto ub2 = upper_bound(arr2Sorted.begin(), arr2Sorted.end(), nums[i]);
-            int greater1 = arr1Sorted.end() - ub1;
-            int greater2 = arr2Sorted.end() - ub2;
+            int greater1 = arr1Sorted.end() - ub1; // gives count of elements greater than val in arr1Sorted
+            int greater2 = arr2Sorted.end() - ub2; // gives count of elements greater than val in arr2Sorted
+
             if (greater1 > greater2 || (greater1 == greater2 && arr1Sorted.size() <= arr2Sorted.size()))
             {
                 arr1Sorted.insert(ub1, nums[i]);
@@ -34,7 +37,7 @@ public:
             }
         }
 
-         vector<int> ans;
+        vector<int> ans;
 
         for (int i = 0; i < arr1.size(); i++)
         {
