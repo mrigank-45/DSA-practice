@@ -4,60 +4,46 @@ using namespace std;
 class Solution
 {
 public:
-    void dfs(vector<vector<int>> &h, vector<vector<bool>> &vis, int i, int j)
+    int solve(vector<vector<int>> &grid, vector<vector<int>> &dp, int n, int m, int i, int j)
     {
+        if (i < 0 || j < 0 || i >= n || j >= m)
+        {
+            return 0;
+        }
 
-        int m = h.size();
-        int n = h[0].size();
+        if (dp[i][j] != -1)
+        {
+            return dp[i][j];
+        }
 
-        vis[i][j] = true;
-        // up
-        if (i - 1 >= 0 && vis[i - 1][j] != true && h[i - 1][j] >= h[i][j])
-            dfs(h, vis, i - 1, j);
-        // down
-        if (i + 1 < m && vis[i + 1][j] != true && h[i + 1][j] >= h[i][j])
-            dfs(h, vis, i + 1, j);
-        // left
-        if (j - 1 >= 0 && vis[i][j - 1] != true && h[i][j - 1] >= h[i][j])
-            dfs(h, vis, i, j - 1);
-        // right
-        if (j + 1 < n && vis[i][j + 1] != true && h[i][j + 1] >= h[i][j])
-            dfs(h, vis, i, j + 1);
+        int s1 = solve(grid, dp, n, m, i - 1, j);
+        int s2 = solve(grid, dp, n, m, i, j - 1);
+        int s3 = solve(grid, dp, n, m, i - 1, j - 1);
+        int sum = s1 + s2 - s3 + grid[i][j];
+
+        return dp[i][j] = sum;
     }
-
-    vector<vector<int>> pacificAtlantic(vector<vector<int>> &heights)
+    int countSubmatrices(vector<vector<int>> &grid, int k)
     {
+        int n = grid.size();
+        int m = grid[0].size();
+        vector<vector<int>> dp(n + 1, vector<int>(m + 1, -1));
 
-        vector<vector<int>> ans;
-        int m = heights.size();
-        int n = heights[0].size();
+        dp[n - 1][m - 1] = solve(grid, dp, n, m, n - 1, m - 1);
 
-        vector<vector<bool>> pacific(m, vector<bool>(n));
-        vector<vector<bool>> atlantic(m, vector<bool>(n));
-
-        for (int i = 0; i < m; i++)
+        int ans = 0;
+        // transverse dp
+        for (int i = 0; i < n; i++)
         {
-
-            dfs(heights, pacific, i, 0);
-            dfs(heights, atlantic, i, n - 1);
-        }
-
-        for (int j = 0; j < n; j++)
-        {
-
-            dfs(heights, pacific, 0, j);
-            dfs(heights, atlantic, m - 1, j);
-        }
-
-        for (int i = 0; i < m; i++)
-        {
-            for (int j = 0; j < n; j++)
+            for (int j = 0; j < m; j++)
             {
-
-                if (pacific[i][j] && atlantic[i][j]) 
-                    ans.push_back({i, j});           
+                if (dp[i][j] <= k)
+                {
+                    ans++;
+                }
             }
         }
+
         return ans;
     }
 };

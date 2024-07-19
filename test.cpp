@@ -1,70 +1,60 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class Solution
+int maxDisplacement(string commands, int N)
 {
-public:
-    int earliestSecondToMarkIndices(vector<int> &nums, vector<int> &changeIndices)
+    int n = commands.size();
+    vector<vector<int>> dp(n + 1, vector<int>(N + 1, -1));
+
+    dp[0][0] = 0;
+
+    for (int i = 1; i <= n; ++i)
     {
-        int n = nums.size();
-        int m = changeIndices.size();
-        for (int i = 0; i < m; i++)
+        char command = commands[i - 1];
+        for (int j = 0; j <= N; ++j)
         {
-            changeIndices[i] = changeIndices[i] - 1;
-        }
-        map<int, int> need;
-        map<int, int> last;
-        map<int, bool> vis;
-
-        for (int i = 0; i < n; i++)
-        {
-            need[i] = nums[i];
-            vis[i] = false;
-        }
-        for (int i = 0; i < m; i++)
-        {
-            last[changeIndices[i]] = i;
-        }
-        for (int i = 0; i < n; i++)
-        {
-            if (last.find(i) == last.end())
+            if (dp[i - 1][j] != -1)
             {
-                return -1;
-            }
-        }
-
-        int k = 0, cnt = 0;
-
-        while (k < m)
-        {
-            if (nums[changeIndices[k]] == 0 && vis[changeIndices[k]] == false)
-            {
-                k++;
-                cnt++;
-                vis[changeIndices[k]] = true;
-                if (cnt == n)
+                if (command == 'F')
                 {
-                    return k;
+                    dp[i][j] = max(dp[i][j], dp[i - 1][j] + 1);
                 }
-                continue;
-            }
-            int extra = INT_MAX, index = 0;
-            for (int i = 0; i < n; i++)
-            {
-                if(need[i] == 0) continue; 
-                int temp = last[i] - k - need[i];
-                if(temp < 0) return -1;
-                if (temp < extra)
+                else
                 {
-                    extra = temp;
-                    index = i;
+                    dp[i][j] = max(dp[i][j], dp[i - 1][j] - 1);
+                }
+                if (j < N)
+                {
+                    if (command == 'F')
+                    {
+                        dp[i][j + 1] = max(dp[i][j + 1], dp[i - 1][j] - 1);
+                    }
+                    else
+                    {
+                        dp[i][j + 1] = max(dp[i][j + 1], dp[i - 1][j] + 1);
+                    }
                 }
             }
-            nums[index]--;
-            need[index]--;
-            k++;
         }
-
-        return -1;
     }
-};
+
+    int maxDisplacement = 0;
+    for (int j = 0; j <= N; ++j)
+    {
+        maxDisplacement = max(maxDisplacement, abs(dp[n][j]));
+    }
+
+    return maxDisplacement;
+}
+
+int main()
+{
+    string commands;
+    int N;
+
+    cin >> commands >> N;
+
+    cout << maxDisplacement(commands, N) << endl;
+
+    return 0;
+}

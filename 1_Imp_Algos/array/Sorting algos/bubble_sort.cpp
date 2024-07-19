@@ -29,3 +29,5 @@ void bubbleSort(vector<int> &arr, int n)
         }
     }
 }
+
+// In-place sorting algorithms are those that sort the input array without using any additional memory.
