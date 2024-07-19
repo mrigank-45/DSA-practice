@@ -4,46 +4,85 @@ using namespace std;
 class Solution
 {
 public:
-    int solve(vector<vector<int>> &grid, vector<vector<int>> &dp, int n, int m, int i, int j)
+    int change_y_part(vector<vector<int>> &grid, int val, int n, int m)
     {
-        if (i < 0 || j < 0 || i >= n || j >= m)
-        {
-            return 0;
-        }
-
-        if (dp[i][j] != -1)
-        {
-            return dp[i][j];
-        }
-
-        int s1 = solve(grid, dp, n, m, i - 1, j);
-        int s2 = solve(grid, dp, n, m, i, j - 1);
-        int s3 = solve(grid, dp, n, m, i - 1, j - 1);
-        int sum = s1 + s2 - s3 + grid[i][j];
-
-        return dp[i][j] = sum;
-    }
-    int countSubmatrices(vector<vector<int>> &grid, int k)
-    {
-        int n = grid.size();
-        int m = grid[0].size();
-        vector<vector<int>> dp(n + 1, vector<int>(m + 1, -1));
-
-        dp[n - 1][m - 1] = solve(grid, dp, n, m, n - 1, m - 1);
-
         int ans = 0;
-        // transverse dp
-        for (int i = 0; i < n; i++)
+        int i = 0, j = 0;
+        while (i <= n / 2 && j <= m / 2)
         {
-            for (int j = 0; j < m; j++)
+            if (grid[i][j] != val)
             {
-                if (dp[i][j] <= k)
+                ++ans;
+            }
+            ++i;
+            ++j;
+        }
+
+        i = 0;
+        j = m - 1;
+        while (i <= n / 2 && j >= m / 2)
+        {
+            if (grid[i][j] != val)
+            {
+                ++ans;
+            }
+            ++i;
+            --j;
+        }
+
+        i = n / 2;
+        j = n / 2;
+        while (i < n)
+        {
+            if (grid[i][j] != val)
+            {
+                ++ans;
+            }
+            ++i;
+        }
+
+        if (grid[n / 2][m / 2] != val)
+        {
+            ans = ans - 2;
+        }
+
+        return ans;
+    }
+    int change_whole_grid(vector<vector<int>> &grid, int val, int n, int m)
+    {
+        int ans = 0;
+        for (int i = 0; i < n; ++i)
+        {
+            for (int j = 0; j < m; ++j)
+            {
+                if (grid[i][j] != val)
                 {
-                    ans++;
+                    ++ans;
                 }
             }
         }
+        return ans;
+    }
+    int minimumOperationsToWriteY(vector<vector<int>> &grid)
+    {
+        int n = grid.size();
+        int m = grid[0].size();
 
+        int ans = INT_MAX;
+
+        for (int x = 0; x < 3; ++x)
+        {
+            for (int y = 0; y < 3; ++y)
+            {
+                if(x == y) continue;
+                int s1 = change_y_part(grid, x, n, m);
+                int s2 = change_whole_grid(grid, y, n, m) - change_y_part(grid, y, n, m);
+
+                cout<<"x: "<<x<<" y: "<<y<<" s1: "<<s1<<" s2: "<<s2<<endl;
+
+                ans = min(ans, s1 + s2);
+            }
+        }
         return ans;
     }
 };
