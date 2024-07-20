@@ -4,48 +4,41 @@ using namespace std;
 class Solution
 {
 public:
-    vector<int> resultArray(vector<int> &nums)
+    int rec(int x1, int x2, int y1, int y2, vector<int> &horizontalCut, vector<int> &verticalCut, vector<vector<vector<vector<int>>>> &dp)
     {
+        if (x1 > x2 || y1 > y2)
+            return 0;
+        if (x1 == x2 && y1 == y2)
+            return 0;
 
-        vector<int> arr1Sorted, arr2Sorted, arr1, arr2;
-        nums.insert(nums.begin(), 0);
+        if (dp[x1][x2][y1][y2] != -1)
+            return dp[x1][x2][y1][y2];
 
-        int n = nums.size();
-        arr1Sorted.push_back(nums[1]);
-        arr2Sorted.push_back(nums[2]);
-        arr1.push_back(nums[1]);
-        arr2.push_back(nums[2]);
+        int min_cost = INT_MAX;
 
-        for (int i = 3; i < n; i++)
+        for (int cut = x1; cut < x2; ++cut)
         {
-            auto ub1 = upper_bound(arr1Sorted.begin(), arr1Sorted.end(), nums[i]);
-            auto ub2 = upper_bound(arr2Sorted.begin(), arr2Sorted.end(), nums[i]);
-            int greater1 = arr1Sorted.end() - ub1;
-            int greater2 = arr2Sorted.end() - ub2;
-            if (greater1 > greater2 || (greater1 == greater2 && arr1Sorted.size() <= arr2Sorted.size()))
-            {
-                arr1Sorted.insert(ub1, nums[i]);
-                arr1.push_back(nums[i]);
-            }
-            else
-            {
-                arr2Sorted.insert(ub2, nums[i]);
-                arr2.push_back(nums[i]);
-            }
+            int cost = horizontalCut[cut] +
+                       rec(x1, cut, y1, y2, horizontalCut, verticalCut, dp) +
+                       rec(cut + 1, x2, y1, y2, horizontalCut, verticalCut, dp);
+            min_cost = min(min_cost, cost);
         }
 
-         vector<int> ans;
-
-        for (int i = 0; i < arr1.size(); i++)
+        for (int cut = y1; cut < y2; ++cut)
         {
-            ans.push_back(arr1[i]);
+            int cost = verticalCut[cut] +
+                       rec(x1, x2, y1, cut, horizontalCut, verticalCut, dp) +
+                       rec(x1, x2, cut + 1, y2, horizontalCut, verticalCut, dp);
+            min_cost = min(min_cost, cost);
         }
 
-        for (int i = 0; i < arr2.size(); i++)
-        {
-            ans.push_back(arr2[i]);
-        }
+        dp[x1][x2][y1][y2] = min_cost;
+        return min_cost;
+    }
 
-        return ans;
+    int minimumCost(int m, int n, vector<int> &horizontalCut, vector<int> &verticalCut)
+    {
+        vector<vector<vector<vector<int>>>> dp(m, vector<vector<vector<int>>>(m, vector<vector<int>>(n, vector<int>(n, -1))));
+        return rec(0, m - 1, 0, n - 1, horizontalCut, verticalCut, dp);
     }
 };

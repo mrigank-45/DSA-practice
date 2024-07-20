@@ -5,6 +5,8 @@ using namespace std;
 // Worst case TC: O(n^2) (when pivot is the smallest or largest element)
 // It is not a stable sort algo
 
+// https://www.geeksforgeeks.org/why-quick-sort-preferred-for-arrays-and-merge-sort-for-linked-lists/
+
 int partition(int arr[], int s, int e)
 {
 
