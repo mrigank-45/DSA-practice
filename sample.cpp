@@ -4,41 +4,33 @@ using namespace std;
 class Solution
 {
 public:
-    int rec(int x1, int x2, int y1, int y2, vector<int> &horizontalCut, vector<int> &verticalCut, vector<vector<vector<vector<int>>>> &dp)
+    long long maximumHappinessSum(vector<int> &happiness, int k)
     {
-        if (x1 > x2 || y1 > y2)
-            return 0;
-        if (x1 == x2 && y1 == y2)
-            return 0;
+        int n = happiness.size();
 
-        if (dp[x1][x2][y1][y2] != -1)
-            return dp[x1][x2][y1][y2];
+        priority_queue<int> pq;
 
-        int min_cost = INT_MAX;
-
-        for (int cut = x1; cut < x2; ++cut)
+        for (int i = 0; i < n; i++)
         {
-            int cost = horizontalCut[cut] +
-                       rec(x1, cut, y1, y2, horizontalCut, verticalCut, dp) +
-                       rec(cut + 1, x2, y1, y2, horizontalCut, verticalCut, dp);
-            min_cost = min(min_cost, cost);
+            pq.push(happiness[i]);
         }
 
-        for (int cut = y1; cut < y2; ++cut)
+        int decrement = 0;
+        long long sum = 0;
+
+        while (k > 0)
         {
-            int cost = verticalCut[cut] +
-                       rec(x1, x2, y1, cut, horizontalCut, verticalCut, dp) +
-                       rec(x1, x2, cut + 1, y2, horizontalCut, verticalCut, dp);
-            min_cost = min(min_cost, cost);
+            int top = pq.top();
+            pq.pop();
+            top -= decrement;
+            if (top > 0)
+            {
+                sum += top;
+            }
+            decrement++;
+            k--;
         }
 
-        dp[x1][x2][y1][y2] = min_cost;
-        return min_cost;
-    }
-
-    int minimumCost(int m, int n, vector<int> &horizontalCut, vector<int> &verticalCut)
-    {
-        vector<vector<vector<vector<int>>>> dp(m, vector<vector<vector<int>>>(m, vector<vector<int>>(n, vector<int>(n, -1))));
-        return rec(0, m - 1, 0, n - 1, horizontalCut, verticalCut, dp);
+        return sum;
     }
 };
