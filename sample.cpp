@@ -1,45 +1,71 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int solve(vector<int> &arr, int x, int y)
+class Solution
 {
-    int n = arr.size();
-    priority_queue<int> pq;
-    for (int i = 0; i < n; i++)
+public:
+    vector<string> shortestSubstrings(vector<string> &arr)
     {
-        pq.push(arr[i]);
-    }
-    int ans = 0;
-    while (!pq.empty())
-    {
-        int val = pq.top();
-        pq.pop();
-        vector<int> temp;
-        if (val - x > 0)
+        int n = arr.size();
+
+        map<string, int> mp;
+
+        for (int i = 0; i < n; i++)
         {
-            temp.push_back(val - x);
-        }
-        while (!pq.empty())
-        {
-            if (pq.top() - y > 0)
+            string s = arr[i];
+            int m = s.size();
+            // generate all substrings of s
+            for (int j = 0; j < m; j++)
             {
-                temp.push_back(pq.top() - y);
+                for (int k = 1; k <= m - j; k++)
+                {
+                    string sub = s.substr(j, k);
+                    mp[sub]++;
+                }
             }
-            pq.pop();
-        }
-        for (int i = 0; i < temp.size(); i++)
-        {
-            pq.push(temp[i]);
         }
 
-        ans++;
+        vector<string> ans;
+
+        for (int i = 0; i < n; i++)
+        {
+            string s = arr[i];
+            int m = s.size();
+            map<string, int> freq;
+            for (int j = 0; j < m; j++)
+            {
+                for (int k = 1; k <= m - j; k++)
+                {
+                    string sub = s.substr(j, k);
+                    freq[sub]++;
+                }
+            }
+            bool flag = true;
+            for (auto it : freq)
+            {
+                if (mp[it.first] - it.second == 0)
+                {
+                    if (flag)
+                    {
+                        ans.push_back(it.first);
+                    }
+                    else
+                    {
+                        if(it.first.size() < ans.back().size())
+                        {
+                            ans.pop_back();
+                            ans.push_back(it.first);
+                        }
+                    }
+                    flag = false;
+
+                }
+            }
+            if (flag)
+            {
+                ans.push_back("");
+            }
+        }
+        return ans;
     }
-    return ans;
-}
-int main()
-{
-    vector<int> executionTime = {3, 4, 1, 7, 6}; 
-    int x = 4;
-    int y = 2;
-    cout << solve(executionTime, x, y) << endl;
-}
+};
