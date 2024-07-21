@@ -1,44 +1,45 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class Solution
+int solve(vector<int> &arr, int x, int y)
 {
-public:
-    long long rec(int x1, int x2, int y1, int y2, vector<int> &horizontalCut, vector<int> &verticalCut, vector<vector<vector<vector<long long>>>> &dp)
+    int n = arr.size();
+    priority_queue<int> pq;
+    for (int i = 0; i < n; i++)
     {
-        if (x1 > x2 || y1 > y2)
-            return 0;
-        if (x1 == x2 && y1 == y2)
-            return 0;
-
-        if (dp[x1][x2][y1][y2] != -1)
-            return dp[x1][x2][y1][y2];
-
-        long long min_cost = INT_MAX;
-
-        for (int cut = x1; cut < x2; ++cut)
+        pq.push(arr[i]);
+    }
+    int ans = 0;
+    while (!pq.empty())
+    {
+        int val = pq.top();
+        pq.pop();
+        vector<int> temp;
+        if (val - x > 0)
         {
-            long long cost = horizontalCut[cut] +
-                       rec(x1, cut, y1, y2, horizontalCut, verticalCut, dp) +
-                       rec(cut + 1, x2, y1, y2, horizontalCut, verticalCut, dp);
-            min_cost = min(min_cost, cost);
+            temp.push_back(val - x);
+        }
+        while (!pq.empty())
+        {
+            if (pq.top() - y > 0)
+            {
+                temp.push_back(pq.top() - y);
+            }
+            pq.pop();
+        }
+        for (int i = 0; i < temp.size(); i++)
+        {
+            pq.push(temp[i]);
         }
 
-        for (int cut = y1; cut < y2; ++cut)
-        {
-            long long cost = verticalCut[cut] +
-                       rec(x1, x2, y1, cut, horizontalCut, verticalCut, dp) +
-                       rec(x1, x2, cut + 1, y2, horizontalCut, verticalCut, dp);
-            min_cost = min(min_cost, cost);
-        }
-
-        dp[x1][x2][y1][y2] = min_cost;
-        return min_cost;
+        ans++;
     }
-
-    long long minimumCost(int m, int n, vector<int> &horizontalCut, vector<int> &verticalCut)
-    {
-        vector<vector<vector<vector<long long>>>> dp(m + 1, vector<vector<vector<long long>>>(m + 1, vector<vector<long long>>(n + 1, vector<long long>(n + 1, -1))));
-        return rec(0, m - 1, 0, n - 1, horizontalCut, verticalCut, dp);
-    }
-};
+    return ans;
+}
+int main()
+{
+    vector<int> executionTime = {3, 4, 1, 7, 6}; 
+    int x = 4;
+    int y = 2;
+    cout << solve(executionTime, x, y) << endl;
+}
