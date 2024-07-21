@@ -4,68 +4,49 @@ using namespace std;
 class Solution
 {
 public:
-    vector<string> shortestSubstrings(vector<string> &arr)
+    const long long INF = -1e9; // Use the smallest value for invalid results
+
+    long long maxStrength(vector<int> &nums, int i, int k, bool isStarting, long long currentSum, vector<vector<vector<long long>>> &memo)
     {
-        int n = arr.size();
-
-        map<string, int> mp;
-
-        for (int i = 0; i < n; i++)
+        if (k == 0)
         {
-            string s = arr[i];
-            int m = s.size();
-            // generate all substrings of s
-            for (int j = 0; j < m; j++)
-            {
-                for (int k = 1; k <= m - j; k++)
-                {
-                    string sub = s.substr(j, k);
-                    mp[sub]++;
-                }
-            }
+            return 0; // No more subarrays needed
+        }
+        if (i >= nums.size())
+            return INF; // Reached end of array
+
+        int state = isStarting ? 0 : 1;
+        if (memo[i][k][state] != -1)
+            return memo[i][k][state]; // Return memoized result
+
+        long long result = INF;
+        if (isStarting)
+        {
+            // Choice 1: Start a new subarray at index i
+            result = max(result, maxStrength(nums, i + 1, k, false, nums[i], memo));
+            // Choice 2: Skip the current element
+            result = max(result, maxStrength(nums, i + 1, k, true, 0, memo));
+            // Choice 3: start and end the current subarray at index i
+            int sign = (k % 2 == 1) ? 1 : -1; // Positive if k is odd, negative if k is even
+            result = max(result, sign * (nums[i]) * k + maxStrength(nums, i + 1, k - 1, true, 0, memo));
+        }
+        else
+        {
+            // Choice 1: Continue the current subarray
+            result = max(result, maxStrength(nums, i + 1, k, false, currentSum + nums[i], memo));
+            // Choice 2: End the current subarray at index i
+            int sign = (k % 2 == 1) ? 1 : -1; // Positive if k is odd, negative if k is even
+            result = max(result, sign * (currentSum + nums[i]) * k + maxStrength(nums, i + 1, k - 1, true, 0, memo));
         }
 
-        vector<string> ans;
+        memo[i][k][state] = result; // Memoize the result
+        return result;
+    }
 
-        for (int i = 0; i < n; i++)
-        {
-            string s = arr[i];
-            int m = s.size();
-            map<string, int> freq;
-            for (int j = 0; j < m; j++)
-            {
-                for (int k = 1; k <= m - j; k++)
-                {
-                    string sub = s.substr(j, k);
-                    freq[sub]++;
-                }
-            }
-            bool flag = true;
-            for (auto it : freq)
-            {
-                if (mp[it.first] - it.second == 0)
-                {
-                    if (flag)
-                    {
-                        ans.push_back(it.first);
-                    }
-                    else
-                    {
-                        if(it.first.size() < ans.back().size())
-                        {
-                            ans.pop_back();
-                            ans.push_back(it.first);
-                        }
-                    }
-                    flag = false;
-
-                }
-            }
-            if (flag)
-            {
-                ans.push_back("");
-            }
-        }
-        return ans;
+    long long maximumStrength(vector<int> &nums, int k)
+    {
+        int n = nums.size();
+        vector<vector<vector<long long>>> memo(n, vector<vector<long long>>(k + 1, vector<long long>(2, -1))); // 3D DP array
+        return maxStrength(nums, 0, k, true, 0, memo);
     }
 };
