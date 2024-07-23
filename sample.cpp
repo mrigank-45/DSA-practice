@@ -4,82 +4,48 @@ using namespace std;
 class Solution
 {
 public:
-    int countDigits(int num)
+    vector<long long> unmarkedSumArray(vector<int> &nums, vector<vector<int>> &queries)
     {
-        if (num == 0)
-            return 1;
-        int count = 0;
-        while (num > 0)
+        int n = nums.size();
+        long long sum = 0;
+        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+        for (int i = 0; i < n; i++)
         {
-            num /= 10;
-            count++;
+            sum += nums[i];
+            pq.push({nums[i], i});
         }
-        return count;
-    }
+        map<int, bool> mp;
+        vector<long long> answer;
 
-    vector<long long> RangeSumDigits(int n, vector<int> &arr, int Q, vector<vector<int>> &Queries)
-    {
-        vector<long long> result;
-        vector<int> digits(n);
-
-        // Initialize the digits array
-        for (int i = 0; i < n; ++i)
+        for (int i = 0; i < queries.size(); i++)
         {
-            digits[i] = countDigits(arr[i]);
-        }
+            int index = queries[i][0];
+            int k = queries[i][1];
 
-        // Process each query
-        for (const auto &query : Queries)
-        {
-            int type = query[0];
-            int l = query[1] - 1;
-            int r = query[2] - 1;
-
-            if (type == 1)
+            if (!mp[index])
             {
-                // Update the array elements to their digit counts in the given range
-                for (int j = l; j <= r; ++j)
+                sum -= nums[index];
+                mp[index] = true;
+            }
+
+            while (!pq.empty() && k > 0)
+            {
+                if (mp[pq.top().second])
                 {
-                    arr[j] = digits[j];
+                    pq.pop();
+                    continue;
+                }
+                else
+                {
+                    sum -= pq.top().first;
+                    mp[pq.top().second] = true;
+                    pq.pop();
+                    k--;
                 }
             }
-            else if (type == 2)
-            {
-                // Calculate the sum for the given range and store it in the result
-                long long rangeSum = 0;
-                for (int j = l; j <= r; ++j)
-                {
-                    rangeSum += arr[j];
-                }
-                result.push_back(rangeSum);
-            }
-
-            // Update digits array after processing each query
-            for (int i = l; i <=r; ++i)
-            {
-                digits[i] = countDigits(arr[i]);
-            }
+            answer.push_back(sum);
         }
 
-        return result;
+        return answer;
     }
 };
-
-int main()
-{
-    Solution solution;
-    int n = 4;
-    vector<int> arr = {11, 1234, 5, 622};
-    int Q = 4;
-    vector<vector<int>> Queries = {{1, 2, 3}, {2, 2, 2}, {1, 1, 2}, {2, 1, 4}};
-
-    vector<long long> result = solution.RangeSumDigits(n, arr, Q, Queries);
-
-    for (long long res : result)
-    {
-        cout << res << " ";
-    }
-    cout << endl;
-
-    return 0;
-}
