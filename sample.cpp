@@ -4,48 +4,64 @@ using namespace std;
 class Solution
 {
 public:
-    vector<long long> unmarkedSumArray(vector<int> &nums, vector<vector<int>> &queries)
+    string minimizeStringValue(string s)
     {
-        int n = nums.size();
-        long long sum = 0;
-        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+        int n = s.size();
+
+        map<char, int> mp;
+        int cnt = 0;
+        for (int i = 0; i < 26; i++)
+        {
+            mp['a' + i] = 0;
+        }
         for (int i = 0; i < n; i++)
         {
-            sum += nums[i];
-            pq.push({nums[i], i});
+            if (s[i] != '?')
+            {
+                mp[s[i]]++;
+            }
+            else
+            {
+                cnt++;
+            }
         }
-        map<int, bool> mp;
-        vector<long long> answer;
 
-        for (int i = 0; i < queries.size(); i++)
+        vector<char> v;
+
+        for (int i = 0; i < cnt; i++)
         {
-            int index = queries[i][0];
-            int k = queries[i][1];
+            int mini = INT_MAX;
+            char temp = 'a';
 
-            if (!mp[index])
+            for (auto it : mp)
             {
-                sum -= nums[index];
-                mp[index] = true;
-            }
-
-            while (!pq.empty() && k > 0)
-            {
-                if (mp[pq.top().second])
+                if (it.second == 0)
                 {
-                    pq.pop();
-                    continue;
+                    temp = it.first;
+                    break;
                 }
-                else
+                if (it.second < mini)
                 {
-                    sum -= pq.top().first;
-                    mp[pq.top().second] = true;
-                    pq.pop();
-                    k--;
+                    mini = it.second;
+                    temp = it.first;
                 }
             }
-            answer.push_back(sum);
+
+            cout << temp << endl;
+            v.push_back(temp);
+            mp[temp]++;
         }
+        sort(v.begin(), v.end());
 
-        return answer;
+        int j = 0;
+        for (int i = 0; i < n; i++)
+        {
+            if (s[i] == '?')
+            {
+                s[i] = v[j];
+                j++;
+            }
+        }
+        return s;
     }
 };

@@ -5,8 +5,8 @@ int main()
 {
     map<string, int> mp;
 
-    mp["fn"] = 1;
-    mp["g"] = 2;
+    mp["b"] = 1;
+    mp["a"] = 2;
 
     for(auto it = mp.begin(); it != mp.end(); it++)
     {
