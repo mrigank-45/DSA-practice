@@ -1,3 +1,4 @@
+// Find the Sum of the Power of All Subsequences
 #include <bits/stdc++.h>
 using namespace std;
 
