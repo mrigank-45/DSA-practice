@@ -4,37 +4,68 @@ using namespace std;
 class Solution
 {
 public:
-    vector<long long> mostFrequentIDs(vector<int> &nums, vector<int> &freq)
+    vector<int> z_fn(const string &s)
     {
-        int n = nums.size();
-
-        map<long long, long long> mp;
-
-        for (int i = 0; i < n; i++)
+        int n = s.size(), l = 0, r = 0;
+        vector<int> z(n);
+        for (int i = 1; i < n; i++)
         {
-            mp[nums[i]] = 0;
-        }
-
-        priority_queue<pair<long long, long long>> pq;
-
-        for (auto it : mp)
-        {
-            pq.push({0, it.first});
-        }
-
-        vector<long long> ans;
-
-        for (int i = 0; i < n; i++)
-        {
-            mp[nums[i]] += freq[i];
-            pq.push({mp[nums[i]], nums[i]});
-
-            while (pq.top().first != mp[pq.top().second])
+            if (i > r)
             {
-                pq.pop();
+                l = r = i;
+                while (r < n && s[r] == s[r - l])
+                    r++;
+                z[i] = r - l;
+                r--;
+            }
+            else
+            {
+                int cur = i - l;
+                if (z[cur] + i < r + 1)
+                    z[i] = z[cur];
+                else
+                {
+                    l = i;
+                    while (r < n && s[r] == s[r - l])
+                        r++;
+                    z[i] = r - l;
+                    r--;
+                }
+            }
+        }
+        return z;
+    }
+
+    vector<int> stringIndices(vector<string> &wordsContainer, vector<string> &wordsQuery)
+    {
+        vector<int> ans;
+
+        for (auto &query : wordsQuery)
+        {
+            int index = 0;
+            int maxLen = 0;
+            reverse(query.begin(), query.end());
+
+            for (int i = 0; i < wordsContainer.size(); i++)
+            {
+                string container = wordsContainer[i];
+                reverse(container.begin(), container.end());
+                string temp = container + "#" + query;
+                vector<int> arr = z_fn(temp);
+                int length = arr[container.size() + 1];
+
+                if (length > maxLen)
+                {
+                    maxLen = length;
+                    index = i;
+                }
+                else if (length == maxLen && wordsContainer[i].size() < wordsContainer[index].size())
+                {
+                    index = i;
+                }
             }
 
-            ans.push_back(pq.top().first);
+            ans.push_back(index);
         }
 
         return ans;
