@@ -1,73 +1,52 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class Solution
-{
-public:
-    vector<int> z_fn(const string &s)
-    {
-        int n = s.size(), l = 0, r = 0;
-        vector<int> z(n);
-        for (int i = 1; i < n; i++)
-        {
-            if (i > r)
-            {
-                l = r = i;
-                while (r < n && s[r] == s[r - l])
-                    r++;
-                z[i] = r - l;
-                r--;
-            }
-            else
-            {
-                int cur = i - l;
-                if (z[cur] + i < r + 1)
-                    z[i] = z[cur];
-                else
-                {
-                    l = i;
-                    while (r < n && s[r] == s[r - l])
-                        r++;
-                    z[i] = r - l;
-                    r--;
-                }
-            }
+int minSwaps(string s, char c) {
+    int n = s.size();
+    int total = 0;
+    
+    // Count the total number of character c in the string
+    for (int i = 0; i < n; i++) {
+        if (s[i] == c) {
+            total++;
         }
-        return z;
+    }
+    
+    // If the character c is not present or already the entire string, no swaps needed
+    if (total == 0 || total == n) {
+        return 0;
     }
 
-    vector<int> stringIndices(vector<string> &wordsContainer, vector<string> &wordsQuery)
-    {
-        vector<int> ans;
+    // Sliding window to count the minimum swaps required
+    int max_count_in_window = 0;
+    int current_count = 0;
 
-        for (auto &query : wordsQuery)
-        {
-            int index = 0;
-            int maxLen = 0;
-            reverse(query.begin(), query.end());
-
-            for (int i = 0; i < wordsContainer.size(); i++)
-            {
-                string container = wordsContainer[i];
-                reverse(container.begin(), container.end());
-                string temp = container + "#" + query;
-                vector<int> arr = z_fn(temp);
-                int length = arr[container.size() + 1];
-
-                if (length > maxLen)
-                {
-                    maxLen = length;
-                    index = i;
-                }
-                else if (length == maxLen && wordsContainer[i].size() < wordsContainer[index].size())
-                {
-                    index = i;
-                }
-            }
-
-            ans.push_back(index);
+    // Initialize the first window
+    for (int i = 0; i < total; i++) {
+        if (s[i] == c) {
+            current_count++;
         }
-
-        return ans;
     }
-};
+    max_count_in_window = current_count;
+
+    // Slide the window across the string
+    for (int i = total; i < n; i++) {
+        if (s[i - total] == c) {
+            current_count--;
+        }
+        if (s[i] == c) {
+            current_count++;
+        }
+        max_count_in_window = max(max_count_in_window, current_count);
+    }
+
+    // The minimum swaps required is the difference between total count and max_count_in_window
+    return total - max_count_in_window;
+}
+
+int main() {
+    string s = "agbggcggbcvnxjkmsdkdgggg";
+    char c = 'g';
+    cout << minSwaps(s, c) << endl;
+    return 0;
+}
