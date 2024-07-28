@@ -1,3 +1,5 @@
+// Find the Sum of Subsequence Powers
+
 #include <bits/stdc++.h>
 using namespace std;
 
