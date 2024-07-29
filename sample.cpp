@@ -4,49 +4,39 @@ using namespace std;
 class Solution
 {
 public:
-    long long countAlternatingSubarrays(vector<int> &nums)
+    int numberOfSubstrings(string s)
     {
-        int n = nums.size();
-        int start = 0;
-        int last = nums[0];
-        vector<int> len;
-
-        for (int i = 1; i < n; i++)
+        int n = s.size();
+        int count = 0;
+        for (int winLen = 1; winLen <= n; winLen++)
         {
-            if (i == n - 1)
+            int zeroCount = 0;
+            float maxZero = sqrt(winLen);
+            int l = 0;
+            int r = winLen;
+            for (int i = l; i < r; i++)
             {
-                if (nums[i] != last)
-                {
-                    len.push_back(i - start + 1);
-                }
+                if (s[i] == '0')
+                    zeroCount++;
             }
-            if (nums[i] == last)
+            if (zeroCount < maxZero)
+                count++;
+            while (r < n)
             {
-                if (i - start > 1)
+                if (s[r] == '0' && s[l] != '0')
                 {
-                    len.push_back(i - start);
+                    zeroCount++;
                 }
-                start = i;
+                else if (s[r] != '0' && s[l] == '0')
+                {
+                    zeroCount--;
+                }
+                l++;
+                r++;
+                if (zeroCount < maxZero)
+                    count++;
             }
-            last = nums[i];
         }
-
-        long long ans = 0;
-
-        for (int i = 0; i < len.size(); i++)
-        {
-            long long temp;
-            if(len[i] % 2 == 0){
-                temp = len[i] / 2;
-                temp = temp * (len[i] + 1);
-            }
-            else{
-                temp = (len[i] - 1) / 2;
-                temp = temp * len[i];
-            }
-            ans += temp;
-        }
-
-        return ans + n;
+        return count;
     }
 };
