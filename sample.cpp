@@ -4,28 +4,49 @@ using namespace std;
 class Solution
 {
 public:
-    int maxBottlesDrunk(int numBottles, int numExchange)
+    long long countAlternatingSubarrays(vector<int> &nums)
     {
+        int n = nums.size();
+        int start = 0;
+        int last = nums[0];
+        vector<int> len;
 
-        int ans = 0, empty = 0, full = numBottles;
-
-        while (full > 0)
+        for (int i = 1; i < n; i++)
         {
-            ans += full;
-            empty += full;
-            full = 0;
-            if (empty >= numExchange)
+            if (i == n - 1)
             {
-                full++;
-                empty -= numExchange;
-                numExchange++;
+                if (nums[i] != last)
+                {
+                    len.push_back(i - start + 1);
+                }
             }
-            else
+            if (nums[i] == last)
             {
-                break;
+                if (i - start > 1)
+                {
+                    len.push_back(i - start);
+                }
+                start = i;
             }
+            last = nums[i];
         }
 
-        return ans;
+        long long ans = 0;
+
+        for (int i = 0; i < len.size(); i++)
+        {
+            long long temp;
+            if(len[i] % 2 == 0){
+                temp = len[i] / 2;
+                temp = temp * (len[i] + 1);
+            }
+            else{
+                temp = (len[i] - 1) / 2;
+                temp = temp * len[i];
+            }
+            ans += temp;
+        }
+
+        return ans + n;
     }
 };
