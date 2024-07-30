@@ -1,3 +1,4 @@
+// Range Frequency Queries
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -5,7 +6,7 @@ class RangeFreqQuery
 {
 public:
     int n;
-    vector<map<int, int>> seg;
+    vector<map<int, int>> seg; // stores occurance of each element
     void makeTree(int low, int high, vector<int> &arr, int i)
     {
         if (low == high)
