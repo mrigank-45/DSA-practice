@@ -4,39 +4,80 @@ using namespace std;
 class Solution
 {
 public:
-    string getSmallestString(string s, int k)
+    long long helper(vector<int> nums, int k, int i)
     {
-        int n = s.size();
-        string ans;
-
-        for (int i = 0; i < n; i++)
+        if (nums[i] == k)
         {
-            if (k == 0)
+            return 0;
+        }
+        long long ans = 0;
+        if (nums[i] < k)
+        {
+            if (i != nums.size() - 1 && nums[i + 1] <= k)
             {
-                ans.push_back(s[i]);
-                continue;
+                ans += nums[i + 1] - nums[i];
+                nums[i] = nums[i + 1];
+                if (nums[i] == k)
+                    return ans;
             }
-            int val1 = s[i] - 'a';
-            int val2 = 26 - val1;
+            if (i == nums.size() - 1)
+            {
+                ans += k - nums[i];
+                nums[i] = k;
+                return ans;
+            }
 
-            if (val1 <= k && val1 < val2)
+            long long temp = 0;
+            int j = i;
+            while (j < nums.size() && nums[j] < k)
             {
-                ans.push_back('a');
-                k -= val1;
+                temp += k - nums[j];
+                nums[j] = k;
+                j++;
             }
-            else if (val2 <= k && val2 <= val1)
+            ans += temp;
+        }
+        else
+        {
+            if (i != 0 && nums[i - 1] >= k)
             {
-                ans.push_back('a');
-                k -= val2;
+                ans += nums[i] - nums[i - 1];
+                nums[i] = nums[i - 1];
+                if (nums[i] == k)
+                    return ans;
             }
-            else
+            if (i == 0)
             {
-                char temp = s[i] - k;
-                ans.push_back(temp);
-                k = 0;
+                ans += nums[i] - k;
+                nums[i] = k;
+                return ans;
             }
+
+            long long temp = 0;
+            int j = i;
+            while (j >= 0 && nums[j] > k)
+            {
+                temp += nums[j] - k;
+                nums[j] = k;
+                j--;
+            }
+            ans += temp;
         }
 
         return ans;
+    }
+    long long minOperationsToMakeMedianK(vector<int> &nums, int k)
+    {
+        int n = nums.size();
+        sort(nums.begin(), nums.end());
+
+        if (n % 2 == 1)
+        {
+            return helper(nums, k, n / 2);
+        }
+        else
+        {
+            return helper(nums, k, n / 2);
+        }
     }
 };
