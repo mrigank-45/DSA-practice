@@ -1,59 +1,77 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class Solution
+class NumArray
 {
 public:
-    vector<long long> magicTree(int n, vector<vector<int>> &edges)
+    vector<int> tree;
+    int size;
+    NumArray(vector<int> &nums)
     {
-        vector<vector<pair<long long, long long>>> adj(n);
-        vector<long long> answer(n, LLONG_MAX);
-        priority_queue<pair<long long, long long>, vector<pair<long long, long long>>, greater<pair<long long, long long>>> pq;
+        size = nums.size();
+        tree.resize(4 * size);
+        buildTree(nums, 0, 0, size - 1);
+    }
 
-        // Build the adjacency list
-        for (const auto &edge : edges)
+    void buildTree(vector<int> &array, int treeIndex, int left, int right)
+    {
+        if (left == right)
         {
-            long long u = edge[0];
-            long long v = edge[1];
-            long long t = edge[2];
-            adj[u].emplace_back(v, t);
-            adj[v].emplace_back(u, t);
+            tree[treeIndex] = array[left];
+            return;
         }
+        int mid = left + (right - left) / 2;
+        buildTree(array, 2 * treeIndex + 1, left, mid);
+        buildTree(array, 2 * treeIndex + 2, mid + 1, right);
+        tree[treeIndex] = tree[2 * treeIndex + 1] + tree[2 * treeIndex + 2];
+    }
 
-        // Add all magical nodes (nodes with degree 1) to the priority queue
-        for (long long i = 0; i < n; ++i)
+    void pointUpdate(int treeIndex, int low, int high, int index, int value)
+    {
+        if (low == high)
         {
-            if (adj[i].size() == 1)
-            {
-                pq.push({0, i});
-                answer[i] = 0;
-            }
+            tree[treeIndex] = value;
+            return;
         }
-
-        // Dijkstra's algorithm
-        while (!pq.empty())
+        int mid = low + (high - low) / 2;
+        if (index <= mid)
         {
-            long long current_time = pq.top().first;
-            long long node = pq.top().second;
-
-            pq.pop();
-
-            if (current_time > answer[node])
-                continue;
-
-            for (const auto &neighbor : adj[node])
-            {
-                long long next_node = neighbor.first;
-                long long travel_time = neighbor.second;
-
-                if (current_time + travel_time < answer[next_node])
-                {
-                    answer[next_node] = current_time + travel_time;
-                    pq.push({answer[next_node], next_node});
-                }
-            }
+            pointUpdate(2 * treeIndex + 1, low, mid, index, value);
         }
+        else
+        {
+            pointUpdate(2 * treeIndex + 2, mid + 1, high, index, value);
+        }
+        tree[treeIndex] = tree[2 * treeIndex + 1] + tree[2 * treeIndex + 2];
+    }
 
-        return answer;
+    void update(int index, int val)
+    {
+        pointUpdate(0, 0, size - 1, index, val);
+    }
+
+    int query(int treeIndex, int low, int high, int queryLeft, int queryRight)
+    {
+        // in range
+        if (queryLeft <= low && high <= queryRight)
+        {
+            return tree[treeIndex];
+        }
+        // out of range
+        if (high < queryLeft || low > queryRight)
+        {
+            return 0;
+        }
+        // partially in range
+        int mid = low + (high - low) / 2;
+        int left = query(2 * treeIndex + 1, low, mid, queryLeft, queryRight);
+        int right = query(2 * treeIndex + 2, mid + 1, high, queryLeft, queryRight);
+
+        return left + right;
+    }
+
+    int sumRange(int left, int right)
+    {
+        return query(0, 0, size - 1, left, right);
     }
 };
