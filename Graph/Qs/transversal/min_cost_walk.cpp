@@ -1,3 +1,6 @@
+// Minimum Cost Walk in Weighted Graph
+// Logic: since in question it is given that that we can visit same path any number of time, hence for any two vertex which is same component will have cost=(AND of all edge in that connected component)
+
 #include <bits/stdc++.h>
 using namespace std;
 
