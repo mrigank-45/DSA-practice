@@ -4,62 +4,45 @@ using namespace std;
 class Solution
 {
 public:
-    vector<int> nextGreaterElement(vector<int> &arr, int n)
+    vector<bool> genPrimes(int n)
     {
-        stack<int> s;
-        s.push(-1);
-        vector<int> ans(n);
+        vector<bool> prime(n + 1, true);
 
-        for (int i = n - 1; i >= 0; i--)
+        prime[0] = prime[1] = false;
+
+        for (int i = 2; i <= n; ++i)
         {
-            int curr = arr[i];
-            while (s.top() != -1 && arr[s.top()] <= curr)
+            if (prime[i])
             {
-                s.pop();
+                for (int j = i + i; j <= n; j += i)
+                {
+                    prime[j] = false;
+                }
             }
-
-            ans[i] = s.top();
-            s.push(i);
         }
 
-        return ans;
+        return prime;
     }
-
-    long long numberOfSubarrays(vector<int> &nums)
+    int maximumPrimeDifference(vector<int> &nums)
     {
-        int n = nums.size();
-        map<int, vector<int>> mp;
+        vector<bool> isPrime = genPrimes(101);
+        vector<int> v;
 
-        for (int i = 0; i < n; i++)
+        for (int i = 0; i < nums.size(); i++)
         {
-            mp[nums[i]].push_back(i);
-        }
-
-        long long ans = 0;
-        vector<int> nextGreater = nextGreaterElement(nums, n);
-
-        for (auto it : mp)
-        {
-            if (it.second.size() < 2)
-                continue;
-
-            vector<int> v = it.second;
-            for (int i = 0; i < v.size() - 1; i++)
+            if (isPrime[nums[i]])
             {
-                if (nextGreater[v[i]] == -1)
-                {
-                    ans += v.size() - i - 1;
-                    continue;
-                }
-
-                for (int j = i + 1; j < v.size(); j++)
-                {
-                    if (nextGreater[v[i]] == -1 || nextGreater[v[i]] > v[j])
-                        ans++;
-                }
+                v.push_back(i);
             }
         }
 
-        return ans + n;
+        if (v.size() == 0)
+        {
+            return -1;
+        }
+        else
+        {
+            return v.back() - v.front();
+        }
     }
 };
