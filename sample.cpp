@@ -4,48 +4,54 @@ using namespace std;
 class Solution
 {
 public:
-    unordered_map<int, int> group;
-    unordered_map<int, int> dist;
-    int dfs(int i, int g, vector<bool> &vis, vector<vector<pair<int, int>>> &adj)
+    vector<int> minimumTime(int n, vector<vector<int>> &edges, vector<int> &disappear)
     {
-        if (vis[i])
-            return INT_MAX;
-        vis[i] = true;
-        group[i] = g;
-        int z = INT_MAX;
-        for (auto &e : adj[i])
+        // Create graph as adjacency list
+        vector<vector<pair<int, int>>> graph(n);
+        for (const auto &edge : edges)
         {
-            int res = dfs(e.first, g, vis, adj);
-            z &= (e.second & res);
+            int u = edge[0], v = edge[1], length = edge[2];
+            graph[u].emplace_back(v, length);
+            graph[v].emplace_back(u, length);
         }
-        return z;
-    }
-    vector<int> minimumCost(int n, vector<vector<int>> &edges, vector<vector<int>> &query)
-    {
-        int q = query.size();
-        vector<vector<pair<int, int>>> adj(n, vector<pair<int, int>>());
-        for (auto &e : edges)
+
+        // Min-heap for Dijkstra's algorithm
+        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<>> pq;
+        vector<int> dist(n, INT_MAX);
+
+        // Start from node 0
+        pq.emplace(0, 0); // (time, node)
+        dist[0] = 0;
+
+        while (!pq.empty())
         {
-            adj[e[0]].push_back({e[1], e[2]});
-            adj[e[1]].push_back({e[0], e[2]});
+            int time = pq.top().first;
+            int node = pq.top().second;
+            pq.pop();
+
+            if (time > disappear[node])
+                continue; // Skip if node has disappeared
+
+            for (const auto &neighbour : graph[node])
+            {
+                int nextNode = neighbour.first;
+                int edgeLength = neighbour.second;
+
+                if (time + edgeLength <= disappear[nextNode] && time + edgeLength < dist[nextNode])
+                {
+                    dist[nextNode] = time + edgeLength;
+                    pq.emplace(dist[nextNode], nextNode);
+                }
+            }
         }
-        vector<bool> vis(n, false);
-        for (int i = 0; i < n; i++)
+
+        // Convert unreachable nodes distance to -1
+        for (int i = 0; i < n; ++i)
         {
-            if (vis[i])
-                continue;
-            dist[i] = dfs(i, i, vis, adj);
+            if (dist[i] == INT_MAX)
+                dist[i] = -1;
         }
-        vector<int> ans;
-        for (auto &e : query)
-        {
-            if (e[0] == e[1])
-                ans.push_back(0);
-            else if (group[e[0]] != group[e[1]])
-                ans.push_back(-1);
-            else
-                ans.push_back(dist[group[e[1]]]);
-        }
-        return ans;
+
+        return dist;
     }
 };

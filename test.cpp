@@ -1,89 +1,57 @@
-// Range sum digits (gfg)
 #include <bits/stdc++.h>
 using namespace std;
 
-// number of digits in a number can be max 10, so if changed[i] >= 3, then we don't need to change it anymore, hence we are tracking it.
-
 class Solution
 {
-private:
-    int change(int num)
-    {
-        int ans = 0;
-        while (num)
-        {
-            ans++;
-            num /= 10;
-        }
-        return ans;
-    }
-    const int MAXN = 4 * 100005;
-    vector<long long> tree;
-    vector<int> changed;
-    void build(int index, int low, int high, vector<long long> &A)
-    {
-        if (low == high)
-        {
-            tree[index] = A[low];
-            return;
-        }
-        int mid = (low + high) >> 1;
-        build(2 * index + 1, low, mid, A);
-        build(2 * index + 2, mid + 1, high, A);
-        tree[index] = tree[2 * index + 1] + tree[2 * index + 2];
-    }
-    long long query(int index, int low, int high, int l, int r)
-    {
-        if (r < low || high < l)
-            return 0;
-        if (l <= low && high <= r)
-            return tree[index];
-        int mid = (low + high) >> 1;
-        return query(2 * index + 1, low, mid, l, r) + query(2 * index + 2, mid + 1, high, l, r);
-    }
-    void update(int index, int low, int high, int l, int r)
-    {
-        if (r < low || high < l || changed[index] >= 3)
-            return;
-        if (low == high)
-        {
-            tree[index] = change(tree[index]);
-            changed[index]++;
-            return;
-        }
-        if (l <= low && high <= r)
-            changed[index]++;
-        int mid = (low + high) / 2;
-        update(2 * index + 1, low, mid, l, r);
-        update(2 * index + 2, mid + 1, high, l, r);
-        tree[index] = tree[2 * index + 1] + tree[2 * index + 2];
-    }
-
 public:
-    vector<long long> RangeSumDigits(int n, vector<int> arr, int Q,
-                                     vector<vector<int>> Queries)
+    vector<int> minimumTime(int n, vector<vector<int>> &edges, vector<int> &disappear)
     {
-        vector<long long> A(n);
-        for (int i = 0; i < n; i++)
+        // Create graph as adjacency list
+        vector<vector<pair<int, int>>> graph(n);
+        for (const auto &edge : edges)
         {
-            A[i] = arr[i];
+            int u = edge[0], v = edge[1], length = edge[2];
+            graph[u].emplace_back(v, length);
+            graph[v].emplace_back(u, length);
         }
-        tree.resize(4 * n);
-        changed.resize(4 * n);
-        build(0, 0, n - 1, A);
 
-        vector<long long> ans;
-        for (auto &qq : Queries)
+        // Min-heap for Dijkstra's algorithm
+        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<>> pq;
+        vector<int> dist(n, INT_MAX);
+
+        // Start from node 0
+        pq.emplace(0, 0); // (time, node)
+        dist[0] = 0;
+
+        while (!pq.empty())
         {
-            if (qq[0] == 1)
+            int time = pq.top().first;
+            int node = pq.top().second;
+            pq.pop();
+
+            if (time >= disappear[node])
+                continue; // Skip if node has disappeared
+
+            for (const auto &neighbour : graph[node])
             {
-                update(0, 0, n - 1, qq[1] - 1, qq[2] - 1);
-            }
-            else
-            {
-                ans.push_back(query(0, 0, n - 1, qq[1] - 1, qq[2] - 1));
+                int nextNode = neighbour.first;
+                int edgeLength = neighbour.second;
+
+                if (time + edgeLength < disappear[nextNode] && time + edgeLength < dist[nextNode])
+                {
+                    dist[nextNode] = time + edgeLength;
+                    pq.emplace(dist[nextNode], nextNode);
+                }
             }
         }
-        return ans;
+
+        // Convert unreachable nodes distance to -1
+        for (int i = 0; i < n; ++i)
+        {
+            if (dist[i] == INT_MAX)
+                dist[i] = -1;
+        }
+
+        return dist;
     }
 };
