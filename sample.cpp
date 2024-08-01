@@ -4,54 +4,62 @@ using namespace std;
 class Solution
 {
 public:
-    vector<int> minimumTime(int n, vector<vector<int>> &edges, vector<int> &disappear)
+    vector<int> nextGreaterElement(vector<int> &arr, int n)
     {
-        // Create graph as adjacency list
-        vector<vector<pair<int, int>>> graph(n);
-        for (const auto &edge : edges)
+        stack<int> s;
+        s.push(-1);
+        vector<int> ans(n);
+
+        for (int i = n - 1; i >= 0; i--)
         {
-            int u = edge[0], v = edge[1], length = edge[2];
-            graph[u].emplace_back(v, length);
-            graph[v].emplace_back(u, length);
+            int curr = arr[i];
+            while (s.top() != -1 && arr[s.top()] <= curr)
+            {
+                s.pop();
+            }
+
+            ans[i] = s.top();
+            s.push(i);
         }
 
-        // Min-heap for Dijkstra's algorithm
-        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<>> pq;
-        vector<int> dist(n, INT_MAX);
+        return ans;
+    }
 
-        // Start from node 0
-        pq.emplace(0, 0); // (time, node)
-        dist[0] = 0;
+    long long numberOfSubarrays(vector<int> &nums)
+    {
+        int n = nums.size();
+        map<int, vector<int>> mp;
 
-        while (!pq.empty())
+        for (int i = 0; i < n; i++)
         {
-            int time = pq.top().first;
-            int node = pq.top().second;
-            pq.pop();
+            mp[nums[i]].push_back(i);
+        }
 
-            if (time > disappear[node])
-                continue; // Skip if node has disappeared
+        long long ans = 0;
+        vector<int> nextGreater = nextGreaterElement(nums, n);
 
-            for (const auto &neighbour : graph[node])
+        for (auto it : mp)
+        {
+            if (it.second.size() < 2)
+                continue;
+
+            vector<int> v = it.second;
+            for (int i = 0; i < v.size() - 1; i++)
             {
-                int nextNode = neighbour.first;
-                int edgeLength = neighbour.second;
-
-                if (time + edgeLength <= disappear[nextNode] && time + edgeLength < dist[nextNode])
+                if (nextGreater[v[i]] == -1)
                 {
-                    dist[nextNode] = time + edgeLength;
-                    pq.emplace(dist[nextNode], nextNode);
+                    ans += v.size() - i - 1;
+                    continue;
+                }
+
+                for (int j = i + 1; j < v.size(); j++)
+                {
+                    if (nextGreater[v[i]] == -1 || nextGreater[v[i]] > v[j])
+                        ans++;
                 }
             }
         }
 
-        // Convert unreachable nodes distance to -1
-        for (int i = 0; i < n; ++i)
-        {
-            if (dist[i] == INT_MAX)
-                dist[i] = -1;
-        }
-
-        return dist;
+        return ans + n;
     }
 };

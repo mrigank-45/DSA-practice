@@ -1,57 +1,37 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class Solution
+vector<int> nextGreaterElement(vector<int> &arr, int n)
 {
-public:
-    vector<int> minimumTime(int n, vector<vector<int>> &edges, vector<int> &disappear)
+    stack<int> s;
+    s.push(-1);
+    vector<int> ans(n);
+
+    for (int i = n - 1; i >= 0; i--)
     {
-        // Create graph as adjacency list
-        vector<vector<pair<int, int>>> graph(n);
-        for (const auto &edge : edges)
+        int curr = arr[i];
+        while (s.top() != -1 && arr[s.top()] <= curr)
         {
-            int u = edge[0], v = edge[1], length = edge[2];
-            graph[u].emplace_back(v, length);
-            graph[v].emplace_back(u, length);
+            s.pop();
         }
 
-        // Min-heap for Dijkstra's algorithm
-        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<>> pq;
-        vector<int> dist(n, INT_MAX);
-
-        // Start from node 0
-        pq.emplace(0, 0); // (time, node)
-        dist[0] = 0;
-
-        while (!pq.empty())
-        {
-            int time = pq.top().first;
-            int node = pq.top().second;
-            pq.pop();
-
-            if (time >= disappear[node])
-                continue; // Skip if node has disappeared
-
-            for (const auto &neighbour : graph[node])
-            {
-                int nextNode = neighbour.first;
-                int edgeLength = neighbour.second;
-
-                if (time + edgeLength < disappear[nextNode] && time + edgeLength < dist[nextNode])
-                {
-                    dist[nextNode] = time + edgeLength;
-                    pq.emplace(dist[nextNode], nextNode);
-                }
-            }
-        }
-
-        // Convert unreachable nodes distance to -1
-        for (int i = 0; i < n; ++i)
-        {
-            if (dist[i] == INT_MAX)
-                dist[i] = -1;
-        }
-
-        return dist;
+        ans[i] = s.top();
+        s.push(i);
     }
-};
+
+    return ans;
+}
+
+int main()
+{
+    vector<int> v = {7, 4, 5, 2, 6};
+    vector<int> ans = nextGreaterElement(v, 5);
+
+    for (int i = 0; i < ans.size(); i++)
+    {
+        cout << ans[i] << ' ';
+    }
+    cout << endl;
+
+    return 0;
+}
