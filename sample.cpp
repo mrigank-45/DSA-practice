@@ -4,38 +4,38 @@ using namespace std;
 class Solution
 {
 public:
-    long long findKthSmallest(vector<int> &coins, int k)
+    int numberOfSpecialChars(string word)
     {
-        int n = coins.size();
-        unordered_map<int, bool> mp;
-
-        int cnt = 0;
-
-        // min priority queue
-        priority_queue<pair<long long, long long>, vector<pair<long long, long long>>, greater<pair<long long, long long>>> pq; // {val,adder}
+        int n = word.size();
+        vector<pair<int, int>> lower(26, {0, 0});
+        vector<pair<int, int>> upper(26, {0, 0});
 
         for (int i = 0; i < n; i++)
         {
-            pq.push({coins[i], coins[i]});
-        }
-
-        while (1)
-        {
-            pair<int, int> p = pq.top();
-            pq.pop();
-
-            if (mp[p.first] == false)
+            if (word[i] >= 'a' && word[i] <= 'z')
             {
-                mp[p.first] = true;
+                lower[word[i] - 'a'].first = 1;
+                lower[word[i] - 'a'].second = i;
+            }
+            else
+            {
+                if (upper[word[i] - 'A'].first == 0)
+                {
+                    upper[word[i] - 'A'].first = 1;
+                    upper[word[i] - 'A'].second = i;
+                }
+            }
+        }
+        int cnt = 0;
+
+        for (int i = 0; i < 26; i++)
+        {
+            if (lower[i].first == 1 && upper[i].first == 1 && lower[i].second < upper[i].second)
+            {
                 cnt++;
             }
-
-            if (cnt == k)
-            {
-                return p.first;
-            }
-
-            pq.push({p.first + p.second, p.second});
         }
+
+        return cnt;
     }
 };
