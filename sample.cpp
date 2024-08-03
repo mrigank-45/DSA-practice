@@ -4,45 +4,38 @@ using namespace std;
 class Solution
 {
 public:
-    vector<bool> genPrimes(int n)
+    long long findKthSmallest(vector<int> &coins, int k)
     {
-        vector<bool> prime(n + 1, true);
+        int n = coins.size();
+        unordered_map<int, bool> mp;
 
-        prime[0] = prime[1] = false;
+        int cnt = 0;
 
-        for (int i = 2; i <= n; ++i)
+        // min priority queue
+        priority_queue<pair<long long, long long>, vector<pair<long long, long long>>, greater<pair<long long, long long>>> pq; // {val,adder}
+
+        for (int i = 0; i < n; i++)
         {
-            if (prime[i])
+            pq.push({coins[i], coins[i]});
+        }
+
+        while (1)
+        {
+            pair<int, int> p = pq.top();
+            pq.pop();
+
+            if (mp[p.first] == false)
             {
-                for (int j = i + i; j <= n; j += i)
-                {
-                    prime[j] = false;
-                }
+                mp[p.first] = true;
+                cnt++;
             }
-        }
 
-        return prime;
-    }
-    int maximumPrimeDifference(vector<int> &nums)
-    {
-        vector<bool> isPrime = genPrimes(101);
-        vector<int> v;
-
-        for (int i = 0; i < nums.size(); i++)
-        {
-            if (isPrime[nums[i]])
+            if (cnt == k)
             {
-                v.push_back(i);
+                return p.first;
             }
-        }
 
-        if (v.size() == 0)
-        {
-            return -1;
-        }
-        else
-        {
-            return v.back() - v.front();
+            pq.push({p.first + p.second, p.second});
         }
     }
 };
