@@ -4,55 +4,41 @@ using namespace std;
 class Solution
 {
 public:
-    vector<vector<pair<int, int>>> adj;
-    int n;
-    void dijkstra(int src, vector<int> &d)
+    long long numberOfRightTriangles(vector<vector<int>> &grid)
     {
-        d[src] = 0;
-        set<pair<int, int>> q;
-        q.insert({0, src});
-        while (!q.empty())
+        int n = grid.size();
+        int m = grid[0].size();
+
+        map<int, int> row;
+        map<int, int> col;
+        vector<pair<int, int>> points;
+
+        for (int i = 0; i < n; i++)
         {
-            int node = q.begin()->second;
-            q.erase(q.begin());
-            for (auto &x : adj[node])
+            for (int j = 0; j < m; j++)
             {
-                int to = x.first;
-                int len = x.second;
-                if (d[node] + len < d[to])
+                if (grid[i][j] == 1)
                 {
-                    q.erase({d[to], to});
-                    d[to] = d[node] + len;
-                    q.insert({d[to], to});
+                    row[i]++;
+                    col[j]++;
+                    points.push_back({i, j});
                 }
             }
         }
-    }
-    vector<bool> findAnswer(int n, vector<vector<int>> &a)
-    {
 
-        this->n = n;
-        this->adj.resize(n);
-        for (auto &x : a)
+        long long ans = 0;
+
+        for (auto it : points)
         {
-            adj[x[0]].push_back({x[1], x[2]});
-            adj[x[1]].push_back({x[0], x[2]});
+            int x = it.first;
+            int y = it.second;
+
+            if (row[x] == 0 || col[y] == 0)
+                continue;
+
+            ans += (row[x] - 1) * (col[y] - 1);
         }
-        vector<int> d1(n, INT_MAX), d2(n, INT_MAX);
-        dijkstra(0, d1);
-        dijkstra(n - 1, d2);
-        int m = a.size();
-        vector<bool> ans(m, false);
-        for (int i = 0; i < m; i++)
-        {
-            int u = a[i][0];
-            int v = a[i][1];
-            int cost = a[i][2];
-            if (d1[u] != INT_MAX && d2[v] != INT_MAX && (d1[u] + cost + d2[v] == d1[n - 1] || d2[u] + cost + d1[v] == d1[n - 1]))
-            {
-                ans[i] = true;
-            }
-        }
+
         return ans;
     }
 };
