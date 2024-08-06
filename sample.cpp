@@ -4,57 +4,55 @@ using namespace std;
 class Solution
 {
 public:
-    int solve(vector<vector<int>> &grid, int n, int m, int i, int prev, map<int, vector<pair<int, int>>> &mp,  vector<map<int, int>> &dp)
+    vector<vector<pair<int, int>>> adj;
+    int n;
+    void dijkstra(int src, vector<int> &d)
     {
-        if (i == m)
+        d[src] = 0;
+        set<pair<int, int>> q;
+        q.insert({0, src});
+        while (!q.empty())
         {
-            return 0;
-        }
-
-        if (dp[i].count(prev))
-        {
-            return dp[i][prev];
-        }
-
-        int ans = INT_MAX;
-
-        for (auto it : mp[i])
-        {
-            int a = it.first;
-            int b = it.second;
-            if (a != prev)
+            int node = q.begin()->second;
+            q.erase(q.begin());
+            for (auto &x : adj[node])
             {
-                ans = min(ans, (n - b) + solve(grid, n, m, i + 1, a, mp, dp));
+                int to = x.first;
+                int len = x.second;
+                if (d[node] + len < d[to])
+                {
+                    q.erase({d[to], to});
+                    d[to] = d[node] + len;
+                    q.insert({d[to], to});
+                }
             }
         }
-        ans = min(ans, n + solve(grid, n, m, i + 1, -1, mp, dp));
-
-        return dp[i][prev] = ans;
     }
-    int minimumOperations(vector<vector<int>> &grid)
+    vector<bool> findAnswer(int n, vector<vector<int>> &a)
     {
-        int n = grid.size();
-        int m = grid[0].size();
 
-        map<int, vector<pair<int, int>>> mp;
-
+        this->n = n;
+        this->adj.resize(n);
+        for (auto &x : a)
+        {
+            adj[x[0]].push_back({x[1], x[2]});
+            adj[x[1]].push_back({x[0], x[2]});
+        }
+        vector<int> d1(n, INT_MAX), d2(n, INT_MAX);
+        dijkstra(0, d1);
+        dijkstra(n - 1, d2);
+        int m = a.size();
+        vector<bool> ans(m, false);
         for (int i = 0; i < m; i++)
         {
-            vector<pair<int, int>> v;
-            map<int, int> mp1;
-            for (int j = 0; j < n; j++)
+            int u = a[i][0];
+            int v = a[i][1];
+            int cost = a[i][2];
+            if (d1[u] != INT_MAX && d2[v] != INT_MAX && (d1[u] + cost + d2[v] == d1[n - 1] || d2[u] + cost + d1[v] == d1[n - 1]))
             {
-                mp1[grid[j][i]]++;
+                ans[i] = true;
             }
-            for (auto it : mp1)
-            {
-                v.push_back({it.first, it.second});
-            }
-            mp[i] = v;
         }
-
-        vector<map<int, int>> dp(m + 1, map<int, int>());
-
-        return solve(grid, n, m, 0, -1, mp, dp);
+        return ans;
     }
 };

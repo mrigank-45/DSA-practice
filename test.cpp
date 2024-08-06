@@ -4,80 +4,55 @@ using namespace std;
 class Solution
 {
 public:
-    int minimumOperations(vector<vector<int>> &grid)
+    vector<vector<pair<int, int>>> adj;
+    int n;
+    void dijkstra(int src, vector<int> &d)
     {
-        int n = grid.size();
-        int m = grid[0].size();
+        d[src] = 0;
+        set<pair<int, int>> q;
+        q.insert({0, src});
+        while (!q.empty())
+        {
+            int node = q.begin()->second;
+            q.erase(q.begin());
+            for (auto &x : adj[node])
+            {
+                int to = x.first;
+                int len = x.second;
+                if (d[node] + len < d[to])
+                {
+                    q.erase({d[to], to});
+                    d[to] = d[node] + len;
+                    q.insert({d[to], to});
+                }
+            }
+        }
+    }
+    vector<bool> findAnswer(int n, vector<vector<int>> &a)
+    {
 
-        vector<pair<pair<int, int>, pair<int, int>>> v;
-
+        this->n = n;
+        this->adj.resize(n);
+        for (auto &x : a)
+        {
+            adj[x[0]].push_back({x[1], x[2]});
+            adj[x[1]].push_back({x[0], x[2]});
+        }
+        vector<int> d1(n, INT_MAX), d2(n, INT_MAX);
+        dijkstra(0, d1);
+        dijkstra(n - 1, d2);
+        int m = a.size();
+        vector<bool> ans(m, false);
         for (int i = 0; i < m; i++)
         {
-            map<int, int> mp1;
-            for (int j = 0; j < n; j++)
+            int u = a[i][0];
+            int v = a[i][1];
+            int cost = a[i][2];
+            if (d1[u] != INT_MAX && d2[v] != INT_MAX && (d1[u] + cost + d2[v] == d1[n - 1] || d2[u] + cost + d1[v] == d1[n - 1]))
             {
-                mp1[grid[j][i]]++;
-            }
-            priority_queue<pair<int, int>> pq;
-            for (auto x : mp1)
-            {
-                pq.push({x.second, x.first});
-            }
-            pair<int, int> p1 = {pq.top().second, pq.top().first};
-            pq.pop();
-            pair<int, int> p2;
-            if (pq.empty())
-            {
-                p2 = {-1, n};
-            }
-            else
-            {
-                p2 = {pq.top().second, pq.top().first};
-            }
-            v.push_back({p1, p2});
-        }
-        int ans = 0;
-        int prev = -1;
-        for (int i = 0; i < v.size(); i++)
-        {
-            pair<int, int> p1 = v[i].first;
-            pair<int, int> p2 = v[i].second;
-            if (prev == -1)
-            {
-                if (p1.first == p2.first && i != n - 1 && p1.first == v[i + 1].first.first)
-                {
-                    ans = ans + (n - p2.second);
-                    prev = p2.first;
-                }
-                else
-                {
-                    ans = ans + n - p1.second;
-                    prev = p1.first;
-                }
-            }
-            else
-            {
-                if (prev == p1.first)
-                {
-                    if (p2.first == -1)
-                    {
-                        ans = ans + n;
-                        prev = -1;
-                    }
-                    else
-                    {
-                        ans = ans + (n - p2.second);
-                        prev = p2.first;
-                    }
-                }
-                else
-                {
-                    ans = ans + (n - p1.second);
-                    prev = p1.first;
-                }
+                ans[i] = true;
             }
         }
-
         return ans;
     }
 };
