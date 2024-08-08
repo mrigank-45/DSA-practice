@@ -4,40 +4,64 @@ using namespace std;
 class Solution
 {
 public:
-    int solve(vector<int> &nums1, vector<int> &nums2, int n, int i, int left)
+    long long helper(vector<int> &nums, int mid, int n)
     {
-        int diff = nums2[0] - nums1[i];
-        i++;
-        int j = 1;
-        while (j < nums2.size() && i < n)
+        long long ans = 0;
+        unordered_map<int, int> mp;
+        int i = 0;
+        int j = 0;
+        while (j < n)
         {
-            if (nums2[j] - nums1[i] == diff)
+            mp[nums[j]]++;
+            while (i <= j && mp.size() > mid)
             {
-                j++;
+                mp[nums[i]]--;
+                if (mp[nums[i]] == 0)
+                {
+                    mp.erase(nums[i]);
+                }
                 i++;
+            }
+            ans += j - i + 1;
+            j++;
+        }
+        return ans;
+    }
+    int medianOfUniquenessArray(vector<int> &nums)
+    {
+        int n = nums.size();
+        long long m;
+        if (n % 2 == 0)
+        {
+            m = (long long)(n / 2) * (long long)(n - 1) + (long long)n;
+        }
+        else
+        {
+            m = (long long)((n - 1) / 2) * (long long)(n) + (long long)n;
+        }
+
+        int s = 1, e = n;
+
+        int ans = -1;
+
+        while (s <= e)
+        {
+            int mid = s + (e - s) / 2;
+            if (helper(nums, mid, n) == (m + 1) / 2)
+            {
+                ans = mid;
+                break;
+            }
+            else if (helper(nums, mid, n) > (m + 1) / 2)
+            {
+                ans = mid;
+                e = mid - 1;
             }
             else
             {
-                if (left == 0)
-                    return INT_MAX;
-                left--;
-                i++;
+                s = mid + 1;
             }
         }
-        return diff;
-    }
-    int minimumAddedInteger(vector<int> &nums1, vector<int> &nums2)
-    {
-        int n = nums1.size();
-        sort(nums1.begin(), nums1.end());
-        sort(nums2.begin(), nums2.end());
-        int ans = INT_MAX;
-        ans = min(ans, solve(nums1, nums2, n, 0, 2));
-
-        ans = min(ans, solve(nums1, nums2, n, 1, 1));
-
-        ans = min(ans, solve(nums1, nums2, n, 2, 0));
-
         return ans;
     }
 };
