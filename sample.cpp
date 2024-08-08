@@ -4,40 +4,39 @@ using namespace std;
 class Solution
 {
 public:
-    long long numberOfRightTriangles(vector<vector<int>> &grid)
+    int solve(vector<int> &nums1, vector<int> &nums2, int n, int i, int left)
     {
-        int n = grid.size();
-        int m = grid[0].size();
-
-        map<int, int> row;
-        map<int, int> col;
-        vector<pair<int, int>> points;
-
-        for (int i = 0; i < n; i++)
+        int diff = nums2[0] - nums1[i];
+        i++;
+        int j = 1;
+        while (j < nums2.size() && i < n)
         {
-            for (int j = 0; j < m; j++)
+            if (nums2[j] - nums1[i] == diff)
             {
-                if (grid[i][j] == 1)
-                {
-                    row[i]++;
-                    col[j]++;
-                    points.push_back({i, j});
-                }
+                j++;
+                i++;
+            }
+            else
+            {
+                if (left == 0)
+                    return INT_MAX;
+                left--;
+                i++;
             }
         }
+        return diff;
+    }
+    int minimumAddedInteger(vector<int> &nums1, vector<int> &nums2)
+    {
+        int n = nums1.size();
+        sort(nums1.begin(), nums1.end());
+        sort(nums2.begin(), nums2.end());
+        int ans = INT_MAX;
+        ans = min(ans, solve(nums1, nums2, n, 0, 2));
 
-        long long ans = 0;
+        ans = min(ans, solve(nums1, nums2, n, 1, 1));
 
-        for (auto it : points)
-        {
-            int x = it.first;
-            int y = it.second;
-
-            if (row[x] == 0 || col[y] == 0)
-                continue;
-
-            ans += (row[x] - 1) * (col[y] - 1);
-        }
+        ans = min(ans, solve(nums1, nums2, n, 2, 0));
 
         return ans;
     }
