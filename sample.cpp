@@ -4,32 +4,74 @@ using namespace std;
 class Solution
 {
 public:
-    int minimumOperationsToMakeKPeriodic(string word, int k)
+    int minCostToEqualizeArray(vector<int> &nums, int cost1, int cost2)
     {
-        int n = word.size();
-        map<string, int> mp;
-        int i = 0;
+        int n = nums.size();
+        int mod = 1e9 + 7;
 
-        while (i < n)
+        int one = cost1, two;
+        if (2 * cost1 < cost2)
         {
-            string s = "";
-            for (int j = i; j < i + k; j++)
-            {
-                s += word[j];
-            }
-            mp[s]++;
-            i += k;
+            two = 2 * cost1;
         }
-        int max = 0, cnt = 0;
-        for (auto it : mp)
+        else
         {
-            if (it.second > max)
-            {
-                max = it.second;
-            }
-            cnt += it.second;
+            two = cost2;
         }
 
-        return cnt - max;
+        int max = nums[0];
+        for (int i = 0; i < n; i++)
+        {
+            if (nums[i] > max)
+            {
+                max = nums[i];
+            }
+        }
+
+        priority_queue<int, vector<int>, greater<int>> pq;
+        int flag = 0;
+        for (int i = 0; i < n; i++)
+        {
+            if (nums[i] == max && flag == 0)
+            {
+                flag = 1;
+            }
+            else
+            {
+                pq.push(nums[i]);
+            }
+        }
+        int ans = 0;
+
+        while (!pq.empty())
+        {
+            if (pq.size() == 1)
+            {
+                int x = pq.top();
+                pq.pop();
+                ans += (max - x) * one;
+            }
+            else
+            {
+                int x = pq.top();
+                pq.pop();
+                x++;
+                int y = pq.top();
+                pq.pop();
+                y++;
+                ans += two;
+
+                if (x < max)
+                {
+                    pq.push(x);
+                }
+                if (y < max)
+                {
+                    pq.push(y);
+                }
+            }
+        }
+
+        return ans;
     }
 };
