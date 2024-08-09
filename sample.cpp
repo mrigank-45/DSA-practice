@@ -4,64 +4,32 @@ using namespace std;
 class Solution
 {
 public:
-    long long helper(vector<int> &nums, int mid, int n)
+    int minimumOperationsToMakeKPeriodic(string word, int k)
     {
-        long long ans = 0;
-        unordered_map<int, int> mp;
+        int n = word.size();
+        map<string, int> mp;
         int i = 0;
-        int j = 0;
-        while (j < n)
+
+        while (i < n)
         {
-            mp[nums[j]]++;
-            while (i <= j && mp.size() > mid)
+            string s = "";
+            for (int j = i; j < i + k; j++)
             {
-                mp[nums[i]]--;
-                if (mp[nums[i]] == 0)
-                {
-                    mp.erase(nums[i]);
-                }
-                i++;
+                s += word[j];
             }
-            ans += j - i + 1;
-            j++;
+            mp[s]++;
+            i += k;
         }
-        return ans;
-    }
-    int medianOfUniquenessArray(vector<int> &nums)
-    {
-        int n = nums.size();
-        long long m;
-        if (n % 2 == 0)
+        int max = 0, cnt = 0;
+        for (auto it : mp)
         {
-            m = (long long)(n / 2) * (long long)(n - 1) + (long long)n;
-        }
-        else
-        {
-            m = (long long)((n - 1) / 2) * (long long)(n) + (long long)n;
+            if (it.second > max)
+            {
+                max = it.second;
+            }
+            cnt += it.second;
         }
 
-        int s = 1, e = n;
-
-        int ans = -1;
-
-        while (s <= e)
-        {
-            int mid = s + (e - s) / 2;
-            if (helper(nums, mid, n) == (m + 1) / 2)
-            {
-                ans = mid;
-                break;
-            }
-            else if (helper(nums, mid, n) > (m + 1) / 2)
-            {
-                ans = mid;
-                e = mid - 1;
-            }
-            else
-            {
-                s = mid + 1;
-            }
-        }
-        return ans;
+        return cnt - max;
     }
 };
