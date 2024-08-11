@@ -1,36 +1,124 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int helper(vector<int> &nums, int mid, int n)
+class Solution
 {
-    int ans = 0;
-    unordered_map<int, int> mp;
-    int i = 0;
-    int j = 0;
-    while (j < n)
+public:
+    int maxPointsInsideSquare(vector<vector<int>> &points, string s)
     {
-        mp[nums[j]]++;
-        while (i <= j && mp.size() > mid)
+        map<pair<int, int>, char> mp;
+        map<char, int> vis;
+        int n = points.size();
+        for (int i = 0; i < n; i++)
         {
-            mp[nums[i]]--;
-            if (mp[nums[i]] == 0)
-            {
-                mp.erase(nums[i]);
-            }
-            i++;
+            mp[{points[i][0], points[i][1]}] = s[i];
         }
-        ans += j - i + 1;
-        j++;
+        int ans = 0, len = 2;
+        pair<int, int> p1 = {-1, 1};
+        pair<int, int> p2 = {1, -1};
+
+        while (vis.size() <= n)
+        {
+            if (vis.size() == n)
+                return ans;
+            int x = p1.first;
+            int y = p1.second;
+            int temp = ans;
+            for (int i = x; i <= x + len; i++)
+            {
+                if (mp.find({i, y}) != mp.end())
+                {
+                    cout << "found: " << mp[{i, y}] << endl;
+                    if (vis[mp[{i, y}]])
+                    {
+                        return ans;
+                    }
+                    else
+                    {
+                        vis[mp[{i, y}]] = 1;
+                        temp++;
+                    }
+                }
+            }
+            for (int i = y; i >= y - len; i--)
+            {
+                if (mp.find({x, i}) != mp.end())
+                {
+                    cout << "found: " << mp[{i, y}] << endl;
+
+                    if (vis[mp[{x, i}]])
+                    {
+                        return ans;
+                    }
+                    else
+                    {
+                        vis[mp[{x, i}]] = 1;
+                        temp++;
+                    }
+                }
+            }
+
+            x = p2.first;
+            y = p2.second;
+
+            for (int i = x; i > x - len; i--)
+            {
+                if (mp.find({i, y}) != mp.end())
+                {
+                    cout << "found: " << mp[{i, y}] << endl;
+
+                    if (vis[mp[{i, y}]])
+                    {
+                        return ans;
+                    }
+                    else
+                    {
+                        vis[mp[{i, y}]] = 1;
+                        temp++;
+                    }
+                }
+            }
+
+            for (int i = y; i < y + len; i++)
+            {
+                if (mp.find({x, i}) != mp.end())
+                {
+                    cout << "found: " << mp[{i, y}] << endl;
+
+                    if (vis[mp[{x, i}]])
+                    {
+                        return ans;
+                    }
+                    else
+                    {
+                        vis[mp[{x, i}]] = 1;
+                        temp++;
+                    }
+                }
+            }
+            ans = temp;
+            cout << "p1: " << p1.first << " " << p1.second << endl;
+            cout << "p2: " << p2.first << " " << p2.second << endl;
+            cout << "ans: " << ans << endl;
+            len += 2;
+            p1.first--;
+            p1.second++;
+            p2.first++;
+            p2.second--;
+        }
+        return ans;
     }
-    return ans;
-}
+};
 
 int main()
 {
-    vector<int> nums = {1, 2, 3};
-    int n = nums.size();
-    cout << helper(nums, 1, n) << endl;
-    cout << helper(nums, 2, n) << endl;
+    vector<vector<int>> points = {{2, 2}, {-1, -2}, {-4, 4}, {-3, 1}, {3, -3}};
+    string s = "abdca";
 
-    cout << helper(nums, 3, n) << endl;
+    Solution sol;
+    int result = sol.maxPointsInsideSquare(points, s);
+
+    cout << "Maximum points inside the square: " << result << endl;
+
+    return 0;
 }
