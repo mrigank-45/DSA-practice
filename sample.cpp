@@ -4,108 +4,61 @@ using namespace std;
 class Solution
 {
 public:
-    int maxPointsInsideSquare(vector<vector<int>> &points, string s)
+    map<string, int> dp;
+
+    bool equal(map<char, int> &mp)
     {
-        map<pair<int, int>, char> mp;
-        map<char, int> vis;
-        int n = points.size();
-        for (int i = 0; i < n; i++)
+        int freq = mp.begin()->second;
+        for (auto it : mp)
         {
-            mp[{points[i][0], points[i][1]}] = s[i];
+            if (it.second != freq)
+                return false;
         }
-        int ans = 0, len = 2;
-        pair<int, int> p1 = {-1, 1};
-        pair<int, int> p2 = {1, -1};
-
-        while (vis.size() <= n)
+        return true;
+    }
+    string getkey(map<char, int> &mp)
+    {
+        string key = "";
+        for (auto it : mp)
         {
-            if (vis.size() == n)
-                return ans;
-            int x = p1.first;
-            int y = p1.second;
-            int temp = ans;
-            for (int i = x; i <= x + len; i++)
-            {
-                if (mp.find({i, y}) != mp.end())
-                {
-                    cout<<"found: "<<mp[{i, y}]<<endl;
-                    if (vis[mp[{i, y}]])
-                    {
-                        return ans;
-                    }
-                    else
-                    {
-                        vis[mp[{i, y}]] = 1;
-                        temp++;
-                    }
-                }
-            }
-            for (int i = y; i >= y - len; i--)
-            {
-                if (mp.find({x, i}) != mp.end())
-                {
-                    cout<<"found: "<<mp[{i, y}]<<endl;
+            key += it.first;
+            key += to_string(it.second);
+        }
+        return key;
+    }
+    int solve(string s, int n, int i, map<char, int> &mp)
+    {
+        if (i == n)
+        {
+            if (mp.size() == 0)
+                return 0;
+            if (equal(mp))
+                return 1;
+            else
+                return 10000;
+        }
+        string temp = getkey(mp) + "#" + to_string(i);
 
-                    if (vis[mp[{x, i}]])
-                    {
-                        return ans;
-                    }
-                    else
-                    {
-                        vis[mp[{x, i}]] = 1;
-                        temp++;
-                    }
-                }
-            }
+        if(dp.find(temp) != dp.end())
+            return dp[temp];
 
-            x = p2.first;
-            y = p2.second;
+        mp[s[i]]++;
+        int ans = 10000;
 
-            for (int i = x; i > x - len; i--)
-            {
-                if (mp.find({i, y}) != mp.end())
-                {
-                    cout<<"found: "<<mp[{i, y}]<<endl;
+        if (equal(mp))
+        {
+            map<char, int> temp;
+            ans = min(ans, 1 + solve(s, n, i + 1, temp));
+        }
 
-                    if (vis[mp[{i, y}]])
-                    {
-                        return ans;
-                    }
-                    else
-                    {
-                        vis[mp[{i, y}]] = 1;
-                        temp++;
-                    }
-                }
-            }
+        ans = min(ans, solve(s, n, i + 1, mp));
 
-            for (int i = y; i < y + len; i++)
-            {
-                if (mp.find({x, i}) != mp.end())
-                {
-                    cout<<"found: "<<mp[{i, y}]<<endl;
-
-                    if (vis[mp[{x, i}]])
-                    {
-                        return ans;
-                    }
-                    else
-                    {
-                        vis[mp[{x, i}]] = 1;
-                        temp++;
-                    }
-                }
-            }
-            ans = temp;
-            cout << "p1: " << p1.first << " " << p1.second << endl;
-            cout << "p2: " << p2.first << " " << p2.second << endl;
-            cout << "ans: " << ans << endl;
-            len += 2;
-            p1.first--;
-            p1.second--;
-            p2.first++;
-            p2.second++;
-                }
-        return ans;
+        return dp[temp] = ans;
+    }
+    int minimumSubstringsInPartition(string s)
+    {
+        int n = s.size();
+        map<char, int> temp;
+        return solve(s, n, 0, temp);
     }
 };
