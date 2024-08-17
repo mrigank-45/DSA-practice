@@ -1,124 +1,72 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <string>
+
 using namespace std;
 
-class Solution
-{
-public:
-    int maxPointsInsideSquare(vector<vector<int>> &points, string s)
-    {
-        map<pair<int, int>, char> mp;
-        map<char, int> vis;
-        int n = points.size();
-        for (int i = 0; i < n; i++)
-        {
-            mp[{points[i][0], points[i][1]}] = s[i];
+vector<string> solution(const vector<vector<string>>& paragraphs, int width) {
+    vector<string> result;
+    const string border(width + 2, '*'); // Top and bottom border
+    result.push_back(border);
+
+    for (const auto& paragraph : paragraphs) {
+        string line = "*"; // Start the line with a left border asterisk
+
+        for (size_t i = 0; i < paragraph.size(); ++i) {
+            const auto& chunk = paragraph[i];
+            if (line.size() + chunk.size() + 1 > width + 1) { // Check if adding the next chunk exceeds the width
+                // Center the current line if it has content
+                if (line.size() > 1) {
+                    int total_spaces = width - (line.size() - 1); // Total spaces needed
+                    int left_spaces = total_spaces / 2;
+                    int right_spaces = total_spaces - left_spaces;
+                    line = "*" + string(left_spaces, ' ') + line.substr(1) + string(right_spaces, ' ') + "*";
+                    result.push_back(line);
+                }
+                line = "*"; // Start a new line
+                line += chunk; // Add the current chunk to the new line
+            } else {
+                if (line.size() > 1) { // If line already has some content, add a space before the next chunk
+                    line += " ";
+                }
+                line += chunk;
+            }
         }
-        int ans = 0, len = 2;
-        pair<int, int> p1 = {-1, 1};
-        pair<int, int> p2 = {1, -1};
 
-        while (vis.size() <= n)
-        {
-            if (vis.size() == n)
-                return ans;
-            int x = p1.first;
-            int y = p1.second;
-            int temp = ans;
-            for (int i = x; i <= x + len; i++)
-            {
-                if (mp.find({i, y}) != mp.end())
-                {
-                    cout << "found: " << mp[{i, y}] << endl;
-                    if (vis[mp[{i, y}]])
-                    {
-                        return ans;
-                    }
-                    else
-                    {
-                        vis[mp[{i, y}]] = 1;
-                        temp++;
-                    }
-                }
-            }
-            for (int i = y; i >= y - len; i--)
-            {
-                if (mp.find({x, i}) != mp.end())
-                {
-                    cout << "found: " << mp[{i, y}] << endl;
-
-                    if (vis[mp[{x, i}]])
-                    {
-                        return ans;
-                    }
-                    else
-                    {
-                        vis[mp[{x, i}]] = 1;
-                        temp++;
-                    }
-                }
-            }
-
-            x = p2.first;
-            y = p2.second;
-
-            for (int i = x; i > x - len; i--)
-            {
-                if (mp.find({i, y}) != mp.end())
-                {
-                    cout << "found: " << mp[{i, y}] << endl;
-
-                    if (vis[mp[{i, y}]])
-                    {
-                        return ans;
-                    }
-                    else
-                    {
-                        vis[mp[{i, y}]] = 1;
-                        temp++;
-                    }
-                }
-            }
-
-            for (int i = y; i < y + len; i++)
-            {
-                if (mp.find({x, i}) != mp.end())
-                {
-                    cout << "found: " << mp[{i, y}] << endl;
-
-                    if (vis[mp[{x, i}]])
-                    {
-                        return ans;
-                    }
-                    else
-                    {
-                        vis[mp[{x, i}]] = 1;
-                        temp++;
-                    }
-                }
-            }
-            ans = temp;
-            cout << "p1: " << p1.first << " " << p1.second << endl;
-            cout << "p2: " << p2.first << " " << p2.second << endl;
-            cout << "ans: " << ans << endl;
-            len += 2;
-            p1.first--;
-            p1.second++;
-            p2.first++;
-            p2.second--;
+        // Push the last line of the paragraph only if it has content
+        if (line.size() > 1) {
+            int total_spaces = width - (line.size() - 1); // Total spaces needed
+            int left_spaces = total_spaces / 2;
+            int right_spaces = total_spaces - left_spaces;
+            line = "*" + string(left_spaces, ' ') + line.substr(1) + string(right_spaces, ' ') + "*";
+            result.push_back(line);
         }
-        return ans;
     }
-};
 
-int main()
-{
-    vector<vector<int>> points = {{2, 2}, {-1, -2}, {-4, 4}, {-3, 1}, {3, -3}};
-    string s = "abdca";
+    result.push_back(border); // Bottom border
 
-    Solution sol;
-    int result = sol.maxPointsInsideSquare(points, s);
+    return result;
+}
 
-    cout << "Maximum points inside the square: " << result << endl;
+int main() {
+    // vector<vector<string>> paragraphs = {
+    //     {"there", "are"},
+    //     {"four seasons", "in a year"},
+    //     {"summer", "autumn", "winter", "spring"}
+    // };
+    // int width = 12;
+
+     vector<vector<string>> paragraphs = {
+        {"hello", "world"},
+        {"How", "areYou", "doing"},
+        {"Please look", "and align", "to center"}
+    };
+    int width = 16;
+
+    vector<string> formattedPage = solution(paragraphs, width);
+    for (const auto& line : formattedPage) {
+        cout << line << endl;
+    }
 
     return 0;
 }

@@ -1,64 +1,44 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class Solution
+vector<bool> solution(vector<vector<int>> &operations)
 {
-public:
-    map<string, int> dp;
+    int max_width = 0;
+    int max_height = 0;
+    vector<bool> result;
 
-    bool equal(map<char, int> &mp)
+    for (const auto &op : operations)
     {
-        int freq = mp.begin()->second;
-        for (auto it : mp)
+        if (op[0] == 0)
         {
-            if (it.second != freq)
-                return false;
+            int width = op[1];
+            int height = op[2];
+            max_width = max(max_width, max(width, height));
+            max_height = max(max_height, min(width, height));
         }
-        return true;
+        else if (op[0] == 1)
+        {
+            int box_width = op[1];
+            int box_height = op[2];
+            bool can_fit1 = (max_width <= max(box_width, box_height) &&
+                             max_height <= min(box_width, box_height));
+            bool can_fit2 = (max_height <= max(box_width, box_height) &&
+                             max_width <= min(box_width, box_height));
+            result.push_back(can_fit1 || can_fit2);
+        }
     }
-    string getkey(map<char, int> &mp)
+    return result;
+}
+
+int main()
+{
+    vector<vector<int>> operations = {{0, 1, 3}, {0, 4, 2}, {1, 3, 4}, {1, 3, 2}};
+    vector<bool> res = solution(operations);
+
+    for (bool b : res)
     {
-        string key = "";
-        for (auto it : mp)
-        {
-            key += it.first;
-            key += to_string(it.second);
-        }
-        return key;
+        cout << (b ? "true" : "false") << endl;
     }
-    int solve(string s, int n, int i, map<char, int> &mp)
-    {
-        if (i == n)
-        {
-            if (mp.size() == 0)
-                return 0;
-            if (equal(mp))
-                return 1;
-            else
-                return 10000;
-        }
-        string temp = getkey(mp) + "#" + to_string(i);
 
-        if(dp.find(temp) != dp.end())
-            return dp[temp];
-
-        mp[s[i]]++;
-        int ans = 10000;
-
-        if (equal(mp))
-        {
-            map<char, int> temp;
-            ans = min(ans, 1 + solve(s, n, i + 1, temp));
-        }
-
-        ans = min(ans, solve(s, n, i + 1, mp));
-
-        return dp[temp] = ans;
-    }
-    int minimumSubstringsInPartition(string s)
-    {
-        int n = s.size();
-        map<char, int> temp;
-        return solve(s, n, 0, temp);
-    }
-};
+    return 0;
+}
