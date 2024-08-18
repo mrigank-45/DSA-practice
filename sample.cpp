@@ -4,36 +4,58 @@ using namespace std;
 class Solution
 {
 public:
-    int solve(vector<int> &energy, int k, int n, int i, int choose, vector<vector<int>> &dp)
+    int m, n;
+    vector<vector<int>> dp;
+    int ans = INT_MIN;
+
+    int solve(vector<vector<int>> &grid, int i, int j, int score)
     {
-        if (i >= n)
+        if (dp[i][j] != INT_MIN)
         {
-            return choose == 1 ? 0 : INT_MIN;
+            return dp[i][j] + score;
         }
 
-        if (dp[i][choose] != INT_MIN)
+        int maxScore = score;
+
+        for (int x = j + 1; x < n; ++x)
         {
-            return dp[i][choose];
+            int newScore = solve(grid, i, x, score + grid[i][x] - grid[i][j]);
+            maxScore = max(maxScore, newScore);
         }
 
-        if (choose == 1)
+        for (int y = i + 1; y < m; ++y)
         {
-            dp[i][choose] = energy[i] + solve(energy, k, n, i + k, 1, dp);
-        }
-        else
-        {
-            int take = energy[i] + solve(energy, k, n, i + k, 1, dp);
-            int skip = solve(energy, k, n, i + 1, 0, dp);
-            dp[i][choose] = max(take, skip);
+            int newScore = solve(grid, y, j, score + grid[y][j] - grid[i][j]);
+            maxScore = max(maxScore, newScore);
         }
 
-        return dp[i][choose];
+        dp[i][j] = maxScore - score;
+
+        return maxScore;
     }
 
-    int maximumEnergy(vector<int> &energy, int k)
+    int maxScore(vector<vector<int>> &grid)
     {
-        int n = energy.size();
-        vector<vector<int>> dp(n, vector<int>(2, INT_MIN));
-        return solve(energy, k, n, 0, 0, dp);
+        m = grid.size();
+        n = grid[0].size();
+        dp.resize(m, vector<int>(n, INT_MIN));
+
+        for (int i = 0; i < m; ++i)
+        {
+            for (int j = 0; j < n; ++j)
+            {
+                for (int x = j + 1; x < n; ++x)
+                {
+                    ans = max(ans, solve(grid, i, x, grid[i][x] - grid[i][j]));
+                }
+
+                for (int y = i + 1; y < m; ++y)
+                {
+                    ans = max(ans, solve(grid, y, j, grid[y][j] - grid[i][j]));
+                }
+            }
+        }
+
+        return ans;
     }
 };
