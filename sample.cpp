@@ -4,34 +4,32 @@ using namespace std;
 class Solution
 {
 public:
-    vector<int> occurrencesOfElement(vector<int> &nums, vector<int> &queries, int x)
+    long long solve(vector<int> &a, vector<int> &b, int i, int turn, int n)
     {
-        int n = nums.size();
-        vector<int> index;
-
-        for (int i = 0; i < n; i++)
+        if (i == n)
         {
-            if (nums[i] == x)
-            {
-                index.push_back(i);
-            }
+            return 0;
         }
-        int size = index.size();
 
-        vector<int> ans;
+        long long ans = INT_MIN;
 
-        for (int i = 0; i < queries.size(); i++)
+        if (turn == 0)
         {
-            if (queries[i] > size)
-            {
-                ans.push_back(-1);
-            }
-            else
-            {
-                ans.push_back(index[queries[i] - 1]);
-            }
+            ans = max(a[i] + solve(a, b, i + 1, 0, n), ans);
+            ans = max(solve(a, b, i + 1, 1, n), ans);
+        }
+        else
+        {
+            ans = max(b[i] + solve(a, b, i + 1, 1, n), ans);
+            ans = max(solve(a, b, i + 1, 0, n), ans);
         }
 
         return ans;
+    }
+    long long maxEnergyBoost(vector<int> &energyDrinkA, vector<int> &energyDrinkB)
+    {
+        int n = energyDrinkA.size();
+
+        return max(solve(energyDrinkA, energyDrinkB, 0, 0, n), solve(energyDrinkB, energyDrinkA, 0, 1, n));
     }
 };

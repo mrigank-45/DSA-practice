@@ -4,59 +4,42 @@ using namespace std;
 class Solution
 {
 public:
-    vector<int> findPermutation(vector<int> &nums)
+    long long solve(vector<int> &a, vector<int> &b, int i, int turn, int n, vector<vector<long long>> &dp)
     {
-        int n = nums.size();
-        int min_cost = numeric_limits<int>::max();
-        vector<int> best_permutation;
+        if (i == n)
+        {
+            return 0;
+        }
 
-        vector<bool> used(n, false);
-        vector<int> perm;
+        if (dp[i][turn] != -1)
+        {
+            return dp[i][turn];
+        }
 
-        dfs(perm, used, 0, nums, min_cost, best_permutation);
-        return best_permutation;
+        long long ans = 0;
+
+        if (turn == 0)
+        {
+            ans = max(a[i] + solve(a, b, i + 1, 0, n, dp), ans);
+            ans = max(solve(a, b, i + 1, 1, n, dp), ans);
+        }
+        else
+        {
+            ans = max(b[i] + solve(a, b, i + 1, 1, n, dp), ans);
+            ans = max(solve(a, b, i + 1, 0, n, dp), ans);
+        }
+
+        return dp[i][turn] = ans;
     }
-
-private:
-    void dfs(vector<int> &perm, vector<bool> &used, int current_cost, const vector<int> &nums, int &min_cost, vector<int> &best_permutation)
+    long long maxEnergyBoost(vector<int> &energyDrinkA, vector<int> &energyDrinkB)
     {
-        int n = nums.size();
-        if (perm.size() == n)
-        {
-            int final_cost = current_cost + abs(perm.back() - nums[perm[0]]);
-            if (final_cost < min_cost)
-            {
-                min_cost = final_cost;
-                best_permutation = perm;
-            }
-            return;
-        }
+        int n = energyDrinkA.size();
+        vector<vector<long long>> dp1(n + 1, vector<long long>(2, -1));
+        long long res = 0;
+        res = max(res, solve(energyDrinkA, energyDrinkB, 0, 0, n, dp1));
+        vector<vector<long long>> dp2(n + 1, vector<long long>(2, -1));
+        res = max(res, solve(energyDrinkA, energyDrinkB, 0, 1, n, dp2));
 
-        for (int i = 0; i < n; ++i)
-        {
-            if (!used[i])
-            {
-                if (!perm.empty())
-                {
-                    int next_cost = current_cost + abs(perm.back() - nums[i]);
-                    if (next_cost < min_cost)
-                    {
-                        used[i] = true;
-                        perm.push_back(i);
-                        dfs(perm, used, next_cost, nums, min_cost, best_permutation);
-                        perm.pop_back();
-                        used[i] = false;
-                    }
-                }
-                else
-                {
-                    used[i] = true;
-                    perm.push_back(i);
-                    dfs(perm, used, 0, nums, min_cost, best_permutation);
-                    perm.pop_back();
-                    used[i] = false;
-                }
-            }
-        }
+        return res;
     }
 };
