@@ -4,33 +4,32 @@ using namespace std;
 class Solution
 {
 public:
-    vector<bool> isArraySpecial(vector<int> &nums, vector<vector<int>> &queries)
+    vector<int> occurrencesOfElement(vector<int> &nums, vector<int> &queries, int x)
     {
         int n = nums.size();
-        vector<int> subarray_id(n);
-        int current_id = 0;
+        vector<int> index;
 
-        subarray_id[0] = current_id;
-
-        for (int i = 1; i < n; ++i)
+        for (int i = 0; i < n; i++)
         {
-            if (nums[i] % 2 != nums[i - 1] % 2)
+            if (nums[i] == x)
             {
-                subarray_id[i] = current_id;
+                index.push_back(i);
+            }
+        }
+        int size = index.size();
+
+        vector<int> ans;
+
+        for (int i = 0; i < queries.size(); i++)
+        {
+            if (queries[i] > size)
+            {
+                ans.push_back(-1);
             }
             else
             {
-                current_id++;
-                subarray_id[i] = current_id;
+                ans.push_back(index[queries[i] - 1]);
             }
-        }
-
-        vector<bool> ans;
-        for (const auto &query : queries)
-        {
-            int l = query[0];
-            int r = query[1];
-            ans.push_back(subarray_id[l] == subarray_id[r]);
         }
 
         return ans;
