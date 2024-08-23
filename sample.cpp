@@ -4,32 +4,27 @@ using namespace std;
 class Solution
 {
 public:
-    long long solve(vector<int> &a, vector<int> &b, int i, int turn, int n)
+    vector<int> numberGame(vector<int> &nums)
     {
-        if (i == n)
+        int n = nums.size();
+        vector<int> ans;
+
+        priority_queue<int, vector<int>, greater<int>> pq;
+
+        for (int i = 0; i < n; i++)
         {
-            return 0;
+            pq.push(nums[i]);
         }
 
-        long long ans = INT_MIN;
-
-        if (turn == 0)
+        while (!pq.empty())
         {
-            ans = max(a[i] + solve(a, b, i + 1, 0, n), ans);
-            ans = max(solve(a, b, i + 1, 1, n), ans);
+            int a = pq.top();
+            pq.pop();
+            int b = pq.top();
+            pq.pop();
+            ans.push_back(b);
+            ans.push_back(a);
         }
-        else
-        {
-            ans = max(b[i] + solve(a, b, i + 1, 1, n), ans);
-            ans = max(solve(a, b, i + 1, 0, n), ans);
-        }
-
         return ans;
-    }
-    long long maxEnergyBoost(vector<int> &energyDrinkA, vector<int> &energyDrinkB)
-    {
-        int n = energyDrinkA.size();
-
-        return max(solve(energyDrinkA, energyDrinkB, 0, 0, n), solve(energyDrinkB, energyDrinkA, 0, 1, n));
     }
 };

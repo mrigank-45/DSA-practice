@@ -4,42 +4,47 @@ using namespace std;
 class Solution
 {
 public:
-    long long solve(vector<int> &a, vector<int> &b, int i, int turn, int n, vector<vector<long long>> &dp)
+    vector<long long> countKConstraintSubstrings(string s, int k, vector<vector<int>> &queries)
     {
-        if (i == n)
+        long long n = s.size(), l, r, one = 0, zero = 0, cur, i, len;
+        vector<long long> ans, pre(n + 1), a(n);
+        l = 0;
+        for (r = 0; r < n; r++)
         {
-            return 0;
+            s[r] == '1' ? one++ : zero++;
+            while (zero > k && one > k)
+            {
+                s[l] == '1' ? one-- : zero--;
+                l++;
+            }
+            cur = r - l + 1;
+            a[r] = cur;
         }
-
-        if (dp[i][turn] != -1)
+        for (i = 0; i < n; i++)
         {
-            return dp[i][turn];
+            pre[i + 1] = pre[i] + a[i];
         }
-
-        long long ans = 0;
-
-        if (turn == 0)
+        for (auto &q : queries)
         {
-            ans = max(a[i] + solve(a, b, i + 1, 0, n, dp), ans);
-            ans = max(solve(a, b, i + 1, 1, n, dp), ans);
+            l = q[0];
+            r = q[1];
+            cur = 0;
+            len = 0;
+            for (i = l; i <= r; i++)
+            {
+                len++;
+                if (a[i] <= len)
+                {
+                    cur = cur + pre[r + 1] - pre[i];
+                    break;
+                }
+                else
+                {
+                    cur = cur + len;
+                }
+            }
+            ans.push_back(cur);
         }
-        else
-        {
-            ans = max(b[i] + solve(a, b, i + 1, 1, n, dp), ans);
-            ans = max(solve(a, b, i + 1, 0, n, dp), ans);
-        }
-
-        return dp[i][turn] = ans;
-    }
-    long long maxEnergyBoost(vector<int> &energyDrinkA, vector<int> &energyDrinkB)
-    {
-        int n = energyDrinkA.size();
-        vector<vector<long long>> dp1(n + 1, vector<long long>(2, -1));
-        long long res = 0;
-        res = max(res, solve(energyDrinkA, energyDrinkB, 0, 0, n, dp1));
-        vector<vector<long long>> dp2(n + 1, vector<long long>(2, -1));
-        res = max(res, solve(energyDrinkA, energyDrinkB, 0, 1, n, dp2));
-
-        return res;
+        return ans;
     }
 };
