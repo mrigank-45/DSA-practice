@@ -4,47 +4,54 @@ using namespace std;
 class Solution
 {
 public:
-    vector<long long> countKConstraintSubstrings(string s, int k, vector<vector<int>> &queries)
+    int maximizeSquareArea(int m, int n, vector<int> &hFences, vector<int> &vFences)
     {
-        long long n = s.size(), l, r, one = 0, zero = 0, cur, i, len;
-        vector<long long> ans, pre(n + 1), a(n);
-        l = 0;
-        for (r = 0; r < n; r++)
+        int mod = 1e9 + 7;
+        if (m == n)
         {
-            s[r] == '1' ? one++ : zero++;
-            while (zero > k && one > k)
+            return (m - 1) * (n - 1);
+        }
+        hFences.push_back(1);
+        hFences.push_back(m);
+        sort(hFences.begin(), hFences.end());
+        vFences.push_back(1);
+        vFences.push_back(n);
+        sort(vFences.begin(), vFences.end());
+
+        set<int> s1;
+        set<int> s2;
+
+        int ans = -1;
+
+        for (int i = 0; i < vFences.size(); i++)
+        {
+            for (int j = i + 1; j < vFences.size(); j++)
             {
-                s[l] == '1' ? one-- : zero--;
-                l++;
+                int b = vFences[j] - vFences[i];
+                s1.insert(b);
             }
-            cur = r - l + 1;
-            a[r] = cur;
         }
-        for (i = 0; i < n; i++)
+
+        for (int i = 0; i < hFences.size(); i++)
         {
-            pre[i + 1] = pre[i] + a[i];
-        }
-        for (auto &q : queries)
-        {
-            l = q[0];
-            r = q[1];
-            cur = 0;
-            len = 0;
-            for (i = l; i <= r; i++)
+            for (int j = i + 1; j < hFences.size(); j++)
             {
-                len++;
-                if (a[i] <= len)
+                int b = hFences[j] - hFences[i];
+                s2.insert(b);
+            }
+        }
+
+        for (auto i : s1)
+        {
+            for (auto j : s2)
+            {
+                if (i == j)
                 {
-                    cur = cur + pre[r + 1] - pre[i];
-                    break;
-                }
-                else
-                {
-                    cur = cur + len;
+                    ans = max(ans, i * j) % mod;
                 }
             }
-            ans.push_back(cur);
         }
-        return ans;
+
+        return ans % mod;
     }
 };
