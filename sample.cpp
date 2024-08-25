@@ -4,41 +4,27 @@ using namespace std;
 class Solution
 {
 public:
-    int maxSumNonAdjacent(vector<int> &nums)
+    vector<int> getFinalState(vector<int> &nums, int k, int multiplier)
     {
         int n = nums.size();
-        if (n == 0)
-            return 0;
-        if (n == 1)
-            return max(0, nums[0]);
 
-        int prev1 = max(0, nums[0]);
-        int prev2 = 0;
-        int maxSum = prev1;
-
-        for (int i = 1; i < n; ++i)
+        while (k > 0)
         {
-            maxSum = max(prev1, nums[i] + prev2);
-            prev2 = prev1;
-            prev1 = maxSum;
+            // find minimum
+            int val = nums[0];
+            int index = 0;
+
+            for (int i = 0; i < n; i++)
+            {
+                if (nums[i] < val)
+                {
+                    val = nums[i];
+                    index = i;
+                }
+            }
+            nums[index] = val*multiplier;
+            k--;
         }
-
-        return maxSum;
-    }
-
-    int maximumSumSubsequence(vector<int> &nums, vector<vector<int>> &queries)
-    {
-        const int MOD = 1e9 + 7;
-        long long totalSum = 0;
-
-        for (auto &query : queries)
-        {
-            int pos = query[0];
-            int newValue = query[1];
-            nums[pos] = newValue;
-            totalSum = (totalSum + maxSumNonAdjacent(nums)) % MOD;
-        }
-
-        return totalSum;
+        return nums;
     }
 };
