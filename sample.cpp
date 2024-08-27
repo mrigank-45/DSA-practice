@@ -4,27 +4,46 @@ using namespace std;
 class Solution
 {
 public:
-    vector<int> getFinalState(vector<int> &nums, int k, int multiplier)
+    struct compare
     {
-        int n = nums.size();
-
-        while (k > 0)
+        bool operator()(const pair<char, int> &p1, const pair<char, int> &p2)
         {
-            // find minimum
-            int val = nums[0];
-            int index = 0;
-
-            for (int i = 0; i < n; i++)
+            if (p1.first == p2.first)
             {
-                if (nums[i] < val)
-                {
-                    val = nums[i];
-                    index = i;
-                }
+                return p1.second < p2.second;
             }
-            nums[index] = val*multiplier;
-            k--;
+            return p1.first > p2.first;
         }
-        return nums;
+    };
+    string clearStars(string s)
+    {
+        int n = s.size();
+        priority_queue<pair<char, int>, vector<pair<char, int>>, compare> pq;
+
+        unordered_map<int, bool> mp;
+        for (int i = 0; i < n; i++)
+        {
+            if (s[i] == '*')
+            {
+                int index = pq.top().second;
+                mp[index] = true;
+                pq.pop();
+            }
+            else
+            {
+                pq.push({s[i], i});
+            }
+        }
+        string ans = "";
+
+        for (int i = 0; i < n; i++)
+        {
+            if (mp[i] == true || s[i] == '*')
+            {
+                continue;
+            }
+            ans.push_back(s[i]);
+        }
+        return ans;
     }
 };
