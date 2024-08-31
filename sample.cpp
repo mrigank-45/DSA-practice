@@ -4,46 +4,27 @@ using namespace std;
 class Solution
 {
 public:
-    struct compare
+    int findWinningPlayer(vector<int> &skills, int k)
     {
-        bool operator()(const pair<char, int> &p1, const pair<char, int> &p2)
+        int n = skills.size();
+        int winner = 0;
+        int streak = 0;
+        for (int i = 1; i < n; i++)
         {
-            if (p1.first == p2.first)
+            if (skills[winner] < skills[i])
             {
-                return p1.second < p2.second;
-            }
-            return p1.first > p2.first;
-        }
-    };
-    string clearStars(string s)
-    {
-        int n = s.size();
-        priority_queue<pair<char, int>, vector<pair<char, int>>, compare> pq;
-
-        unordered_map<int, bool> mp;
-        for (int i = 0; i < n; i++)
-        {
-            if (s[i] == '*')
-            {
-                int index = pq.top().second;
-                mp[index] = true;
-                pq.pop();
+                winner = i;
+                streak = 1;
             }
             else
             {
-                pq.push({s[i], i});
+                streak++;
             }
-        }
-        string ans = "";
-
-        for (int i = 0; i < n; i++)
-        {
-            if (mp[i] == true || s[i] == '*')
+            if (streak == k)
             {
-                continue;
+                return winner;
             }
-            ans.push_back(s[i]);
         }
-        return ans;
+        return winner;
     }
 };
