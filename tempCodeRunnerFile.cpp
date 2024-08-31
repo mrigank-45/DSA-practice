@@ -1,6 +1,2 @@
- // vector<vector<string>> paragraphs = {
-    //     {"there", "are"},
-    //     {"four seasons", "in a year"},
-    //     {"summer", "autumn", "twinter", "spring"}
-    // };
-    // int width = 12;
+ // vector<int> arr = {9,9,9};
+    // vector<int> arr = {2,1,1};

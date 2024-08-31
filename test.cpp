@@ -1,48 +1,66 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class Solution
-{
-public:
-    int findWinningPlayer(vector<int> &skills, int k)
-    {
-        int n = skills.size();
-        deque<int> q;
-        unordered_map<int, int> index;
+// Precomputed prime numbers up to 200
+vector<int> primes = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 
+                      53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 
+                      109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 
+                      173, 179, 181, 191, 193, 197, 199};
 
-        for (int i = 0; i < n; i++)
-        {
-            index[skills[i]] = i;
-            q.push_back(skills[i]);
-        }
-
-        int cnt = 0;
-        int current_winner = q.front();
-        q.pop_front();
-
-        while (!q.empty())
-        {
-            int challenger = q.front();
-            q.pop_front();
-
-            if (current_winner > challenger)
-            {
-                cnt++;
-                q.push_back(challenger);
+// Precompute the bit representation for each number up to 200
+vector<int> computeBitRepresentation(int maxNum) {
+    vector<int> bitRepresentation(maxNum + 1, 0);
+    for (int i = 2; i <= maxNum; ++i) {
+        int num = i;
+        int bits = 0;
+        for (int j = 0; j < primes.size(); ++j) {
+            int prime = primes[j];
+            int exponent = 0;
+            while (num % prime == 0) {
+                num /= prime;
+                exponent++;
             }
-            else
-            {
-                cnt = 1;
-                q.push_back(current_winner);
-                current_winner = challenger;
-            }
-
-            if (cnt == k)
-            {
-                break;
+            if (exponent % 2 != 0) {
+                bits ^= (1 << j);
             }
         }
-
-        return index[current_winner];
+        bitRepresentation[i] = bits;
     }
-};
+    return bitRepresentation;
+}
+
+long countSpecialSubarrays(vector<int> arr) {
+   int n = arr.size();
+    vector<int> bitRepresentation = computeBitRepresentation(200);
+    unordered_map<int, int> prefixCount;
+    int currentParity = 0;
+    long specialCount = 0;
+
+    // Initial case: empty subarray has parity 0
+    prefixCount[0] = 1;
+
+    for (int num : arr) {
+        currentParity ^= bitRepresentation[num];
+        
+        // Count the number of special subarrays ending at the current position
+        if (prefixCount.find(currentParity) != prefixCount.end()) {
+            specialCount += prefixCount[currentParity];
+        }
+
+        // Update the hash map with the current parity
+        prefixCount[currentParity]++;
+    }
+
+    return specialCount;
+}
+
+
+int main() {
+    // vector<int> arr = {4, 3, 12};  // Example input
+    vector<int> arr = {9, 9, 9};  // Another example input
+    // vector<int> arr = {2, 1, 1};  // Another example input
+
+    int result = countSpecialSubarrays(arr);
+    cout << "Number of special subarrays: " << result << endl;
+    return 0;
+}
