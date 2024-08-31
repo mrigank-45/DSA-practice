@@ -1,39 +1,48 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-long countSpecialSubarrays(vector<int> arr) {
-    int n = arr.size();
-    unordered_map<int, int> prefixCount;
-    int currentParity = 0;
-    long specialCount = 0;
+class Solution
+{
+public:
+    int dp[502][502][26];
+    int solve(vector<int> &nums, int n, int k, int i, int prev)
+    {
+        if (i == n)
+        {
+            return 0;
+        }
 
-    // Initial case: empty subarray has parity 0
-    prefixCount[0] = 1;
+        if (dp[i][prev][k] != -1)
+        {
+            return dp[i][prev][k];
+        }
 
-    for (int num : arr) {
-        // Calculate the parity of the current number
-        int parity = num % 2;
+        int ans = INT_MIN;
 
-        // Update the current parity
-        currentParity ^= parity;
+        // choose
+        if (prev != 501 && nums[i] == nums[prev])
+        {
+            ans = max(ans, 1 + solve(nums, n, k, i + 1, i));
+        }
+        else if (prev != 501 && nums[i] != nums[prev] && k > 0)
+        {
+            ans = max(ans, 1 + solve(nums, n, k - 1, i + 1, i));
+        }
+        else if (prev == 501)
+        {
+            ans = max(ans, 1 + solve(nums, n, k, i + 1, i));
+        }
 
-        // Count the number of special subarrays ending at the current position
-        specialCount += prefixCount[currentParity];
+        // not choose
+        ans = max(ans, solve(nums, n, k, i + 1, prev));
 
-        // Update the hash map with the current parity
-        prefixCount[currentParity]++;
+        return dp[i][prev][k] = ans;
     }
+    int maximumLength(vector<int> &nums, int k)
+    {
+        int n = nums.size();
+        memset(dp, -1, sizeof(dp));
 
-    return specialCount;
-}
-
-
-int main() {
-    // vector<int> arr = {4, 3, 12};  // Example input
-    vector<int> arr = {9, 9, 9};  // Another example input
-    // vector<int> arr = {2, 1, 1};  // Another example input
-
-    int result = countSpecialSubarrays(arr);
-    cout << "Number of special subarrays: " << result << endl;
-    return 0;
-}
+        return solve(nums, n, k, 0, 501);
+    }
+};
