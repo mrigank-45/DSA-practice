@@ -4,44 +4,43 @@ using namespace std;
 class Solution
 {
 public:
-    int solve(vector<int> &nums, int n, int k, int i, int prev, vector<vector<vector<int>>> &dp)
+    int solve(int i, int curr, vector<int> &rewardValues, int n, vector<vector<int>> &dp)
     {
-        if (i == n)
+        if (i < 0)
         {
             return 0;
         }
 
-        if (dp[i][prev][k] != -1)
+        if (dp[i][curr] != -1)
         {
-            return dp[i][prev][k];
-        }
-
-        int ans = INT_MIN;
-
-        // choose
-        if (prev != n && nums[i] == nums[prev])
-        {
-            ans = max(ans, 1 + solve(nums, n, k, i + 1, i, dp));
-        }
-        else if (prev != n && nums[i] != nums[prev] && k > 0)
-        {
-            ans = max(ans, 1 + solve(nums, n, k - 1, i + 1, i, dp));
-        }
-        else if (prev == n)
-        {
-            ans = max(ans, 1 + solve(nums, n, k, i + 1, i, dp));
+            return dp[i][curr];
         }
 
         // not choose
-        ans = max(ans, solve(nums, n, k, i + 1, prev, dp));
+        int res = solve(i - 1, curr, rewardValues, n, dp);
 
-        return dp[i][prev][k] = ans;
+        // choose
+        if (rewardValues[i] < curr)
+        {
+            res = max(res, rewardValues[i] + solve(i - 1, min(curr - rewardValues[i],rewardValues[i]), rewardValues, n, dp));
+        }
+        else if (curr == 0)
+        {
+            res = max(res, rewardValues[i] + solve(i - 1, rewardValues[i], rewardValues, n, dp));
+        }
+
+        return dp[i][curr] = res;
     }
-    int maximumLength(vector<int> &nums, int k)
+    int maxTotalReward(vector<int> &rewardValues)
     {
-        int n = nums.size();
-        vector<vector<vector<int>>> dp(n+1, vector<vector<int>>(n+1, vector<int>(k + 1, -1)));
+        int n = rewardValues.size();
+        sort(rewardValues.begin(), rewardValues.end());
 
-        return solve(nums, n, k, 0, n, dp);
+        int max_value = *max_element(rewardValues.begin(), rewardValues.end());
+
+        // 2d DP
+        vector<vector<int>> dp(n + 1, vector<int>(max_value + 1, -1));
+
+        return solve(n-1, 0, rewardValues, n, dp);
     }
 };

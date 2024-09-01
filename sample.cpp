@@ -4,23 +4,43 @@ using namespace std;
 class Solution
 {
 public:
-    int valueAfterKSeconds(int n, int k)
+    int solve(int i, int curr, vector<int> &rewardValues, int n, vector<vector<int>> &dp)
     {
-        vector<int> v(n, 1);
-        int mod = 1000000007;
-
-        while (k > 0)
+        if (i < 0)
         {
-            vector<int> temp(n, 0);
-            temp[0] = v[0];
-            for (int i = 1; i < n; i++)
-            {
-                v[i] = (temp[i - 1] + v[i]) % mod;
-                temp[i] = v[i];
-            }
-            k--;
+            return 0;
         }
 
-        return v[n - 1] % mod;
+        if (dp[i][curr] != -1)
+        {
+            return dp[i][curr];
+        }
+
+        // not choose
+        int res = solve(i - 1, curr, rewardValues, n, dp);
+
+        // choose
+        if (rewardValues[i] < curr)
+        {
+            res = max(res, rewardValues[i] + solve(i - 1, min(curr - rewardValues[i],rewardValues[i]), rewardValues, n, dp));
+        }
+        else if (curr == 0)
+        {
+            res = max(res, rewardValues[i] + solve(i - 1, rewardValues[i], rewardValues, n, dp));
+        }
+
+        return dp[i][curr] = res;
+    }
+    int maxTotalReward(vector<int> &rewardValues)
+    {
+        int n = rewardValues.size();
+        sort(rewardValues.begin(), rewardValues.end());
+
+        int max_value = *max_element(rewardValues.begin(), rewardValues.end());
+
+        // 2d DP
+        vector<vector<int>> dp(n + 1, vector<int>(max_value + 1, -1));
+
+        return solve(n-1, 0, rewardValues, n, dp);
     }
 };
