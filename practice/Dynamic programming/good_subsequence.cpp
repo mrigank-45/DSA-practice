@@ -1,3 +1,6 @@
+// Find the Maximum Length of a Good Subsequence II
+// instead of storing prev element to check if the current element is same as prev element, we are using a bool with help of a map to store the indexes of the same element
+
 #include <bits/stdc++.h>
 using namespace std;
 
