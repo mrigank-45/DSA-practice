@@ -4,40 +4,23 @@ using namespace std;
 class Solution
 {
 public:
-    int dp[5001][2][51];
-    int solve(int i, int count, bool same, vector<int> &nums, unordered_map<int, vector<int>> &mp)
+    int valueAfterKSeconds(int n, int k)
     {
-        if (i >= nums.size())
-            return 0;
-        if (dp[i][same][count] != -1)
-            return dp[i][same][count];
+        vector<int> v(n, 1);
+        int mod = 1000000007;
 
-        int take = 0, notake = 0;
-        vector<int> &v = mp[nums[i]];
-        int ind = upper_bound(v.begin(), v.end(), i) - v.begin();
-
-        if (ind == v.size())
-            take = 1;
-        else
-            take = 1 + solve(v[ind], count, true, nums, mp);
-
-        if (count > 0)
-            take = max(take, 1 + solve(i + 1, count - 1, false, nums, mp));
-        if (same == false)
-            notake = solve(i + 1, count, false, nums, mp);
-
-        return dp[i][same][count] = max(take, notake);
-    }
-
-    int maximumLength(vector<int> &nums, int k)
-    {
-        memset(dp, -1, sizeof(dp));
-        unordered_map<int, vector<int>> mp;
-        for (int i = 0; i < nums.size(); i++)
+        while (k > 0)
         {
-            mp[nums[i]].push_back(i);
+            vector<int> temp(n, 0);
+            temp[0] = v[0];
+            for (int i = 1; i < n; i++)
+            {
+                v[i] = (temp[i - 1] + v[i]) % mod;
+                temp[i] = v[i];
+            }
+            k--;
         }
 
-        return solve(0, k, false, nums, mp);
+        return v[n - 1] % mod;
     }
 };
