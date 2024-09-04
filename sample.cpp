@@ -4,20 +4,22 @@ using namespace std;
 class Solution
 {
 public:
-    int countCompleteDayPairs(vector<int> &hours)
+    long long countCompleteDayPairs(vector<int> &hours)
     {
         int n = hours.size();
+        map<int, int> mp;
+        long long cnt = 0;
 
-        int cnt = 0;
         for (int i = 0; i < n; i++)
         {
-            for (int j = i + 1; j < n; j++)
+            int modVal = hours[i] % 24;
+            int complement = (24 - modVal) % 24;
+
+            if (mp.find(complement) != mp.end())
             {
-                if ((hours[i] + hours[j]) % 24 == 0)
-                {
-                    cnt++;
-                }
+                cnt += mp[complement];
             }
+            mp[modVal]++;
         }
         return cnt;
     }
