@@ -4,60 +4,65 @@ using namespace std;
 class Solution
 {
 public:
-    vector<int> shiftRight(vector<int> v)
+    int beautifulSubstrings(string s, int k)
     {
-        int n = v.size();
-        vector<int> res(n);
-        // shift right
-        for (int i = 1; i < n; i++)
-        {
-            res[i] = v[i - 1];
-        }
-        res[0] = v[n - 1];
-        return res;
-    }
-    vector<int> shiftLeft(vector<int> v)
-    {
-        int n = v.size();
-        vector<int> res(n);
-        // shift left
-        for (int i = n - 2; i >= 0; i--)
-        {
-            res[i] = v[i + 1];
-        }
-        res[n - 1] = v[0];
-        return res;
+        int n = s.size();
 
-    }
-    bool areSimilar(vector<vector<int>> &mat, int k)
-    {
-        vector<vector<int>> res = mat;
+        int cnt = 0;
 
-        int n = mat.size();
-        int m = mat[0].size();
+        vector<int> prefix_constant(n + 1, 0);
+        vector<int> prefix_vowel(n + 1, 0);
 
-        for (int i = 1; i <= k; i++)
+        int cnt_constant = 0;
+        int cnt_vowel = 0;
+
+        for (int i = 0; i < n; i++)
         {
-            for (int j = 0; j < n; j++)
+            if (s[i] == 'a' || s[i] == 'e' || s[i] == 'i' || s[i] == 'o' || s[i] == 'u')
             {
-                if (j % 2 == 0)
+                cnt_vowel++;
+            }
+            else
+            {
+                cnt_constant++;
+            }
+
+            prefix_vowel[i] = cnt_vowel;
+            prefix_constant[i] = cnt_constant;
+        }
+
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = i + 1; j < n; j++)
+            {
+                int c;
+                if (i == 0)
                 {
-                    mat[j] = shiftLeft(mat[j]);
+                    c = 0;
                 }
                 else
                 {
-                    mat[j] = shiftRight(mat[j]);
+                    c = prefix_constant[i - 1];
+                }
+                int v;
+                if (i == 0)
+                {
+                    v = 0;
+                }
+                else
+                {
+                    v = prefix_vowel[i - 1];
+                }
+                int cnt_v = prefix_vowel[j] - v;
+                int cnt_c = prefix_constant[j] - c;
+
+                if ((cnt_v == cnt_c) || ((cnt_c * cnt_v) % k == 0))
+                {
+                    cnt++;
                 }
             }
         }
 
-        if (mat == res)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return cnt;
     }
 };

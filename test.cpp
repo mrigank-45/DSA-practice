@@ -4,63 +4,47 @@ using namespace std;
 class Solution
 {
 public:
-    int solve(vector<int> &nums, int n, int i, int even, vector<vector<int>> &dp)
+    int beautifulSubstrings(string s, int k)
     {
-        if (i == n)
-        {
-            return 0;
-        }
+        int n = s.size();
 
-        if (dp[i][even] != -1)
-        {
-            return dp[i][even];
-        }
+        int cnt = 0;
 
-        int ans = 100001;
+        vector<int> prefix_constant(n + 1, 0);
+        vector<int> prefix_vowel(n + 1, 0);
 
-        if (even == 0)
+        int cnt_constant = 0;
+        int cnt_vowel = 0;
+
+        for (int i = 0; i < n; i++)
         {
-            if (nums[i] == 0)
+            if (s[i] == 'a' || s[i] == 'e' || s[i] == 'i' || s[i] == 'o' || s[i] == 'u')
             {
-                nums[i] = 1;
-                ans = min(ans, 1 + solve(nums, n, i + 1, 1, dp));
-                nums[i] = 0;
+                cnt_vowel++;
             }
             else
             {
-                ans = min(ans, solve(nums, n, i + 1, 0, dp));
+                cnt_constant++;
             }
+
+            prefix_vowel[i + 1] = cnt_vowel;
+            prefix_constant[i + 1] = cnt_constant;
         }
-        else
+
+        for (int i = 0; i < n; i++)
         {
-            if(nums[i] == 1)
+            for (int j = i + 1; j < n; j++)
             {
-                nums[i] = 0;
-                ans = min(ans, 1 + solve(nums, n, i + 1, 0, dp));
-                nums[i] = 1;
+                int cnt_v = prefix_vowel[j + 1] - prefix_vowel[i];
+                int cnt_c = prefix_constant[j + 1] - prefix_constant[i];
+
+                if ((cnt_v == cnt_c) && ((cnt_c * cnt_v) % k == 0))
+                {
+                    cnt++;
+                }
             }
-            else
-            {
-                ans = min(ans, solve(nums, n, i + 1, 1, dp));
-            }
         }
 
-        return dp[i][even] = ans;
-    }
-    int minOperations(vector<int> &nums)
-    {
-        int n = nums.size();
-        vector<vector<int>> dp(n, vector<int>(2, -1));
-
-        int ans = solve(nums, n, 0, 0, dp);
-
-        if (ans >= 100000)
-        {
-            return -1;
-        }
-        else
-        {
-            return ans;
-        }
+        return cnt;
     }
 };
