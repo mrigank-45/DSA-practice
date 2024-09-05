@@ -4,65 +4,46 @@ using namespace std;
 class Solution
 {
 public:
-    int beautifulSubstrings(string s, int k)
+    vector<int> lexicographicallySmallestArray(vector<int> &nums, int limit)
     {
-        int n = s.size();
+        int n = nums.size();
+        map<int, priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>>> mp;
+        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
 
-        int cnt = 0;
-
-        vector<int> prefix_constant(n + 1, 0);
-        vector<int> prefix_vowel(n + 1, 0);
-
-        int cnt_constant = 0;
-        int cnt_vowel = 0;
-
-        for (int i = 0; i < n; i++)
+        for (int i = n - 1; i >= 0; i--)
         {
-            if (s[i] == 'a' || s[i] == 'e' || s[i] == 'i' || s[i] == 'o' || s[i] == 'u')
-            {
-                cnt_vowel++;
-            }
-            else
-            {
-                cnt_constant++;
-            }
-
-            prefix_vowel[i] = cnt_vowel;
-            prefix_constant[i] = cnt_constant;
+            mp[i] = pq;
+            pq.push({nums[i], i});
         }
 
+        vector<pair<int, int>> swaps;
+        map<pair<int,int>, bool> vis;
+
         for (int i = 0; i < n; i++)
         {
-            for (int j = i + 1; j < n; j++)
+            for (auto it : swaps)
             {
-                int c;
-                if (i == 0)
+                if (it.second > i)
                 {
-                    c = 0;
+                    mp[i].push(it);
+                }
+            }
+            while (!mp[i].empty() && mp[i].top().first < nums[i])
+            {
+                if (abs(mp[i].top().first - nums[i]) <= limit && !vis[mp[i].top()])
+                {
+                    swaps.push_back({nums[i], mp[i].top().second});
+                    vis[{mp[i].top().first,mp[i].top().second}] = true;
+                    swap(nums[i], nums[mp[i].top().second]);
+                    break;
                 }
                 else
                 {
-                    c = prefix_constant[i - 1];
-                }
-                int v;
-                if (i == 0)
-                {
-                    v = 0;
-                }
-                else
-                {
-                    v = prefix_vowel[i - 1];
-                }
-                int cnt_v = prefix_vowel[j] - v;
-                int cnt_c = prefix_constant[j] - c;
-
-                if ((cnt_v == cnt_c) || ((cnt_c * cnt_v) % k == 0))
-                {
-                    cnt++;
+                    mp[i].pop();
                 }
             }
         }
 
-        return cnt;
+        return nums;
     }
 };
