@@ -1,141 +1,45 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class SegmentTree
-{
-public:
-    SegmentTree(vector<int> &nums) : n(nums.size()), nums(nums)
-    {
-        tree.resize(4 * n, 0);
-        build(0, 0, n - 1);
+int solution(vector<int>& A, vector<int>& B, int N) {
+    vector<int> max_top(N), max_bottom(N);
+    
+    max_top[0] = A[0];
+    for (int i = 1; i < N; i++) {
+        max_top[i] = max(max_top[i - 1], A[i]);
     }
-
-    int query(int l, int r)
-    {
-        return queryTree(0, 0, n - 1, l, r);
+    
+    max_bottom[N-1] = B[N-1];
+    for (int i = N - 2; i >= 0; i--) {
+        max_bottom[i] = max(max_bottom[i + 1], B[i]);
     }
-
-    void update(int idx, int val)
-    {
-        nums[idx] = val;
-        updateTree(0, 0, n - 1, idx);
+    
+    int result = 1e9 + 10;
+    
+    for (int i = 0; i < N; i++) {
+        int current_max = max(max_top[i], max_bottom[i]);
+        result = min(result, current_max);
     }
-
-private:
-    int n;
-    vector<int> nums;
-    vector<int> tree;
-
-    bool isPeak(int i)
-    {
-        if (i <= 0 || i >= n - 1)
-            return false;
-        return nums[i] > nums[i - 1] && nums[i] > nums[i + 1];
-    }
-
-    void build(int node, int start, int end)
-    {
-        if (start == end)
-        {
-            tree[node] = isPeak(start) ? 1 : 0;
-        }
-        else
-        {
-            int mid = (start + end) / 2;
-            int leftChild = 2 * node + 1;
-            int rightChild = 2 * node + 2;
-            build(leftChild, start, mid);
-            build(rightChild, mid + 1, end);
-            tree[node] = tree[leftChild] + tree[rightChild];
-        }
-    }
-
-    int queryTree(int node, int start, int end, int l, int r)
-    {
-        if (r < start || l > end)
-        {
-            return 0;
-        }
-        if (l <= start && end <= r)
-        {
-            return tree[node];
-        }
-        int mid = (start + end) / 2;
-        int leftChild = 2 * node + 1;
-        int rightChild = 2 * node + 2;
-        return queryTree(leftChild, start, mid, l, r) + queryTree(rightChild, mid + 1, end, l, r);
-    }
-
-    void updateTree(int node, int start, int end, int idx)
-    {
-        if (start == end)
-        {
-            tree[node] = isPeak(start) ? 1 : 0;
-        }
-        else
-        {
-            int mid = (start + end) / 2;
-            int leftChild = 2 * node + 1;
-            int rightChild = 2 * node + 2;
-            if (idx <= mid)
-            {
-                updateTree(leftChild, start, mid, idx);
-            }
-            else
-            {
-                updateTree(rightChild, mid + 1, end, idx);
-            }
-            tree[node] = tree[leftChild] + tree[rightChild];
-        }
-
-        // Update the peaks for the neighboring elements
-        if (idx > start)
-        {
-            int leftMid = (start + end) / 2;
-            if (idx <= leftMid)
-                updateTree(node, start, leftMid, idx - 1);
-            else
-                updateTree(node, leftMid + 1, end, idx + 1);
-        }
-    }
-};
-
-class Solution
-{
-public:
-    vector<int> countOfPeaks(vector<int> &nums, vector<vector<int>> &queries)
-    {
-        SegmentTree segTree(nums);
-        vector<int> result;
-
-        for (const auto &query : queries)
-        {
-            if (query[0] == 1)
-            { // Query type 1: count peaks in range [li, ri]
-                int li = query[1], ri = query[2];
-                result.push_back(segTree.query(li, ri));
-            }
-            else if (query[0] == 2)
-            { // Query type 2: update nums[indexi] to vali
-                int indexi = query[1], vali = query[2];
-                segTree.update(indexi, vali);
-            }
-        }
-
-        return result;
-    }
-};
+    
+    return result;
+}
 
 int main() {
-    vector<int> nums = {4, 1, 4, 2, 1, 5};
-    vector<vector<int>> queries = {{2, 2, 4}, {1, 0, 2}, {1, 0, 4}};
-    Solution sol;
-    vector<int> result = sol.countOfPeaks(nums, queries);
+    // Example test cases
+    vector<int> A = {3, 4, 6};
+    vector<int> B = {6, 5, 4};
+    int N = A.size();
+    cout << solution(A, B, N) << endl;  // Output: 5
 
-    for (int r : result) {
-        cout << r << " ";
-    }
-    cout << endl;
+    vector<int> A2 = {1, 2, 1, 1, 4};
+    vector<int> B2 = {1, 1, 3, 1, 1};
+    N = A2.size();
+    cout << solution(A2, B2, N) << endl;  // Output: 2
+
+    vector<int> A3 = {-5, -1, -3};
+    vector<int> B3 = {-5, 5, -2};
+    N = A3.size();
+    cout << solution(A3, B3, N) << endl;  // Output: -1
 
     return 0;
 }
