@@ -4,86 +4,60 @@ using namespace std;
 class Solution
 {
 public:
-    int solve(vector<int> &nums, int n, int i, vector<int> &dp)
+    vector<int> shiftRight(vector<int> v)
     {
-        if (i == n - 2)
+        int n = v.size();
+        vector<int> res(n);
+        // shift right
+        for (int i = 1; i < n; i++)
         {
-            if (nums[i] == 1 && nums[i + 1] == 1)
-            {
-                return 0;
-            }
-            else
-            {
-                return 100000;
-            }
+            res[i] = v[i - 1];
         }
-
-        if (dp[i] != -1)
-        {
-            return dp[i];
-        }
-
-        int ans = 100000;
-
-        if (nums[i] == 0)
-        {
-            nums[i] = 1;
-            if (nums[i + 1] == 0)
-            {
-                nums[i + 1] = 1;
-            }
-            else
-            {
-                nums[i + 1] = 0;
-            }
-            if (nums[i + 2] == 0)
-            {
-                nums[i + 2] = 1;
-            }
-            else
-            {
-                nums[i + 2] = 0;
-            }
-            ans = min(ans, 1 + solve(nums, n, i + 1, dp));
-            nums[i] = 0;
-            if (nums[i + 1] == 0)
-            {
-                nums[i + 1] = 1;
-            }
-            else
-            {
-                nums[i + 1] = 0;
-            }
-            if (nums[i + 2] == 0)
-            {
-                nums[i + 2] = 1;
-            }
-            else
-            {
-                nums[i + 2] = 0;
-            }
-        }
-        else
-        {
-            ans = min(ans, solve(nums, n, i + 1, dp));
-        }
-
-        return dp[i] = ans;
+        res[0] = v[n - 1];
+        return res;
     }
-    int minOperations(vector<int> &nums)
+    vector<int> shiftLeft(vector<int> v)
     {
-        int n = nums.size();
-        vector<int> dp(n, -1);
-
-        int ans = solve(nums, n, 0, dp);
-
-        if (ans >= 100000)
+        int n = v.size();
+        vector<int> res(n);
+        // shift left
+        for (int i = n - 2; i >= 0; i--)
         {
-            return -1;
+            res[i] = v[i + 1];
+        }
+        res[n - 1] = v[0];
+        return res;
+
+    }
+    bool areSimilar(vector<vector<int>> &mat, int k)
+    {
+        vector<vector<int>> res = mat;
+
+        int n = mat.size();
+        int m = mat[0].size();
+
+        for (int i = 1; i <= k; i++)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                if (j % 2 == 0)
+                {
+                    mat[j] = shiftLeft(mat[j]);
+                }
+                else
+                {
+                    mat[j] = shiftRight(mat[j]);
+                }
+            }
+        }
+
+        if (mat == res)
+        {
+            return true;
         }
         else
         {
-            return ans;
+            return false;
         }
     }
 };
