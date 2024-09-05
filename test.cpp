@@ -1,45 +1,66 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int solution(vector<int>& A, vector<int>& B, int N) {
-    vector<int> max_top(N), max_bottom(N);
-    
-    max_top[0] = A[0];
-    for (int i = 1; i < N; i++) {
-        max_top[i] = max(max_top[i - 1], A[i]);
+class Solution
+{
+public:
+    int solve(vector<int> &nums, int n, int i, int even, vector<vector<int>> &dp)
+    {
+        if (i == n)
+        {
+            return 0;
+        }
+
+        if (dp[i][even] != -1)
+        {
+            return dp[i][even];
+        }
+
+        int ans = 100001;
+
+        if (even == 0)
+        {
+            if (nums[i] == 0)
+            {
+                nums[i] = 1;
+                ans = min(ans, 1 + solve(nums, n, i + 1, 1, dp));
+                nums[i] = 0;
+            }
+            else
+            {
+                ans = min(ans, solve(nums, n, i + 1, 0, dp));
+            }
+        }
+        else
+        {
+            if(nums[i] == 1)
+            {
+                nums[i] = 0;
+                ans = min(ans, 1 + solve(nums, n, i + 1, 0, dp));
+                nums[i] = 1;
+            }
+            else
+            {
+                ans = min(ans, solve(nums, n, i + 1, 1, dp));
+            }
+        }
+
+        return dp[i][even] = ans;
     }
-    
-    max_bottom[N-1] = B[N-1];
-    for (int i = N - 2; i >= 0; i--) {
-        max_bottom[i] = max(max_bottom[i + 1], B[i]);
+    int minOperations(vector<int> &nums)
+    {
+        int n = nums.size();
+        vector<vector<int>> dp(n, vector<int>(2, -1));
+
+        int ans = solve(nums, n, 0, 0, dp);
+
+        if (ans >= 100000)
+        {
+            return -1;
+        }
+        else
+        {
+            return ans;
+        }
     }
-    
-    int result = 1e9 + 10;
-    
-    for (int i = 0; i < N; i++) {
-        int current_max = max(max_top[i], max_bottom[i]);
-        result = min(result, current_max);
-    }
-    
-    return result;
-}
-
-int main() {
-    // Example test cases
-    vector<int> A = {3, 4, 6};
-    vector<int> B = {6, 5, 4};
-    int N = A.size();
-    cout << solution(A, B, N) << endl;  // Output: 5
-
-    vector<int> A2 = {1, 2, 1, 1, 4};
-    vector<int> B2 = {1, 1, 3, 1, 1};
-    N = A2.size();
-    cout << solution(A2, B2, N) << endl;  // Output: 2
-
-    vector<int> A3 = {-5, -1, -3};
-    vector<int> B3 = {-5, 5, -2};
-    N = A3.size();
-    cout << solution(A3, B3, N) << endl;  // Output: -1
-
-    return 0;
-}
+};
