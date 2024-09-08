@@ -4,46 +4,54 @@ using namespace std;
 class Solution
 {
 public:
-    vector<int> lexicographicallySmallestArray(vector<int> &nums, int limit)
+    int minimumArea(vector<vector<int>> &grid)
     {
-        int n = nums.size();
-        map<int, priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>>> mp;
-        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+        int n = grid.size();
+        int m = grid[0].size();
 
-        for (int i = n - 1; i >= 0; i--)
-        {
-            mp[i] = pq;
-            pq.push({nums[i], i});
-        }
-
-        vector<pair<int, int>> swaps;
-        map<pair<int,int>, bool> vis;
-
+        int a = INT_MAX, b = INT_MIN, c = INT_MAX, d = INT_MIN;
         for (int i = 0; i < n; i++)
         {
-            for (auto it : swaps)
+            bool flag = false;
+            for (int j = 0; j < m; j++)
             {
-                if (it.second > i)
+                if (grid[i][j] == 1)
                 {
-                    mp[i].push(it);
-                }
-            }
-            while (!mp[i].empty() && mp[i].top().first < nums[i])
-            {
-                if (abs(mp[i].top().first - nums[i]) <= limit && !vis[mp[i].top()])
-                {
-                    swaps.push_back({nums[i], mp[i].top().second});
-                    vis[{mp[i].top().first,mp[i].top().second}] = true;
-                    swap(nums[i], nums[mp[i].top().second]);
-                    break;
-                }
-                else
-                {
-                    mp[i].pop();
+                    if (!flag)
+                    {
+                        a = min(a,j);
+                        b = max(b,j);
+                        flag = true;
+                    }
+                    else
+                    {
+                        b = max(b,j);
+                    }
                 }
             }
         }
 
-        return nums;
+        for (int i = 0; i < m; i++)
+        {
+            bool flag = false;
+            for (int j = 0; j < n; j++)
+            {
+                if (grid[j][i] == 1)
+                {
+                    if (!flag)
+                    {
+                        c = min(c,j);
+                        d = max(d,j);
+                        flag = true;
+                    }
+                    else
+                    {
+                        d = max(d,j);
+                    }
+                }
+            }
+        }
+
+        return (b - a + 1) * (d - c + 1);
     }
 };
