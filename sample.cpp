@@ -4,43 +4,87 @@ using namespace std;
 class Solution
 {
 public:
-    long long solve(vector<int> &nums, int n, int i, int flag, vector<vector<long long>> &dp)
+    unordered_map<string, int> memo;
+    vector<vector<int>> grid;
+
+    int getOne(int i1, int j1, int i2, int j2)
     {
-        if (i == n)
+        int minx = INT_MAX;
+        int maxx = INT_MIN;
+        int miny = INT_MAX;
+        int maxy = INT_MIN;
+
+        for (int i = i1; i <= i2; ++i)
+        {
+            for (int j = j1; j <= j2; ++j)
+            {
+                if (grid[i][j] == 1)
+                {
+                    minx = min(minx, i);
+                    maxx = max(maxx, i);
+                    miny = min(miny, j);
+                    maxy = max(maxy, j);
+                }
+            }
+        }
+
+        if (minx == INT_MAX)
         {
             return 0;
         }
-        if(dp[i][flag] != -1)
-        {
-            return dp[i][flag];
-        }
-        long long split, notSplit;
 
-        if (flag == 1)
-        {
-            // split
-            split = nums[i] + solve(nums, n, i + 1, 1, dp);
-
-            // not split
-            notSplit = nums[i] + solve(nums, n, i + 1, 0, dp);
-        }
-        else
-        {
-            // split
-            split = ((-1) * nums[i]) + solve(nums, n, i + 1, 1, dp);
-
-            // not split
-            notSplit = ((-1) * nums[i]) + solve(nums, n, i + 1, 1, dp);
-        }
-
-        return dp[i][flag] = max(split, notSplit);
+        return (maxx - minx + 1) * (maxy - miny + 1);
     }
-    long long maximumTotalCost(vector<int> &nums)
+
+    int getNext(int i1, int j1, int i2, int j2, int k)
     {
-        int n = nums.size();
+        string key = to_string(i1) + "," + to_string(j1) + "," + to_string(i2) + "," + to_string(j2) + "," + to_string(k);
+        if (memo.find(key) != memo.end())
+        {
+            return memo[key];
+        }
 
-        vector<vector<long long>> dp(n, vector<long long>(2, -1));
+        int output = INT_MAX;
 
-        return solve(nums, n, 0, 1, dp);
+        if (k == 1)
+        {
+            output = getOne(i1, j1, i2, j2);
+        }
+        else if (k == 2)
+        {
+            for (int i = i1; i < i2; ++i)
+            {
+                output = min(output, getNext(i1, j1, i, j2, 1) + getNext(i + 1, j1, i2, j2, 1));
+            }
+            for (int j = j1; j < j2; ++j)
+            {
+                output = min(output, getNext(i1, j1, i2, j, 1) + getNext(i1, j + 1, i2, j2, 1));
+            }
+        }
+        else if (k == 3)
+        {
+            for (int i = i1; i < i2; ++i)
+            {
+                output = min(output, getNext(i1, j1, i, j2, 1) + getNext(i + 1, j1, i2, j2, 2));
+                output = min(output, getNext(i1, j1, i, j2, 2) + getNext(i + 1, j1, i2, j2, 1));
+            }
+            for (int j = j1; j < j2; ++j)
+            {
+                output = min(output, getNext(i1, j1, i2, j, 1) + getNext(i1, j + 1, i2, j2, 2));
+                output = min(output, getNext(i1, j1, i2, j, 2) + getNext(i1, j + 1, i2, j2, 1));
+            }
+        }
+
+        memo[key] = output;
+        return output;
+    }
+
+    int minimumSum(vector<vector<int>> &grid)
+    {
+        this->grid = grid;
+        int m = grid.size();
+        int n = grid[0].size();
+        int ans = getNext(0, 0, m - 1, n - 1, 3);
+        return ans;
     }
 };
