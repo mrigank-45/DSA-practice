@@ -4,87 +4,63 @@ using namespace std;
 class Solution
 {
 public:
-    unordered_map<string, int> memo;
-    vector<vector<int>> grid;
-
-    int getOne(int i1, int j1, int i2, int j2)
+    bool possible(vector<int> &start, int mid, int d)
     {
-        int minx = INT_MAX;
-        int maxx = INT_MIN;
-        int miny = INT_MAX;
-        int maxy = INT_MIN;
-
-        for (int i = i1; i <= i2; ++i)
+        int n = start.size();
+        long long prev = start[0];
+        for (int i = 1; i < n; i++)
         {
-            for (int j = j1; j <= j2; ++j)
+            long long curr = prev + mid;
+            if (start[i] > curr)
             {
-                if (grid[i][j] == 1)
-                {
-                    minx = min(minx, i);
-                    maxx = max(maxx, i);
-                    miny = min(miny, j);
-                    maxy = max(maxy, j);
-                }
+                prev = start[i];
+            }
+            else if (start[i] + d < curr)
+            {
+                return false;
+            }
+            else
+            {
+                prev = curr;
             }
         }
 
-        if (minx == INT_MAX)
-        {
-            return 0;
-        }
-
-        return (maxx - minx + 1) * (maxy - miny + 1);
+        return true;
     }
-
-    int getNext(int i1, int j1, int i2, int j2, int k)
+    int maxPossibleScore(vector<int> &start, int d)
     {
-        string key = to_string(i1) + "," + to_string(j1) + "," + to_string(i2) + "," + to_string(j2) + "," + to_string(k);
-        if (memo.find(key) != memo.end())
+        int n = start.size();
+        sort(start.begin(), start.end());
+
+        if (d == 0)
         {
-            return memo[key];
+            int min_diff = INT_MAX;
+            for (int i = 1; i < n; i++)
+            {
+                min_diff = min(min_diff, start[i] - start[i - 1]);
+            }
+            return min_diff;
         }
 
-        int output = INT_MAX;
+        long long low = 0;
+        long long high = start[n-1] + d - start[0];
 
-        if (k == 1)
+        long long mid = low + (high - low) / 2;
+        int ans = -1;
+
+        while (low <= high)
         {
-            output = getOne(i1, j1, i2, j2);
-        }
-        else if (k == 2)
-        {
-            for (int i = i1; i < i2; ++i)
+            mid = low + (high - low) / 2;
+            if (possible(start, mid, d))
             {
-                output = min(output, getNext(i1, j1, i, j2, 1) + getNext(i + 1, j1, i2, j2, 1));
+                ans = mid;
+                low = mid + 1;
             }
-            for (int j = j1; j < j2; ++j)
+            else
             {
-                output = min(output, getNext(i1, j1, i2, j, 1) + getNext(i1, j + 1, i2, j2, 1));
-            }
-        }
-        else if (k == 3)
-        {
-            for (int i = i1; i < i2; ++i)
-            {
-                output = min(output, getNext(i1, j1, i, j2, 1) + getNext(i + 1, j1, i2, j2, 2));
-                output = min(output, getNext(i1, j1, i, j2, 2) + getNext(i + 1, j1, i2, j2, 1));
-            }
-            for (int j = j1; j < j2; ++j)
-            {
-                output = min(output, getNext(i1, j1, i2, j, 1) + getNext(i1, j + 1, i2, j2, 2));
-                output = min(output, getNext(i1, j1, i2, j, 2) + getNext(i1, j + 1, i2, j2, 1));
+                high = mid - 1;
             }
         }
-
-        memo[key] = output;
-        return output;
-    }
-
-    int minimumSum(vector<vector<int>> &grid)
-    {
-        this->grid = grid;
-        int m = grid.size();
-        int n = grid[0].size();
-        int ans = getNext(0, 0, m - 1, n - 1, 3);
         return ans;
     }
 };
