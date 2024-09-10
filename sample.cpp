@@ -4,54 +4,43 @@ using namespace std;
 class Solution
 {
 public:
-    int minimumArea(vector<vector<int>> &grid)
+    long long solve(vector<int> &nums, int n, int i, int flag, vector<vector<long long>> &dp)
     {
-        int n = grid.size();
-        int m = grid[0].size();
-
-        int a = INT_MAX, b = INT_MIN, c = INT_MAX, d = INT_MIN;
-        for (int i = 0; i < n; i++)
+        if (i == n)
         {
-            bool flag = false;
-            for (int j = 0; j < m; j++)
-            {
-                if (grid[i][j] == 1)
-                {
-                    if (!flag)
-                    {
-                        a = min(a,j);
-                        b = max(b,j);
-                        flag = true;
-                    }
-                    else
-                    {
-                        b = max(b,j);
-                    }
-                }
-            }
+            return 0;
+        }
+        if(dp[i][flag] != -1)
+        {
+            return dp[i][flag];
+        }
+        long long split, notSplit;
+
+        if (flag == 1)
+        {
+            // split
+            split = nums[i] + solve(nums, n, i + 1, 1, dp);
+
+            // not split
+            notSplit = nums[i] + solve(nums, n, i + 1, 0, dp);
+        }
+        else
+        {
+            // split
+            split = ((-1) * nums[i]) + solve(nums, n, i + 1, 1, dp);
+
+            // not split
+            notSplit = ((-1) * nums[i]) + solve(nums, n, i + 1, 1, dp);
         }
 
-        for (int i = 0; i < m; i++)
-        {
-            bool flag = false;
-            for (int j = 0; j < n; j++)
-            {
-                if (grid[j][i] == 1)
-                {
-                    if (!flag)
-                    {
-                        c = min(c,j);
-                        d = max(d,j);
-                        flag = true;
-                    }
-                    else
-                    {
-                        d = max(d,j);
-                    }
-                }
-            }
-        }
+        return dp[i][flag] = max(split, notSplit);
+    }
+    long long maximumTotalCost(vector<int> &nums)
+    {
+        int n = nums.size();
 
-        return (b - a + 1) * (d - c + 1);
+        vector<vector<long long>> dp(n, vector<long long>(2, -1));
+
+        return solve(nums, n, 0, 1, dp);
     }
 };
