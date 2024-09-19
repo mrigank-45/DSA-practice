@@ -1,66 +1,50 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+struct ListNode
+{
+    int val;
+    ListNode *next;
+    ListNode() : val(0), next(nullptr) {}
+    ListNode(int x) : val(x), next(nullptr) {}
+    ListNode(int x, ListNode *next) : val(x), next(next) {}
+};
+
 class Solution
 {
 public:
-    bool possible(vector<int> &start, int mid, int d)
+    ListNode *reverseBetween(ListNode *root, int left, int right)
     {
-        int n = start.size();
-        long long prev = start[0];
-        for (int i = 1; i < n; i++)
+        if (!root || left == right)
+            return root; // No need to reverse if the list is empty or left == right
+
+        ListNode *dummy = new ListNode(0);
+        dummy->next = root;
+        ListNode *left_before = dummy;
+
+        // Move `left_before` to the node just before the `left` node
+        for (int i = 1; i < left; i++)
         {
-            long long curr = prev + mid;
-            if (start[i] > curr)
-            {
-                prev = start[i];
-            }
-            else if (start[i] + d < curr)
-            {
-                return false;
-            }
-            else
-            {
-                prev = curr;
-            }
+            left_before = left_before->next;
         }
 
-        return true;
-    }
-    int maxPossibleScore(vector<int> &start, int d)
-    {
-        int n = start.size();
-        sort(start.begin(), start.end());
+        ListNode *left_node = left_before->next;
+        ListNode *prev = nullptr;
+        ListNode *curr = left_node;
 
-        if (d == 0)
+        // Reverse the sublist between left and right
+        for (int i = 0; i < right - left + 1; i++)
         {
-            int min_diff = INT_MAX;
-            for (int i = 1; i < n; i++)
-            {
-                min_diff = min(min_diff, start[i] - start[i - 1]);
-            }
-            return min_diff;
+            ListNode *next_node = curr->next;
+            curr->next = prev;
+            prev = curr;
+            curr = next_node;
         }
 
-        long long low = 0;
-        long long high = start[n-1] + d - start[0];
+        // Connect the reversed portion with the remaining list
+        left_before->next = prev;
+        left_node->next = curr;
 
-        long long mid = low + (high - low) / 2;
-        int ans = -1;
-
-        while (low <= high)
-        {
-            mid = low + (high - low) / 2;
-            if (possible(start, mid, d))
-            {
-                ans = mid;
-                low = mid + 1;
-            }
-            else
-            {
-                high = mid - 1;
-            }
-        }
-        return ans;
+        return dummy->next;
     }
 };
