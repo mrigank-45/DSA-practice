@@ -30,7 +30,7 @@ private:
                     parent[adjacentNode] = node;
                 }
                 // if adjacent node is visited and is not it's own parent node
-                else if (vis[adjacentNode] && parent[src] != adjacentNode)
+                else if (vis[adjacentNode] && parent[node] != adjacentNode)
                 {
                     // yes it is a cycle
                     return true;

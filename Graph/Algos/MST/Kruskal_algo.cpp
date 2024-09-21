@@ -3,6 +3,9 @@
 
 // ALGO: Sort the edges by weight, transverse them and if they are not in same component, add weight to ans and join them using disjoint set.
 
+//  Time Complexity = O(M * log(M))
+//  Space Complexity = O(N + M)
+
 #include <bits/stdc++.h>
 using namespace std;
 

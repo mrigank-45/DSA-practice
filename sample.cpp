@@ -1,50 +1,42 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-struct ListNode
-{
-    int val;
-    ListNode *next;
-    ListNode() : val(0), next(nullptr) {}
-    ListNode(int x) : val(x), next(nullptr) {}
-    ListNode(int x, ListNode *next) : val(x), next(next) {}
-};
-
 class Solution
 {
 public:
-    ListNode *reverseBetween(ListNode *root, int left, int right)
+    int solve(string &word1, string &word2, int n, int m, vector<vector<int>> &dp, int i, int j)
     {
-        if (!root || left == right)
-            return root; // No need to reverse if the list is empty or left == right
-
-        ListNode *dummy = new ListNode(0);
-        dummy->next = root;
-        ListNode *left_before = dummy;
-
-        // Move `left_before` to the node just before the `left` node
-        for (int i = 1; i < left; i++)
+        if (i == n)
         {
-            left_before = left_before->next;
+            return m - j;
+        }
+        if(j == m)
+        {
+            return n - i;
         }
 
-        ListNode *left_node = left_before->next;
-        ListNode *prev = nullptr;
-        ListNode *curr = left_node;
-
-        // Reverse the sublist between left and right
-        for (int i = 0; i < right - left + 1; i++)
+        if(dp[i][j] != -1)
         {
-            ListNode *next_node = curr->next;
-            curr->next = prev;
-            prev = curr;
-            curr = next_node;
+            return dp[i][j];
         }
 
-        // Connect the reversed portion with the remaining list
-        left_before->next = prev;
-        left_node->next = curr;
+        if(word1[i] == word2[j])
+        {
+            return dp[i][j] = solve(word1, word2, n, m, dp, i + 1, j + 1);
+        }
 
-        return dummy->next;
+        int op1 = 1 + solve(word1, word2, n, m, dp, i, j + 1);
+        int op2 = 1 + solve(word1, word2, n, m, dp, i + 1, j);
+
+        return dp[i][j] = min(op1, op2);
+    }
+    int minDistance(string word1, string word2)
+    {
+        int n = word1.size();
+        int m = word2.size();
+
+        vector<vector<int>> dp(n + 1, vector<int>(m + 1, -1));
+
+        return solve(word1, word2, n, m, dp, 0, 0);
     }
 };
