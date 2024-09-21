@@ -1,42 +1,39 @@
-#include <bits/stdc++.h>
+#include <vector>
+#include <queue>
+
 using namespace std;
 
-class Solution
-{
+class Solution {
 public:
-    int solve(string &word1, string &word2, int n, int m, vector<vector<int>> &dp, int i, int j)
-    {
-        if (i == n)
-        {
-            return m - j;
-        }
-        if(j == m)
-        {
-            return n - i;
-        }
+    vector<vector<int>> kSmallestPairs(vector<int>& nums1, vector<int>& nums2, int k) {
+        // Min-heap to store pairs, where each element is a tuple (sum, i, j)
+        // sum = nums1[i] + nums2[j], i is index from nums1, j is index from nums2
+        priority_queue<tuple<int, int, int>, vector<tuple<int, int, int>>, greater<>> minHeap;
+        
+        vector<vector<int>> result;
+        
+        // If either nums1 or nums2 is empty, return an empty result
+        if (nums1.empty() || nums2.empty() || k == 0) return result;
 
-        if(dp[i][j] != -1)
-        {
-            return dp[i][j];
-        }
-
-        if(word1[i] == word2[j])
-        {
-            return dp[i][j] = solve(word1, word2, n, m, dp, i + 1, j + 1);
+        // Initialize the heap with pairs from the first element in nums1 and every element in nums2
+        // Only take up to k elements
+        for (int i = 0; i < nums1.size() && i < k; ++i) {
+            minHeap.emplace(nums1[i] + nums2[0], i, 0);
         }
 
-        int op1 = 1 + solve(word1, word2, n, m, dp, i, j + 1);
-        int op2 = 1 + solve(word1, word2, n, m, dp, i + 1, j);
+        // Extract the smallest k pairs
+        while (k-- > 0 && !minHeap.empty()) {
+            auto [sum, i, j] = minHeap.top();  // Get the smallest sum
+            minHeap.pop();
 
-        return dp[i][j] = min(op1, op2);
-    }
-    int minDistance(string word1, string word2)
-    {
-        int n = word1.size();
-        int m = word2.size();
+            result.push_back({nums1[i], nums2[j]});  // Store the corresponding pair
 
-        vector<vector<int>> dp(n + 1, vector<int>(m + 1, -1));
+            // If possible, push the next pair from the same row (nums1[i], nums2[j+1])
+            if (j + 1 < nums2.size()) {
+                minHeap.emplace(nums1[i] + nums2[j + 1], i, j + 1);
+            }
+        }
 
-        return solve(word1, word2, n, m, dp, 0, 0);
+        return result;
     }
 };
