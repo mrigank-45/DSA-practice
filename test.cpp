@@ -1,69 +1,54 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
 using namespace std;
 
-bool subsetSumToK(int n, int k, vector<int> &arr)
-{
-    vector<bool> prev(k + 1, false);
-    prev[0] = true;
+vector<string> groupAnagrams(vector<string> &strs) {
+    vector<vector<string>> anagramGroups;
 
-    if (arr[0] <= k)
-    {
-        prev[arr[0]] = true;
-    }
+    // Iterate through each string in the original array
+    for (const string &str : strs) {
+        string sortedStr = str;
+        sort(sortedStr.begin(), sortedStr.end());
+        bool foundGroup = false;
 
-    for (int ind = 1; ind < n; ind++)
-    {
-        vector<bool> cur(k + 1, false);
-        cur[0] = true;
-
-        for (int target = 1; target <= k; target++)
-        {
-            bool notTaken = prev[target];
-            bool taken = false;
-            if (arr[ind] <= target)
-            {
-                taken = prev[target - arr[ind]];
+        // Check existing groups to find a match
+        for (auto &group : anagramGroups) {
+            string sortedGroupStr = group[0];
+            // Sort the first element of the group for comparison
+            sort(sortedGroupStr.begin(), sortedGroupStr.end());
+            if (sortedStr == sortedGroupStr) {
+                group.push_back(str); // Add the original string to this group
+                foundGroup = true;
+                break;
             }
-            cur[target] = notTaken || taken;
         }
 
-        prev = cur;
+        // If no matching group found, create a new one
+        if (!foundGroup) {
+            anagramGroups.push_back({str}); // Start a new group with the original string
+        }
     }
 
-    return prev[k];
+    // Flatten the 2D vector into a single vector for the final output
+    vector<string> ans;
+    for (const auto &group : anagramGroups) {
+        for (const string &s : group) {
+            ans.push_back(s);
+        }
+    }
+
+    return ans;
 }
 
-int main()
-{
-    // Sample test case
-    vector<int> arr = {1, 2, 3, 4, 5}; // The array elements
-    int k = 9; // Target sum
-    int n = arr.size();
+int main() {
+    vector<string> strs = {"acb", "cc", "nmn", "bac", "abc", "nnm", "mmn", "cba"};
+    vector<string> result = groupAnagrams(strs);
 
-    int ans = INT_MAX;
-
-    // Iterate through all possible subarrays
-    for (int i = 0; i < n; i++)
-    {
-        for (int j = i; j < n; j++)
-        {
-            vector<int> subarray(arr.begin() + i, arr.begin() + j + 1);
-            int subSize = subarray.size();
-            if (subsetSumToK(subSize, k, subarray))
-            {
-                ans = min(ans, j - i + 1);
-            }
-        }
+    // Output the result
+    for (const string &s : result) {
+        cout << s << " ";
     }
-
-    if (ans == INT_MAX)
-    {
-        cout << -1 << endl; // No subarray found
-    }
-    else
-    {
-        cout << ans << endl; // Minimum length of subarray with sum k
-    }
-
     return 0;
 }

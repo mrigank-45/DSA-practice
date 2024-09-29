@@ -1,39 +1,55 @@
+#include <iostream>
 #include <vector>
-#include <queue>
+#include <unordered_map>
+#include <algorithm>
 
 using namespace std;
 
-class Solution {
-public:
-    vector<vector<int>> kSmallestPairs(vector<int>& nums1, vector<int>& nums2, int k) {
-        // Min-heap to store pairs, where each element is a tuple (sum, i, j)
-        // sum = nums1[i] + nums2[j], i is index from nums1, j is index from nums2
-        priority_queue<tuple<int, int, int>, vector<tuple<int, int, int>>, greater<>> minHeap;
-        
-        vector<vector<int>> result;
-        
-        // If either nums1 or nums2 is empty, return an empty result
-        if (nums1.empty() || nums2.empty() || k == 0) return result;
+vector<string> groupAnagrams(vector<string> &strs)
+{
+    unordered_map<string, vector<string>> anagramMap;
+    vector<string> order;
+    vector<string> ans;
 
-        // Initialize the heap with pairs from the first element in nums1 and every element in nums2
-        // Only take up to k elements
-        for (int i = 0; i < nums1.size() && i < k; ++i) {
-            minHeap.emplace(nums1[i] + nums2[0], i, 0);
+    // Create a copy of the original array
+    vector<string> original = strs;
+
+    // Sort the strings and populate the unordered map
+    for (const string &str : original)
+    {
+        string sortedStr = str;
+        sort(sortedStr.begin(), sortedStr.end());
+
+        // If this sorted string is encountered for the first time
+        if (anagramMap.find(sortedStr) == anagramMap.end())
+        {
+            order.push_back(sortedStr); // Track the first occurrence for order
         }
-
-        // Extract the smallest k pairs
-        while (k-- > 0 && !minHeap.empty()) {
-            auto [sum, i, j] = minHeap.top();  // Get the smallest sum
-            minHeap.pop();
-
-            result.push_back({nums1[i], nums2[j]});  // Store the corresponding pair
-
-            // If possible, push the next pair from the same row (nums1[i], nums2[j+1])
-            if (j + 1 < nums2.size()) {
-                minHeap.emplace(nums1[i] + nums2[j + 1], i, j + 1);
-            }
-        }
-
-        return result;
+        anagramMap[sortedStr].push_back(str);
     }
-};
+
+    // Build the final answer array
+    for (const string &firstStr : order)
+    {
+        // Push the grouped anagrams in original order
+        for (const string &groupedStr : anagramMap[firstStr])
+        {
+            ans.push_back(groupedStr);
+        }
+    }
+
+    return ans;
+}
+
+int main()
+{
+    vector<string> strs = {"acb", "cc", "nmn", "bac", "abc", "nnm", "mmn", "cba"};
+    vector<string> result = groupAnagrams(strs);
+
+    // Output the result
+    for (const string &s : result)
+    {
+        cout << s << " ";
+    }
+    return 0;
+}
