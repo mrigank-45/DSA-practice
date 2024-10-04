@@ -1,55 +1,57 @@
-#include <iostream>
-#include <vector>
-#include <unordered_map>
-#include <algorithm>
-
+#include <bits/stdc++.h>
 using namespace std;
 
-vector<string> groupAnagrams(vector<string> &strs)
+class Solution
 {
-    unordered_map<string, vector<string>> anagramMap;
-    vector<string> order;
-    vector<string> ans;
-
-    // Create a copy of the original array
-    vector<string> original = strs;
-
-    // Sort the strings and populate the unordered map
-    for (const string &str : original)
+public:
+    int maximumLength(vector<int> &nums)
     {
-        string sortedStr = str;
-        sort(sortedStr.begin(), sortedStr.end());
-
-        // If this sorted string is encountered for the first time
-        if (anagramMap.find(sortedStr) == anagramMap.end())
+        int n = nums.size();
+        int even_cnt = 0, odd_cnt = 0, first_even = -1, first_odd = -1;
+        for (int i = 0; i < n; i++)
         {
-            order.push_back(sortedStr); // Track the first occurrence for order
+            if (nums[i] % 2 == 0)
+            {
+                if (first_even == -1)
+                {
+                    first_even = i;
+                }
+                even_cnt++;
+            }
+            else
+            {
+                if (first_odd == -1)
+                {
+                    first_odd = i;
+                }
+                odd_cnt++;
+            }
         }
-        anagramMap[sortedStr].push_back(str);
-    }
 
-    // Build the final answer array
-    for (const string &firstStr : order)
-    {
-        // Push the grouped anagrams in original order
-        for (const string &groupedStr : anagramMap[firstStr])
+        // odd_first subsequence
+        int odd_length = 1;
+        int parity = 0;
+        for (int i = first_odd + 1; i < n; i++)
         {
-            ans.push_back(groupedStr);
+            if (nums[i] % 2 == parity)
+            {
+                odd_length++;
+                parity = 1 - parity;
+            }
         }
+
+        // even_first subsequence
+        int even_length = 1;
+        parity = 1;
+        for (int i = first_even + 1; i < n; i++)
+        {
+            if (nums[i] % 2 == parity)
+            {
+                even_length++;
+                parity = 1 - parity;
+            }
+        }
+
+        return max(max(even_cnt, odd_cnt), max(even_length, odd_length));
     }
-
-    return ans;
-}
-
-int main()
-{
-    vector<string> strs = {"acb", "cc", "nmn", "bac", "abc", "nnm", "mmn", "cba"};
-    vector<string> result = groupAnagrams(strs);
-
-    // Output the result
-    for (const string &s : result)
-    {
-        cout << s << " ";
-    }
-    return 0;
-}
+};

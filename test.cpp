@@ -1,54 +1,61 @@
 #include <iostream>
-#include <vector>
-#include <algorithm>
-
+#include <string>
 using namespace std;
 
-vector<string> groupAnagrams(vector<string> &strs) {
-    vector<vector<string>> anagramGroups;
-
-    // Iterate through each string in the original array
-    for (const string &str : strs) {
-        string sortedStr = str;
-        sort(sortedStr.begin(), sortedStr.end());
-        bool foundGroup = false;
-
-        // Check existing groups to find a match
-        for (auto &group : anagramGroups) {
-            string sortedGroupStr = group[0];
-            // Sort the first element of the group for comparison
-            sort(sortedGroupStr.begin(), sortedGroupStr.end());
-            if (sortedStr == sortedGroupStr) {
-                group.push_back(str); // Add the original string to this group
-                foundGroup = true;
-                break;
+string expandString(string &inputStr) {
+    string result;
+    int i = 0;
+    while (i < inputStr.size()) {
+        if (inputStr[i] == '(') {
+            // Find the closing parenthesis
+            int j = i + 1;
+            while (j < inputStr.size() && inputStr[j] != ')') {
+                j++;
             }
-        }
+            // Extract the pattern
+            string pattern = inputStr.substr(i + 1, j - i - 1);
+            i = j + 1; // Move to the '{'
 
-        // If no matching group found, create a new one
-        if (!foundGroup) {
-            anagramGroups.push_back({str}); // Start a new group with the original string
+            // Find the closing curly bracket
+            j = i + 1;
+            while (j < inputStr.size() && inputStr[j] != '}') {
+                j++;
+            }
+            // Extract the count
+            int count = stoi(inputStr.substr(i + 1, j - i - 1));
+            i = j + 1; // Move past the '}'
+
+            // Expand the pattern
+            for (int k = 0; k < count; k++) {
+                result += pattern;
+            }
+        } else {
+            result += inputStr[i];
+            i++;
         }
     }
-
-    // Flatten the 2D vector into a single vector for the final output
-    vector<string> ans;
-    for (const auto &group : anagramGroups) {
-        for (const string &s : group) {
-            ans.push_back(s);
-        }
-    }
-
-    return ans;
+    return result;
 }
 
 int main() {
-    vector<string> strs = {"acb", "cc", "nmn", "bac", "abc", "nnm", "mmn", "cba"};
-    vector<string> result = groupAnagrams(strs);
+    // Test case 1
+    string input1 = "(ab){3}";
+    cout << "Input: " << input1 << endl;
+    cout << "Output: " << expandString(input1) << endl; // Expected output: ababab
 
-    // Output the result
-    for (const string &s : result) {
-        cout << s << " ";
-    }
+    // Test case 2
+    string input2 = "(ab){3}(cd){2}";
+    cout << "Input: " << input2 << endl;
+    cout << "Output: " << expandString(input2) << endl; // Expected output: abababcdcd
+
+    // Additional test cases
+    string input3 = "(a){5}(b){3}";
+    cout << "Input: " << input3 << endl;
+    cout << "Output: " << expandString(input3) << endl; // Expected output: aaaaabbb
+
+    string input4 = "(xyz){2}(pq){4}";
+    cout << "Input: " << input4 << endl;
+    cout << "Output: " << expandString(input4) << endl; // Expected output: xyzxyzpqpqpqpq
+
     return 0;
 }
