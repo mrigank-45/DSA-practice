@@ -4,43 +4,31 @@ using namespace std;
 class Solution
 {
 public:
-    int solve(int i, int rem, vector<vector<int>> &dp, vector<int> &nums, int k)
+    long long maximumTotalSum(vector<int> &maximumHeight)
     {
-        if (dp[i][rem] != 0)
+        int n = maximumHeight.size();
+        long long sum = 0;
+        sort(maximumHeight.begin(), maximumHeight.end());
+        reverse(maximumHeight.begin(), maximumHeight.end());
+        int h = maximumHeight[0];
+        sum += h;
+        for(int i = 1; i < n; i++)
         {
-            return dp[i][rem];
-        }
-
-        int res = 1;
-        for (int j = i + 1; j < nums.size(); j++)
-        {
-            if ((nums[j] + nums[i]) % k == rem)
+            if(maximumHeight[i] < h)
             {
-                res += solve(j, rem, dp, nums, k);
-                break;
+                sum += maximumHeight[i];
+                h = maximumHeight[i];
             }
-        }
-        dp[i][rem] = res;
-        return res;
-    }
-    int maximumLength(vector<int> &nums, int k)
-    {
-        int n = nums.size();
-        vector<vector<int>> dp(n, vector<int>(k, 0));
-
-        int res = 0;
-        for (int i = 0; i < n; i++)
-        {
-            for (int j = i + 1; j < n; j++)
+            else
             {
-                int len = 1 + solve(j, (nums[i] + nums[j]) % k, dp, nums, k);
-                if (len > res)
+                if(h-1 <= 0)
                 {
-                    res = len;
+                    return -1;
                 }
+                sum += h - 1;
+                h--;
             }
         }
-
-        return res;
+        return sum;
     }
 };
