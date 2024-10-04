@@ -4,31 +4,51 @@ using namespace std;
 class Solution
 {
 public:
-    long long maximumTotalSum(vector<int> &maximumHeight)
+    vector<int> validSequence(string word1, string word2)
     {
-        int n = maximumHeight.size();
-        long long sum = 0;
-        sort(maximumHeight.begin(), maximumHeight.end());
-        reverse(maximumHeight.begin(), maximumHeight.end());
-        int h = maximumHeight[0];
-        sum += h;
-        for(int i = 1; i < n; i++)
+        int n = word1.size();
+        int m = word2.size();
+        vector<int> res;
+
+        for (int skip = 0; skip < m; skip++)
         {
-            if(maximumHeight[i] < h)
+            vector<int> ans;
+            int i = 0, j = 0;
+            while (i < n && j < m)
             {
-                sum += maximumHeight[i];
-                h = maximumHeight[i];
-            }
-            else
-            {
-                if(h-1 <= 0)
+                if (word1[i] == word2[j])
                 {
-                    return -1;
+                    ans.push_back(i);
+                    i++;
+                    j++;
                 }
-                sum += h - 1;
-                h--;
+                else if (skip == j)
+                {
+                    ans.push_back(i);
+                    i++;
+                    j++;
+                }
+                else
+                {
+                    i++;
+                }
+            }
+            if (ans.size() == m)
+            {
+                if (res.size() == 0)
+                {
+                    res = ans;
+                }
+                else
+                {
+                    if (ans < res)
+                    {
+                        res = ans;
+                    }
+                }
             }
         }
-        return sum;
+
+        return res;
     }
 };

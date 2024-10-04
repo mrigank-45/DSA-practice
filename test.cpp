@@ -4,28 +4,42 @@ using namespace std;
 class Solution
 {
 public:
-    int maximumLength(vector<int> &nums, int k)
+    vector<int> validSequence(string word1, string word2)
     {
-        int n = nums.size();
-        int max_len = 0;
+        int m = word1.size(), n = word2.size();
+        vector<int> lastSeen(n, -1);
+        vector<int> res;
 
-        for (int rem = 0; rem < k; rem++)
+        for (int i = m - 1, j = n - 1; i >= 0; i--)
         {
-            vector<int> dp(n, 1);
-            for (int i = 0; i < n; i++)
+            if (j >= 0 && word1[i] == word2[j])
             {
-                for (int prev = 0; prev < i; prev++)
-                {
-                    if ((nums[prev] + nums[i]) % k == rem)
-                    {
-                        dp[i] = max(dp[i], dp[prev] + 1);
-                    }
-                }
+                lastSeen[j] = i;
+                j--;
             }
-
-            max_len = max(max_len, *max_element(dp.begin(), dp.end()));
         }
 
-        return max_len;
+        int matchPos = 0, coin = 0;
+        for (int i = 0; i < m; i++)
+        {
+            if (matchPos < n)
+            {
+                bool letterMatch = word1[i] == word2[matchPos];
+                if (letterMatch || (!coin && (matchPos == n - 1 || (i + 1 <= lastSeen[matchPos + 1]))))
+                {
+                    if (!letterMatch)
+                        coin = 1;
+                    res.push_back(i);
+                    matchPos++;
+                }
+            }
+        }
+        // print the result
+        for(int i = 0; i < res.size(); i++)
+        {
+            cout << res[i] << " ";
+        }
+
+        return matchPos == n ? res : vector<int>();
     }
 };
