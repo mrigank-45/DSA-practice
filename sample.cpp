@@ -1,83 +1,43 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+struct TreeNode
+{
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode() : val(0), left(nullptr), right(nullptr) {}
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+};
+
 class Solution
 {
 public:
-    vector<vector<int>> insert(vector<vector<int>> &intervals, vector<int> &newInterval)
+    vector<int> ans;
+    void solve(TreeNode *root, int sum)
     {
-        int n = intervals.size();
-        vector<vector<int>> ans;
-        int l = newInterval[0], r = newInterval[1];
-        bool flag = false;
-
-        int i = 0;
-        while (i < n)
+        if (root == NULL)
         {
-            if (flag)
-            {
-                while (i < n)
-                {
-                    ans.push_back(intervals[i]);
-                    i++;
-                }
-                break;
-            }
-            if (intervals[i][1] >= l)
-            {
-                vector<int> temp(2);
-
-                if (l <= intervals[i][0])
-                {
-                    temp[0] = l;
-                }
-                else
-                {
-                    temp[0] = intervals[i][0];
-                }
-                while (i < n)
-                {
-                    if (intervals[i][1] >= r)
-                    {
-                        if (r >= intervals[i][0])
-                        {
-                            temp[1] = intervals[i][1];
-                            i++;
-                        }
-                        else
-                        {
-                            temp[1] = r;
-                        }
-                        flag = true;
-                        ans.push_back(temp);
-                        break;
-                    }
-                    else
-                    {
-                        i++;
-                    }
-                }
-                if (!flag)
-                {
-                    temp[1] = r;
-                    ans.push_back(temp);
-                    flag = true;
-                    break;
-                }
-            }
-            else
-            {
-                ans.push_back(intervals[i]);
-                i++;
-            }
+            return;
         }
-
-        if (!flag)
+        sum = sum * 10 + root->val;
+        if (root->left == NULL && root->right == NULL)
         {
-            ans = intervals;
-            ans.push_back(newInterval);
+            ans.push_back(sum);
+            return;
         }
-
-        return ans;
+        solve(root->left, sum);
+        solve(root->right, sum);
+    }
+    int sumNumbers(TreeNode *root)
+    {
+        solve(root, 0);
+        int res = 0;
+        for (int i = 0; i < ans.size(); i++)
+        {
+            res += ans[i];
+        }
+        return res;
     }
 };
