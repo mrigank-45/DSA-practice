@@ -4,39 +4,103 @@ using namespace std;
 class Solution
 {
 public:
-    vector<string> findHighAccessEmployees(vector<vector<string>> &access_times)
+    int minOperations(vector<int> &nums1, vector<int> &nums2)
     {
-        int n = access_times.size();
-        unordered_set<string> ans;
-        vector<string> res;
+        int n = nums1.size();
+        int ans = 100000;
 
-        sort(access_times.begin(), access_times.end());
-
-        int time = stoi(access_times[0][1]);
-        string curr = access_times[0][0];
-        for (int i = 0; i < n; i++)
+        // case 1
+        vector<int> temp1 = nums1, temp2 = nums2;
+        int op1 = 0;
+        for (int i = 0; i < n - 1; i++)
         {
-            curr = access_times[i][0];
-            time = stoi(access_times[i][1]);
-            i += 2;
-            if (i >= n)
+            if (temp1[i] <= temp1[n - 1])
             {
-                break;
-            }
-            if (access_times[i][0] == curr && stoi(access_times[i][1]) - time < 100)
-            {
-                ans.insert(curr);
+                continue;
             }
             else
             {
-                i -= 2;
+                swap(temp1[i], temp2[i]);
+                if (temp1[i] <= temp1[n - 1] && temp2[i] <= temp2[n - 1])
+                {
+                    op1++;
+                }
+                else
+                {
+                    op1 = 10000;
+                    break;
+                }
             }
         }
-
-        for(auto &x: ans)
+        for (int i = 0; i < n - 1; i++)
         {
-            res.push_back(x);
+            if (temp2[i] <= temp2[n - 1])
+            {
+                continue;
+            }
+            else
+            {
+                swap(temp2[i], temp1[i]);
+                if (temp2[i] <= temp2[n - 1] && temp1[i] <= temp1[n - 1])
+                {
+                    op1++;
+                }
+                else
+                {
+                    op1 = 10000;
+                    break;
+                }
+            }
         }
-        return res;
+        ans = min(ans, op1);
+
+        // case 2
+        temp1 = nums1;
+        temp2 = nums2;
+        swap(temp1[n - 1], temp2[n - 1]);
+        int op2 = 1;
+        for (int i = 0; i < n - 1; i++)
+        {
+            if (temp1[i] <= temp1[n - 1])
+            {
+                continue;
+            }
+            else
+            {
+                swap(temp1[i], temp2[i]);
+                if (temp1[i] <= temp1[n - 1] && temp2[i] <= temp2[n - 1])
+                {
+                    op2++;
+                }
+                else
+                {
+                    op2 = 10000;
+                    break;
+                }
+            }
+        }
+        for (int i = 0; i < n - 1; i++)
+        {
+            if (temp2[i] <= temp2[n - 1])
+            {
+                continue;
+            }
+            else
+            {
+                swap(temp2[i], temp1[i]);
+                if (temp2[i] <= temp2[n - 1] && temp1[i] <= temp1[n - 1])
+                {
+                    op2++;
+                }
+                else
+                {
+                    op2 = 10000;
+                    break;
+                }
+            }
+        }
+        ans = min(ans, op2);
+
+        return ans >= 10000 ? -1 : ans;
     }
 };
