@@ -1,56 +1,83 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int allocateServers(vector<vector<int>> &matrix, vector<int> &serverCapacities, vector<int> &locationUsers)
+class Solution
 {
-    int rows = matrix.size();
-    int cols = matrix[0].size();
-    int totalCost = 0;
-    int serverId = 1, locationId = 1; 
-
-    while (rows > 0 && cols > 0)
+public:
+    vector<vector<int>> insert(vector<vector<int>> &intervals, vector<int> &newInterval)
     {
-        int minVal = min(serverCapacities[0], locationUsers[0]);
+        int n = intervals.size();
+        vector<vector<int>> ans;
+        int l = newInterval[0], r = newInterval[1];
+        bool flag = false;
 
-        cout << "Allocating " << minVal << " users from Server " << serverId << " to Location " << locationId << endl;
-
-        totalCost += (matrix[0][0] * minVal);
-
-        serverCapacities[0] -= minVal;
-        locationUsers[0] -= minVal;
-
-        if (serverCapacities[0] == 0)
+        int i = 0;
+        while (i < n)
         {
-            serverCapacities.erase(serverCapacities.begin());
-            matrix.erase(matrix.begin());
-            rows--;
-            serverId++; 
-        }
-
-        if (locationUsers[0] == 0)
-        {
-            for (int i = 0; i < rows; ++i)
+            if (flag)
             {
-                matrix[i].erase(matrix[i].begin());
+                while (i < n)
+                {
+                    ans.push_back(intervals[i]);
+                    i++;
+                }
+                break;
             }
-            locationUsers.erase(locationUsers.begin());
-            cols--;
-            locationId++; 
+            if (intervals[i][1] >= l)
+            {
+                vector<int> temp(2);
+
+                if (l <= intervals[i][0])
+                {
+                    temp[0] = l;
+                }
+                else
+                {
+                    temp[0] = intervals[i][0];
+                }
+                while (i < n)
+                {
+                    if (intervals[i][1] >= r)
+                    {
+                        if (r >= intervals[i][0])
+                        {
+                            temp[1] = intervals[i][1];
+                            i++;
+                        }
+                        else
+                        {
+                            temp[1] = r;
+                        }
+                        flag = true;
+                        ans.push_back(temp);
+                        break;
+                    }
+                    else
+                    {
+                        i++;
+                    }
+                }
+                if (!flag)
+                {
+                    temp[1] = r;
+                    ans.push_back(temp);
+                    flag = true;
+                    break;
+                }
+            }
+            else
+            {
+                ans.push_back(intervals[i]);
+                i++;
+            }
         }
+
+        if (!flag)
+        {
+            ans = intervals;
+            ans.push_back(newInterval);
+        }
+
+        return ans;
     }
-
-    return totalCost;
-}
-
-int main()
-{
-    vector<vector<int>> matrix = {{10, 2, 20, 11},  {12, 7, 9, 20}, {4, 14, 16, 18}};
-    vector<int> serverCapacities = {25, 25, 30}; 
-    vector<int> locationUsers = {10, 25, 25, 20};    
-
-    int result = allocateServers(matrix, serverCapacities, locationUsers);
-
-    cout << "Total Cost for Allocation: " << result << endl;
-
-    return 0;
-}
+};
