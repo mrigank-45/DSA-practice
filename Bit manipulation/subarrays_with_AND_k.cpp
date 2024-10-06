@@ -1,3 +1,5 @@
+// Number of Subarrays With AND Value of K
+
 #include <bits/stdc++.h>
 using namespace std;
 
