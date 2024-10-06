@@ -4,53 +4,29 @@ using namespace std;
 class Solution
 {
 public:
-    int calc(vector<int> &temp, int w)
+    int singleNumber(vector<int> &nums)
     {
-        int ans = 0;
-        for (int i = 0; i < 32; i++)
-        {
-            if (temp[i] == w)
-                ans += (1 << i);
-        }
-
-        return ans;
-    }
-    
-    long long atLeastK(vector<int> &nums, int k)
-    {
-        long long ans = 0;
+        int n = nums.size();
         vector<int> temp(32, 0);
 
-        int l = 0;
-        for (int r = 0; r < nums.size(); r++)
+        for (int i = 0; i < n; i++)
         {
-            for (int i = 0; i < 32; i++)
+            for (int j = 0; j < 32; j++)
             {
-                if ((1 << i) & nums[r])
+                if ((1 << j) & nums[i])
                 {
-                    temp[i]++;
+                    temp[j]++;
                 }
             }
-
-            while ((r - l + 1) > 0 && calc(temp, r - l + 1) < k)
-            {
-                for (int i = 0; i < 32; i++)
-                {
-                    if ((1 << i) & nums[l])
-                    {
-                        temp[i]--;
-                    }
-                }
-                l++;
-            }
-            ans += (r - l + 1);
         }
-
+        int ans = 0;
+        for (int j = 0; j < 32; j++)
+        {
+            if(temp[j] % 3 != 0)
+            {
+                ans += (1 << j);
+            }
+        }
         return ans;
-    }
-
-    long long countSubarrays(vector<int> &nums, int k)
-    {
-        return atLeastK(nums, k) - atLeastK(nums, k + 1);
     }
 };
