@@ -4,38 +4,41 @@ using namespace std;
 class Solution
 {
 public:
-    long long maximumPoints(vector<int> &enemyEnergies, int currentEnergy)
+    int numberOfAlternatingGroups(vector<int> &colors, int k)
     {
-        int n = enemyEnergies.size();
-        sort(enemyEnergies.begin(), enemyEnergies.end());
-        reverse(enemyEnergies.begin(), enemyEnergies.end());
+        int n = colors.size();
+        int s = 0, i = 1, l = 1, color = colors[0], ans = 0;
 
-        if (currentEnergy < enemyEnergies[n - 1])
+        while (s < n)
         {
-            return 0;
-        }
-
-        int i = 0;
-        long long ans = 0;
-
-        while (i < n)
-        {
-            // get all the poinst from last enemy
-            ans += currentEnergy/enemyEnergies[n-1];
-            currentEnergy = currentEnergy % enemyEnergies[n-1];
-            
-
-            // get energy from the current enemy
-            while (currentEnergy < enemyEnergies[n - 1])
+            if (colors[i%n] != color)
             {
-                currentEnergy += enemyEnergies[i];
-                i++;
-                if(i == n)
+                l++;
+                if (l == k)
+                {
+                    ans++;
+                    s++;
+                    l--;
+                    if (s == n)
+                    {
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                s = i;
+                l = 1;
+                if (s == n)
                 {
                     break;
                 }
             }
+
+            color = colors[i%n];
+            i++;
         }
+
         return ans;
     }
 };
