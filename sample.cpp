@@ -1,53 +1,41 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class LRUCache
+class Solution
 {
 public:
-    unordered_map<int, pair<int, int>> mp;
-    set<pair<int, int>> st;
-    int max_size;
-    int use_id = 1;
-    LRUCache(int capacity)
+    long long maximumPoints(vector<int> &enemyEnergies, int currentEnergy)
     {
-        max_size = capacity;
-    }
+        int n = enemyEnergies.size();
+        sort(enemyEnergies.begin(), enemyEnergies.end());
+        reverse(enemyEnergies.begin(), enemyEnergies.end());
 
-    int get(int key)  // O(logn)
-    {
-        if (mp.find(key) == mp.end())
+        if (currentEnergy < enemyEnergies[n - 1])
         {
-            return -1;
+            return 0;
         }
-        st.erase({mp[key].second, key});
-        use_id++;
-        mp[key].second = use_id;
-        st.insert({mp[key].second, key});
-        return mp[key].first;
-    }
 
-    void put(int key, int value) // O(logn)
-    {
-        if (mp.find(key) != mp.end())
+        int i = 0;
+        long long ans = 0;
+
+        while (i < n)
         {
-            st.erase({mp[key].second, key});
-            use_id++;
-            mp[key] = {value, use_id};
-            st.insert({mp[key].second, key});
+            // get all the poinst from last enemy
+            ans += currentEnergy/enemyEnergies[n-1];
+            currentEnergy = currentEnergy % enemyEnergies[n-1];
+            
+
+            // get energy from the current enemy
+            while (currentEnergy < enemyEnergies[n - 1])
+            {
+                currentEnergy += enemyEnergies[i];
+                i++;
+                if(i == n)
+                {
+                    break;
+                }
+            }
         }
-        else if (mp.size() == max_size)
-        {
-            mp.erase(st.begin()->second);
-            st.erase(st.begin());
-            use_id++;
-            mp[key] = {value, use_id};
-            st.insert({mp[key].second, key});
-        }
-        else
-        {
-            use_id++;
-            mp[key] = {value, use_id};
-            st.insert({mp[key].second, key});
-        }
+        return ans;
     }
 };
