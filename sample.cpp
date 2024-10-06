@@ -1,106 +1,53 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class Solution
+class LRUCache
 {
 public:
-    int minOperations(vector<int> &nums1, vector<int> &nums2)
+    unordered_map<int, pair<int, int>> mp;
+    set<pair<int, int>> st;
+    int max_size;
+    int use_id = 1;
+    LRUCache(int capacity)
     {
-        int n = nums1.size();
-        int ans = 100000;
+        max_size = capacity;
+    }
 
-        // case 1
-        vector<int> temp1 = nums1, temp2 = nums2;
-        int op1 = 0;
-        for (int i = 0; i < n - 1; i++)
+    int get(int key)  // O(logn)
+    {
+        if (mp.find(key) == mp.end())
         {
-            if (temp1[i] <= temp1[n - 1])
-            {
-                continue;
-            }
-            else
-            {
-                swap(temp1[i], temp2[i]);
-                if (temp1[i] <= temp1[n - 1] && temp2[i] <= temp2[n - 1])
-                {
-                    op1++;
-                }
-                else
-                {
-                    op1 = 10000;
-                    break;
-                }
-            }
+            return -1;
         }
-        for (int i = 0; i < n - 1; i++)
-        {
-            if (temp2[i] <= temp2[n - 1])
-            {
-                continue;
-            }
-            else
-            {
-                swap(temp2[i], temp1[i]);
-                if (temp2[i] <= temp2[n - 1] && temp1[i] <= temp1[n - 1])
-                {
-                    op1++;
-                }
-                else
-                {
-                    op1 = 10000;
-                    break;
-                }
-            }
-        }
-        ans = min(ans, op1);
+        st.erase({mp[key].second, key});
+        use_id++;
+        mp[key].second = use_id;
+        st.insert({mp[key].second, key});
+        return mp[key].first;
+    }
 
-        // case 2
-        temp1 = nums1;
-        temp2 = nums2;
-        swap(temp1[n - 1], temp2[n - 1]);
-        int op2 = 1;
-        for (int i = 0; i < n - 1; i++)
+    void put(int key, int value) // O(logn)
+    {
+        if (mp.find(key) != mp.end())
         {
-            if (temp1[i] <= temp1[n - 1])
-            {
-                continue;
-            }
-            else
-            {
-                swap(temp1[i], temp2[i]);
-                if (temp1[i] <= temp1[n - 1] && temp2[i] <= temp2[n - 1])
-                {
-                    op2++;
-                }
-                else
-                {
-                    op2 = 10000;
-                    break;
-                }
-            }
+            st.erase({mp[key].second, key});
+            use_id++;
+            mp[key] = {value, use_id};
+            st.insert({mp[key].second, key});
         }
-        for (int i = 0; i < n - 1; i++)
+        else if (mp.size() == max_size)
         {
-            if (temp2[i] <= temp2[n - 1])
-            {
-                continue;
-            }
-            else
-            {
-                swap(temp2[i], temp1[i]);
-                if (temp2[i] <= temp2[n - 1] && temp1[i] <= temp1[n - 1])
-                {
-                    op2++;
-                }
-                else
-                {
-                    op2 = 10000;
-                    break;
-                }
-            }
+            mp.erase(st.begin()->second);
+            st.erase(st.begin());
+            use_id++;
+            mp[key] = {value, use_id};
+            st.insert({mp[key].second, key});
         }
-        ans = min(ans, op2);
-
-        return ans >= 10000 ? -1 : ans;
+        else
+        {
+            use_id++;
+            mp[key] = {value, use_id};
+            st.insert({mp[key].second, key});
+        }
     }
 };
