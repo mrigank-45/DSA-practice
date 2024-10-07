@@ -8,6 +8,31 @@
 // For example, if there are two nodes X and Y in the original list, where X.random --> Y, then for the corresponding two nodes x and y in
 // the copied list, x.random --> y. Return the head of the copied linked list.
 
+#include <bits/stdc++.h>
+using namespace std;
+
+class Node
+{
+public:
+    int val;
+    Node *next;
+    Node *random;
+
+    Node(int data)
+    {
+        next = NULL;
+        this->val = val;
+    }
+
+    ~Node()
+    {
+        if (next != NULL)
+        {
+            delete next;
+        }
+    }
+};
+
 class Solution
 {
 public:

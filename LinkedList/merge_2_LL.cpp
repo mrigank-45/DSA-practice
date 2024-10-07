@@ -1,35 +1,34 @@
-/************************************************************
+#include <bits/stdc++.h>
+using namespace std;
 
-    Following is the linked list node structure.
+class Node
+{
+public:
+    int data;
+    Node *next;
 
-    template <typename T>
-    class Node {
-        public:
-        T data;
-        Node* next;
+    Node(int data)
+    {
+        next = NULL;
+        this->data = data;
+    }
 
-        Node(T data) {
-            next = NULL;
-            this->data = data;
+    ~Node()
+    {
+        if (next != NULL)
+        {
+            delete next;
         }
-
-        ~Node() {
-            if (next != NULL) {
-                delete next;
-            }
-        }
-    };
-
-************************************************************/
+    }
+};
 
 Node *solve(Node *first, Node *second)
 {
     if (first->next == NULL)
     {
-        first->next=second;
+        first->next = second;
         return first;
     }
-    
 
     Node *curr1 = first;
     Node *next1 = curr1->next;
@@ -52,9 +51,9 @@ Node *solve(Node *first, Node *second)
         {
             curr1 = next1;
             next1 = next1->next;
-            if (next1==NULL)
+            if (next1 == NULL)
             {
-                curr1->next=curr2;
+                curr1->next = curr2;
                 return first;
             }
         }
