@@ -4,38 +4,25 @@ using namespace std;
 class Solution
 {
 public:
-    int findMaximizedCapital(int k, int w, vector<int> &profits, vector<int> &capital)
+    long long maxKelements(vector<int> &nums, int k)
     {
-        int n = profits.size();
-        vector<pair<int, int>> projects;
+        int n = nums.size();
+        priority_queue<int> pq;
 
-        for (int i = 0; i < n; ++i)
+        for(int i = 0; i < n; i++)
         {
-            projects.emplace_back(capital[i], profits[i]);
+            pq.push(nums[i]);
         }
+        long long ans = 0;
 
-        sort(projects.begin(), projects.end());
-
-        priority_queue<int> maxHeap;
-        int i = 0;
-
-        for (int j = 0; j < k; ++j)
+        while(k--)
         {
-            while (i < n && projects[i].first <= w)
-            {
-                maxHeap.push(projects[i].second);
-                i++;
-            }
-
-            if (maxHeap.empty())
-            {
-                break;
-            }
-
-            w += maxHeap.top();
-            maxHeap.pop();
+            int ele = pq.top();
+            ans += ele;
+            pq.pop();
+            pq.push(ceil((double)ele / 3));
         }
+        return ans;
 
-        return w;
     }
 };
