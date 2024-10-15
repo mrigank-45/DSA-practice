@@ -4,28 +4,27 @@ using namespace std;
 class Solution
 {
 public:
-    int minimumLength(string s)
+    long long dividePlayers(vector<int> &skill)
     {
-        unordered_map<char, int> mp;
-
-        for (char c : s)
+        int n = skill.size();
+        sort(skill.begin(), skill.end());
+        long long ans = 0;
+        int l = 0, r = n - 1;
+        int sum = skill[l] + skill[r];
+        while (l < r)
         {
-            mp[c]++;
-        }
-
-        int ans = 0;
-        for (auto it : mp)
-        {
-            if (it.second % 2 == 1)
+            if (skill[l] + skill[r] != sum)
             {
-                ans++;
+                return -1;
             }
             else
             {
-                ans += 2;
+                ans += skill[l] * skill[r];
+                l++;
+                r--;
             }
         }
 
-        return ans;	
+        return ans;
     }
 };
