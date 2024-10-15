@@ -4,21 +4,28 @@ using namespace std;
 class Solution
 {
 public:
-    long long minimumSteps(string s)
+    int minimumLength(string s)
     {
-        int n = s.size();
-        long long ans = 0;
-        long long cnt = 0;
+        unordered_map<char, int> mp;
 
-        for (int i = 0; i < n; i++)
+        for (char c : s)
         {
-            if (s[i] == '0')
+            mp[c]++;
+        }
+
+        int ans = 0;
+        for (auto it : mp)
+        {
+            if (it.second % 2 == 1)
             {
-                ans += i - cnt;
-                cnt++;
+                ans++;
+            }
+            else
+            {
+                ans += 2;
             }
         }
 
-        return ans;
+        return ans;	
     }
 };
