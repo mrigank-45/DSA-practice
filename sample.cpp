@@ -1,30 +1,49 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+struct Node
+{
+    int data;
+    struct Node *left;
+    struct Node *right;
+
+    Node(int x)
+    {
+        data = x;
+        left = right = NULL;
+    }
+};
+
+// This function should return head to the DLL
 class Solution
 {
 public:
-    long long dividePlayers(vector<int> &skill)
+    void solve(Node *root, Node *head)
     {
-        int n = skill.size();
-        sort(skill.begin(), skill.end());
-        long long ans = 0;
-        int l = 0, r = n - 1;
-        int sum = skill[l] + skill[r];
-        while (l < r)
+        if (root == NULL)
+            return;
+
+        solve(root->left, head);
+
+        if(head == NULL)
         {
-            if (skill[l] + skill[r] != sum)
-            {
-                return -1;
-            }
-            else
-            {
-                ans += skill[l] * skill[r];
-                l++;
-                r--;
-            }
+            head = root;
+        }
+        else
+        {
+            root->left = head;
+            head->right = root;
+            head = root;
         }
 
-        return ans;
+        solve(root->right, head);
+    }
+    Node *bToDLL(Node *root)
+    {
+        Node *head = NULL;
+        Node *temp = head;
+
+        solve(root, head);
+        return head;
     }
 };
