@@ -1,49 +1,53 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-struct Node
-{
-    int data;
-    struct Node *left;
-    struct Node *right;
-
-    Node(int x)
-    {
-        data = x;
-        left = right = NULL;
-    }
-};
-
-// This function should return head to the DLL
 class Solution
 {
 public:
-    void solve(Node *root, Node *head)
+    int solve(string s, int n, int i, int sum, vector<vector<int>> &dp)
     {
-        if (root == NULL)
-            return;
-
-        solve(root->left, head);
-
-        if(head == NULL)
+        if (i == n - 1)
         {
-            head = root;
-        }
-        else
-        {
-            root->left = head;
-            head->right = root;
-            head = root;
+            sum = sum * 10 + (s[i] - '0');
+            if (sum <= 26 && sum != 0)
+            {
+                return 1;
+            }
+            return 0;
         }
 
-        solve(root->right, head);
+        sum = sum * 10 + (s[i] - '0');
+
+        if (sum > 26)
+            return 0;
+
+        if (sum == 0 && i != 0 && s[i - 1] == '0')
+            return 0;
+        
+        if(dp[i][sum] != -1) return dp[i][sum];
+
+        int ans = 0;
+
+        // partition
+        if (i != n - 1 && s[i + 1] != '0' && sum != 0)
+        {
+            ans += solve(s, n, i + 1, 0, dp);
+        }
+
+        // not partition
+        ans += solve(s, n, i + 1, sum, dp);
+
+        return dp[i][sum] = ans;
     }
-    Node *bToDLL(Node *root)
+    int numDecodings(string s)
     {
-        Node *head = NULL;
-        Node *temp = head;
+        int n = s.size();
 
-        solve(root, head);
-        return head;
+        if (s[0] == '0')
+            return 0;
+
+        vector<vector<int>> dp(n + 1, vector<int>(27, -1));
+
+        return solve(s, n, 0, 0, dp);
     }
 };
