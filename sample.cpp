@@ -4,50 +4,36 @@ using namespace std;
 class Solution
 {
 public:
-    int solve(string s, int n, int i, int sum, vector<vector<int>> &dp)
+    bool canArrange(vector<int> &arr, int k)
     {
-        if (i == n - 1)
+        int n = arr.size();
+        unordered_map<int, int> mp; // {rem, freq}
+
+        for (int i = 0; i < n; i++)
         {
-            sum = sum * 10 + (s[i] - '0');
-            if (sum <= 26 && sum != 0)
+            int rem = arr[i] % k;
+            if (rem < 0)
+                rem += k;
+            mp[rem]++;
+        }
+
+        for (auto it : mp)
+        {
+            int rem = it.first;
+            int freq = it.second;
+
+            if (rem == 0 || 2 * rem == k)
             {
-                return 1;
+                if (freq % 2 != 0)
+                    return false;
             }
-            return 0;
+            else
+            {
+                if (mp[k - rem] != freq)
+                    return false;
+            }
         }
 
-        sum = sum * 10 + (s[i] - '0');
-
-        if (sum > 26)
-            return 0;
-
-        if (sum == 0 && i != 0 && s[i - 1] == '0')
-            return 0;
-        
-        if(dp[i][sum] != -1) return dp[i][sum];
-
-        int ans = 0;
-
-        // partition
-        if (i != n - 1 && s[i + 1] != '0' && sum != 0)
-        {
-            ans += solve(s, n, i + 1, 0, dp);
-        }
-
-        // not partition
-        ans += solve(s, n, i + 1, sum, dp);
-
-        return dp[i][sum] = ans;
-    }
-    int numDecodings(string s)
-    {
-        int n = s.size();
-
-        if (s[0] == '0')
-            return 0;
-
-        vector<vector<int>> dp(n + 1, vector<int>(27, -1));
-
-        return solve(s, n, 0, 0, dp);
+        return true;
     }
 };
