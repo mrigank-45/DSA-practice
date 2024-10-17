@@ -6,26 +6,21 @@ using namespace std;
 class Solution
 {
 public:
-    int numSubarrayProductLessThanK(vector<int> &v, int k)
+    long long countSubArrayProductLessThanK(const vector<int> &a, int n, long long k)
     {
-        int n = v.size();
-        if (k == 0 || k == 1)
+        long long ans = 0;
+        long long product = 1;
+        int left = 0, right = 0;
+        while (right < n)
         {
-            return 0;
-        }
-        int i = 0, j = 0;
-        int s = 1;
-        int ans = 0;
-        while (j < n)
-        {
-            s = s * v[j];
-            while (i < n && s >= k)
+            product *= a[right];
+            while (left <= right && product >= k)
             {
-                s = s / v[i];
-                i++;
+                product /= a[left];
+                left++;
             }
-            ans = ans + j - i + 1;
-            j++;
+            ans += right - left + 1;
+            right++;
         }
         return ans;
     }

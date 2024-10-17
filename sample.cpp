@@ -4,37 +4,22 @@ using namespace std;
 class Solution
 {
 public:
-    int smallestChair(vector<vector<int>> &times, int targetFriend)
+    long long countSubArrayProductLessThanK(const vector<int> &a, int n, long long k)
     {
-        int n = times.size(), targetArrival = times[targetFriend][0];
-
-        sort(times.begin(), times.end());
-
-        priority_queue<int, vector<int>, greater<int>> available;
-        for (int i = 0; i < n; i++)
+        long long ans = 0;
+        long long product = 1;
+        int left = 0, right = 0;
+        while (right < n)
         {
-            available.push(i);
-        }
-        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> freeTime; // (ending time, room number)
-
-        for (auto &meet : times)
-        {
-            int room;
-            while (!freeTime.empty() && freeTime.top().first <= meet[0])
+            product *= a[right];
+            while (left <= right && product >= k)
             {
-                room = freeTime.top().second;
-                available.push(room);
-                freeTime.pop();
+                product /= a[left];
+                left++;
             }
-            room = available.top();
-            available.pop();
-            if (meet[0] == targetArrival)
-            {
-                return room;
-            }
-            freeTime.push({meet[1], room});
+            ans += right - left + 1;
+            right++;
         }
-
-        return 0;
+        return ans;
     }
 };
