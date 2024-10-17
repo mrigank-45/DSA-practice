@@ -1,25 +1,98 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+struct Node
+{
+    int data;
+    struct Node *left, *right;
+};
+
 class Solution
 {
 public:
-    long long countSubArrayProductLessThanK(const vector<int> &a, int n, long long k)
+    vector<int> solve(Node *target, unordered_map<Node *, Node *> &parent, int k)
     {
-        long long ans = 0;
-        long long product = 1;
-        int left = 0, right = 0;
-        while (right < n)
+        queue<Node *> q;
+        q.push(target);
+        unordered_map<Node *, bool> visited;
+        visited[target] = true;
+        int level = 0;
+        while (!q.empty())
         {
-            product *= a[right];
-            while (left <= right && product >= k)
+            int size = q.size();
+            if (level == k)
             {
-                product /= a[left];
-                left++;
+                vector<int> ans;
+                while (!q.empty())
+                {
+                    ans.push_back(q.front()->data);
+                    q.pop();
+                }
+                return ans;
             }
-            ans += right - left + 1;
-            right++;
+            while (size--)
+            {
+                Node *curr = q.front();
+                q.pop();
+                if (curr->left && !visited[curr->left])
+                {
+                    visited[curr->left] = true;
+                    q.push(curr->left);
+                }
+                if (curr->right && !visited[curr->right])
+                {
+                    visited[curr->right] = true;
+                    q.push(curr->right);
+                }
+                if (parent[curr] && !visited[parent[curr]])
+                {
+                    visited[parent[curr]] = true;
+                    q.push(parent[curr]);
+                }
+            }
+            level++;
         }
+        return {};
+    }
+    void parentMappingBFS(Node *root, int target, unordered_map<Node *, Node *> &parent, Node *&targetNode)
+    {
+        queue<Node *> q;
+        q.push(root);
+        while (!q.empty())
+        {
+            int size = q.size();
+            while (size--)
+            {
+                Node *curr = q.front();
+                q.pop();
+                if (curr->data == target)
+                {
+                    targetNode = curr;
+                }
+                if (curr->left)
+                {
+                    parent[curr->left] = curr;
+                    q.push(curr->left);
+                }
+                if (curr->right)
+                {
+                    parent[curr->right] = curr;
+                    q.push(curr->right);
+                }
+            }
+        }
+    }
+    vector<int> KDistanceNodes(Node *root, int target, int k)
+    {
+        Node *targetNode = NULL;
+        unordered_map<Node *, Node *> parent;
+
+        parentMappingBFS(root, target, parent, targetNode);
+
+        vector<int> ans = solve(targetNode, parent, k);
+
+        sort(ans.begin(), ans.end());
+
         return ans;
     }
 };
