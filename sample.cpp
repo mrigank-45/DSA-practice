@@ -1,40 +1,46 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-
 class Solution
 {
 public:
-    const vector<pair<int, int>> knightMoves = {
-        {2, 1}, {2, -1}, {-2, 1}, {-2, -1}, {1, 2}, {1, -2}, {-1, 2}, {-1, -2}};
-
-    bool isValid(int x, int y, int N)
+    int mostBooked(int n, vector<vector<int>> &meetings)
     {
-        return (x >= 0 && x < N && y >= 0 && y < N);
-    }
-
-    double dp[101][26][26];
-
-    double solve(int n, int k, int x, int y)
-    {
-        if (!isValid(x, y, n)) return 0.0;
-        if (k == 0) return 1.0;
-
-        if (dp[k][x][y] != -1) return dp[k][x][y];
-
-        double ans = 0.0;
-        for (auto move : knightMoves)
+        sort(meetings.begin(), meetings.end());
+        vector<int> count(n, 0);
+        priority_queue<int, vector<int>, greater<int>> freeRoom;
+        for (int i = 0; i < n; i++)
         {
-            ans += solve(n, k - 1, x + move.first, y + move.second);
+            freeRoom.push(i);
         }
+        priority_queue<pair<long long, int>, vector<pair<long long, int>>, greater<pair<long long, int>>> used; // (ending time, room number)
 
-        return dp[k][x][y] = ans;
-    }
+        for (auto &meet : meetings)
+        {
+            int room;
+            while (!used.empty() && used.top().first <= meet[0])
+            {
+                room = used.top().second;
+                freeRoom.push(room);
+                used.pop();
+            }
+            long long start, m_time = meet[1] - meet[0];
+            if (freeRoom.empty())
+            {
+                tie(start, room) = used.top();
+                used.pop();
+            }
+            else
+            {
+                room = freeRoom.top();
+                start = meet[0];
+                freeRoom.pop();
+            }
+            count[room]++;
+            used.push({start + m_time, room});
+        }
+        int idx = max_element(count.begin(), count.end()) - count.begin();
 
-    double knightProbability(int n, int k, int row, int column)
-    {
-        memset(dp, -1, sizeof(dp));
-        double ways = solve(n, k, row, column);
-        return ways / pow(8, k);
+        return idx;
     }
 };
