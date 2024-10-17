@@ -4,43 +4,37 @@ using namespace std;
 class Solution
 {
 public:
-    int mostBooked(int n, vector<vector<int>> &meetings)
+    int smallestChair(vector<vector<int>> &times, int targetFriend)
     {
-        sort(meetings.begin(), meetings.end());
-        vector<int> count(n, 0);
-        priority_queue<int, vector<int>, greater<int>> freeRoom;
+        int n = times.size(), targetArrival = times[targetFriend][0];
+
+        sort(times.begin(), times.end());
+
+        priority_queue<int, vector<int>, greater<int>> available;
         for (int i = 0; i < n; i++)
         {
-            freeRoom.push(i);
+            available.push(i);
         }
-        priority_queue<pair<long long, int>, vector<pair<long long, int>>, greater<pair<long long, int>>> used; // (ending time, room number)
+        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> freeTime; // (ending time, room number)
 
-        for (auto &meet : meetings)
+        for (auto &meet : times)
         {
             int room;
-            while (!used.empty() && used.top().first <= meet[0])
+            while (!freeTime.empty() && freeTime.top().first <= meet[0])
             {
-                room = used.top().second;
-                freeRoom.push(room);
-                used.pop();
+                room = freeTime.top().second;
+                available.push(room);
+                freeTime.pop();
             }
-            long long start, m_time = meet[1] - meet[0];
-            if (freeRoom.empty())
+            room = available.top();
+            available.pop();
+            if (meet[0] == targetArrival)
             {
-                tie(start, room) = used.top();
-                used.pop();
+                return room;
             }
-            else
-            {
-                room = freeRoom.top();
-                start = meet[0];
-                freeRoom.pop();
-            }
-            count[room]++;
-            used.push({start + m_time, room});
+            freeTime.push({meet[1], room});
         }
-        int idx = max_element(count.begin(), count.end()) - count.begin();
 
-        return idx;
+        return 0;
     }
 };
