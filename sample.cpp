@@ -1,98 +1,47 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-struct Node
-{
-    int data;
-    struct Node *left, *right;
-};
-
 class Solution
 {
 public:
-    vector<int> solve(Node *target, unordered_map<Node *, Node *> &parent, int k)
+    string printMinNumberForPattern(string s)
     {
-        queue<Node *> q;
-        q.push(target);
-        unordered_map<Node *, bool> visited;
-        visited[target] = true;
-        int level = 0;
-        while (!q.empty())
+        int n = s.length();
+        string ans = "";
+        vector<int> d_cnt(n + 1, 0);
+        int cnt = 0;
+        for (int i = n - 1; i >= 0; i--)
         {
-            int size = q.size();
-            if (level == k)
+            if (s[i] == 'D')
             {
-                vector<int> ans;
-                while (!q.empty())
-                {
-                    ans.push_back(q.front()->data);
-                    q.pop();
-                }
-                return ans;
+                cnt++;
             }
-            while (size--)
+            else
             {
-                Node *curr = q.front();
-                q.pop();
-                if (curr->left && !visited[curr->left])
-                {
-                    visited[curr->left] = true;
-                    q.push(curr->left);
-                }
-                if (curr->right && !visited[curr->right])
-                {
-                    visited[curr->right] = true;
-                    q.push(curr->right);
-                }
-                if (parent[curr] && !visited[parent[curr]])
-                {
-                    visited[parent[curr]] = true;
-                    q.push(parent[curr]);
-                }
+                cnt = 0;
             }
-            level++;
+            d_cnt[i] = cnt;
         }
-        return {};
-    }
-    void parentMappingBFS(Node *root, int target, unordered_map<Node *, Node *> &parent, Node *&targetNode)
-    {
-        queue<Node *> q;
-        q.push(root);
-        while (!q.empty())
+
+        int temp = d_cnt[0] + 1;
+        int next = temp + 1;
+        ans += to_string(temp);
+
+        for (int i = 0; i < n; i++)
         {
-            int size = q.size();
-            while (size--)
+            if (s[i] == 'D')
             {
-                Node *curr = q.front();
-                q.pop();
-                if (curr->data == target)
-                {
-                    targetNode = curr;
-                }
-                if (curr->left)
-                {
-                    parent[curr->left] = curr;
-                    q.push(curr->left);
-                }
-                if (curr->right)
-                {
-                    parent[curr->right] = curr;
-                    q.push(curr->right);
-                }
+                temp--;
+                ans += to_string(temp);
+            }
+            else
+            {
+                temp = next;
+                temp += d_cnt[i + 1];
+                ans += to_string(temp);
+                next = temp + 1;
             }
         }
-    }
-    vector<int> KDistanceNodes(Node *root, int target, int k)
-    {
-        Node *targetNode = NULL;
-        unordered_map<Node *, Node *> parent;
-
-        parentMappingBFS(root, target, parent, targetNode);
-
-        vector<int> ans = solve(targetNode, parent, k);
-
-        sort(ans.begin(), ans.end());
-
         return ans;
     }
 };
