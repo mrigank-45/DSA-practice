@@ -1,47 +1,59 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+struct Node
+{
+    int data;
+    struct Node *next;
+    struct Node *bottom;
+
+    Node(int x)
+    {
+        data = x;
+        next = NULL;
+        bottom = NULL;
+    }
+};
+
 class Solution
 {
 public:
-    string printMinNumberForPattern(string s)
+    Node *merge(Node *root1, Node *root2)
     {
-        int n = s.length();
-        string ans = "";
-        vector<int> d_cnt(n + 1, 0);
-        int cnt = 0;
-        for (int i = n - 1; i >= 0; i--)
+        Node *temp = new Node(0);
+        Node *res = temp;
+
+        while (root1 != NULL && root2 != NULL)
         {
-            if (s[i] == 'D')
+            if (root1->data < root2->data)
             {
-                cnt++;
+                temp->bottom = root1;
+                temp = temp->bottom;
+                root1 = root1->bottom;
             }
             else
             {
-                cnt = 0;
-            }
-            d_cnt[i] = cnt;
-        }
-
-        int temp = d_cnt[0] + 1;
-        int next = temp + 1;
-        ans += to_string(temp);
-
-        for (int i = 0; i < n; i++)
-        {
-            if (s[i] == 'D')
-            {
-                temp--;
-                ans += to_string(temp);
-            }
-            else
-            {
-                temp = next;
-                temp += d_cnt[i + 1];
-                ans += to_string(temp);
-                next = temp + 1;
+                temp->bottom = root2;
+                temp = temp->bottom;
+                root2 = root2->bottom;
             }
         }
-        return ans;
+
+        if (root1 != NULL)
+            temp->bottom = root1;
+        else
+            temp->bottom = root2;
+
+        return res->bottom;
+    }
+    Node *flatten(Node *root)
+    {
+        if (root == NULL || root->next == NULL)
+            return root;
+
+        root->next = flatten(root->next);
+        root = merge(root, root->next);
+
+        return root;
     }
 };
