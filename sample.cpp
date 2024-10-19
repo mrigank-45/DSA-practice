@@ -1,59 +1,36 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-struct Node
-{
-    int data;
-    struct Node *next;
-    struct Node *bottom;
-
-    Node(int x)
-    {
-        data = x;
-        next = NULL;
-        bottom = NULL;
-    }
-};
-
 class Solution
 {
 public:
-    Node *merge(Node *root1, Node *root2)
+    vector<int> minBitwiseArray(vector<int> &nums)
     {
-        Node *temp = new Node(0);
-        Node *res = temp;
+        int n = nums.size();
 
-        while (root1 != NULL && root2 != NULL)
+        vector<int> ans(n, 0);
+
+        for (int i = 0; i < n; i++)
         {
-            if (root1->data < root2->data)
+            if (nums[i] == 2)
             {
-                temp->bottom = root1;
-                temp = temp->bottom;
-                root1 = root1->bottom;
+                ans[i] = -1;
             }
             else
             {
-                temp->bottom = root2;
-                temp = temp->bottom;
-                root2 = root2->bottom;
+                int bit = 31;
+                for (int j = 1; j < 32; j++)
+                {
+                    if (!(nums[i] & (1 << j)))
+                    {
+                        bit = j - 1;
+                        break;
+                    }
+                }
+                ans[i] = nums[i] ^ (1 << bit);
             }
         }
 
-        if (root1 != NULL)
-            temp->bottom = root1;
-        else
-            temp->bottom = root2;
-
-        return res->bottom;
-    }
-    Node *flatten(Node *root)
-    {
-        if (root == NULL || root->next == NULL)
-            return root;
-
-        root->next = flatten(root->next);
-        root = merge(root, root->next);
-
-        return root;
+        return ans;
     }
 };
