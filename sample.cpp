@@ -1,39 +1,45 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+struct ListNode
+{
+    int val;
+    ListNode *next;
+    ListNode() : val(0), next(nullptr) {}
+    ListNode(int x) : val(x), next(nullptr) {}
+    ListNode(int x, ListNode *next) : val(x), next(next) {}
+};
+
 class Solution
 {
 public:
-    int dfs(vector<int> &arr, int curr, vector<bool> &visited, vector<int> &dp)
+    vector<ListNode *> splitListToParts(ListNode *head, int k)
     {
-        if (curr < 0 || curr >= arr.size())
-            return 0;
-
-        if (visited[curr])
-            return 0;
-
-        if (arr[curr] == 0)
-            return 1;
-
-        if (dp[curr] != -1)
-            return dp[curr];
-
-        visited[curr] = true;
-
-        int left = dfs(arr, curr - arr[curr], visited, dp);
-        int right = dfs(arr, curr + arr[curr], visited, dp);
-
-        visited[curr] = false;
-
-        return dp[curr] = left || right;
-    }
-    bool canReach(vector<int> &arr, int curr)
-    {
-        int n = arr.size();
-
-        vector<bool> visited(n, false);
-        vector<int> dp(n, -1);
-
-        return dfs(arr,curr,visited,dp);
+        vector<ListNode *> ans;
+        int n = 0;
+        ListNode *temp = head;
+        while (temp)
+        {
+            n++;
+            temp = temp->next;
+        }
+        int length = n / k, rem = n % k;
+        ListNode *curr = head;
+        for (int i = 0; i < k; i++)
+        {
+            ListNode *temp = new ListNode(0);
+            ListNode *write = temp;
+            for (int j = 0; j < length + (i < rem ? 1 : 0); j++)
+            {
+                if (!curr)
+                    continue;
+                write->next = new ListNode(curr->val);
+                write = write->next;
+                if (curr)
+                    curr = curr->next;
+            }
+            ans.push_back(temp->next);
+        }
+        return ans;
     }
 };
