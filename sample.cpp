@@ -1,28 +1,42 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class Solution
-{
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
 public:
-    int numberOfBeams(vector<string> &bank)
+    vector<string> ans;
+    void solve(TreeNode *root, string s)
     {
-        int n = bank.size();
-        int m = bank[0].size();
-        int ans = 0, prev = 0;
-        for (int i = 0; i < n; i++)
+        if (root == NULL)
         {
-            int temp = 0;
-            for (int j = 0; j < m; j++)
-            {
-                if(bank[i][j] == '1')
-                {
-                    temp++;
-                    ans += prev;
-                }
-            }
-            if(temp != 0)   prev = temp;
-            
+            return;
         }
-        return ans;
+        s += root->val + 'a';
+        if (root->left == NULL && root->right == NULL)
+        {
+            ans.push_back(s);
+            return;
+        }
+        solve(root->left, s);
+        solve(root->right, s);
+    }
+    string smallestFromLeaf(TreeNode* root) {
+        solve(root, "");
+        for(int i =0; i<ans.size(); i++){
+            reverse(ans[i].begin(),ans[i].end());
+        }
+        sort(ans.begin(),ans.end());
+        return ans[0];
+        
     }
 };
