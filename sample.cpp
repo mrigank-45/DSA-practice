@@ -1,42 +1,33 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-/**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
- */
-class Solution {
+class Solution
+{
 public:
-    vector<string> ans;
-    void solve(TreeNode *root, string s)
+    int solve(string s, int n, int i, int prev)
     {
-        if (root == NULL)
+        if (i == n)
         {
-            return;
+            return 0;
         }
-        s += root->val + 'a';
-        if (root->left == NULL && root->right == NULL)
+
+        int ans = 0;
+
+        if (s[i] - 'a' == prev + 1)
         {
-            ans.push_back(s);
-            return;
+            ans = max(ans, 1 + solve(s, n, i + 1, s[i] - 'a'));
         }
-        solve(root->left, s);
-        solve(root->right, s);
-    }
-    string smallestFromLeaf(TreeNode* root) {
-        solve(root, "");
-        for(int i =0; i<ans.size(); i++){
-            reverse(ans[i].begin(),ans[i].end());
-        }
-        sort(ans.begin(),ans.end());
-        return ans[0];
         
+        ans = max(ans, solve(s, n, i + 1, s[i] - 'a'));
+
+        return ans;
+
+    }
+
+    int longestContinuousSubstring(string s)
+    {
+        int n = s.size();
+
+        return 1 + solve(s, n, 1, s[0] - 'a');
     }
 };
