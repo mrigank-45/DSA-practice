@@ -4,41 +4,42 @@ using namespace std;
 class Solution
 {
 public:
-    int numberOfArithmeticSlices(vector<int> &nums)
+    int destroyTargets(vector<int> &nums, int space)
     {
         int n = nums.size();
-        if(n < 3)
-        {
-            return 0;
-        }
-        int ans = 0;
-        int diff = nums[1] - nums[0];
-        int len = 2;
 
-        for (int i = 1; i < n - 1; i++)
+        unordered_map<int, pair<int, int>> mp; // {rem,{cnt,smallest element with this rem}}
+
+        for (int i = 0; i < n; i++)
         {
-            if(nums[i+1] - nums[i] == diff)
+            int rem = nums[i] % space;
+
+            if (mp.find(rem) == mp.end())
             {
-                len++;
-                if(i == n - 2)
-                {
-                    if(len >= 3)
-                    {
-                        ans += (len - 1) * (len - 2) / 2;
-                    }
-                }
+                mp[rem] = {1, nums[i]};
             }
             else
             {
-                if(len >= 3)
-                {
-                    ans += (len - 1) * (len - 2) / 2;
-                }
-                diff = nums[i+1] - nums[i];
-                len = 2;
+                mp[rem].first++;
+                mp[rem].second = min(mp[rem].second, nums[i]);
             }
         }
 
-        return ans;
+        int max_cnt = 0, smallest_element = INT_MAX;
+
+        for (auto it : mp)
+        {
+            if (it.second.first > max_cnt)
+            {
+                max_cnt = it.second.first;
+                smallest_element = it.second.second;
+            }
+            else if (it.second.first == max_cnt)
+            {
+                smallest_element = min(smallest_element, it.second.second);
+            }
+        }
+
+        return smallest_element;
     }
 };
