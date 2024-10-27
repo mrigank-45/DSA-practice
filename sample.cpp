@@ -4,30 +4,41 @@ using namespace std;
 class Solution
 {
 public:
-    int solve(string s, int n, int i, int prev)
+    int numberOfArithmeticSlices(vector<int> &nums)
     {
-        if (i == n)
+        int n = nums.size();
+        if(n < 3)
         {
             return 0;
         }
-
         int ans = 0;
+        int diff = nums[1] - nums[0];
+        int len = 2;
 
-        if (s[i] - 'a' == prev + 1)
+        for (int i = 1; i < n - 1; i++)
         {
-            ans = max(ans, 1 + solve(s, n, i + 1, s[i] - 'a'));
+            if(nums[i+1] - nums[i] == diff)
+            {
+                len++;
+                if(i == n - 2)
+                {
+                    if(len >= 3)
+                    {
+                        ans += (len - 1) * (len - 2) / 2;
+                    }
+                }
+            }
+            else
+            {
+                if(len >= 3)
+                {
+                    ans += (len - 1) * (len - 2) / 2;
+                }
+                diff = nums[i+1] - nums[i];
+                len = 2;
+            }
         }
-        
-        ans = max(ans, solve(s, n, i + 1, s[i] - 'a'));
 
         return ans;
-
-    }
-
-    int longestContinuousSubstring(string s)
-    {
-        int n = s.size();
-
-        return 1 + solve(s, n, 1, s[0] - 'a');
     }
 };
