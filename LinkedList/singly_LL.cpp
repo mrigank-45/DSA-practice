@@ -27,6 +27,24 @@ public:
     }
 };
 
+Node *reverse(Node *head)
+{
+    if (head == NULL || head->next == NULL)
+    {
+        return head;
+    }
+
+    Node *prev = NULL;
+    while (head != NULL)
+    {
+        Node *temp = head->next;
+        head->next = prev;
+        prev = head;
+        head = temp;
+    }
+    return prev;
+}
+
 void insertAtHead(Node *&head, int d)
 {
 
