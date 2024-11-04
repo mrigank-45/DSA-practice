@@ -4,39 +4,43 @@ using namespace std;
 class Solution
 {
 public:
-    void dfs(int node, unordered_map<int, vector<int>> &adj, vector<bool> &visited)
+    int minReorder(int n, vector<vector<int>> &connections)
     {
-        visited[node] = true;
-        for (auto it : adj[node])
-        {
-            if (!visited[it])
-            {
-                dfs(it, adj, visited);
-            }
-        }
-    }
-    bool canVisitAllRooms(vector<vector<int>> &rooms)
-    {
-        int n = rooms.size();
-        unordered_map<int, vector<int>> adj;
+        unordered_map<int, vector<int>> out, in;
 
-        for (int i = 0; i < n; i++)
+        for (auto &c : connections)
         {
-            for (int j = 0; j < rooms[i].size(); j++)
-            {
-                adj[i].push_back(rooms[i][j]);
-            }
+            out[c[0]].push_back(c[1]);
+            in[c[1]].push_back(c[0]);
         }
-        vector<bool> visited(n, false);
-        dfs(0, adj, visited);
 
-        for (int i = 0; i < n; i++)
+        queue<int> q;
+        unordered_map<int,int> vis;
+        vis[0] = 1;
+
+        q.push(0);
+        int ans = 0;
+
+        while (!q.empty())
         {
-            if (!visited[i])
+            int ele = q.front();
+            q.pop();
+            for(auto &x: out[ele])
             {
-                return false;
+                if(vis[x])
+                    continue;
+                ans++;
+                q.push(x);
+                vis[x] = 1;
+            }
+            for(auto &x: in[ele])
+            {
+                if(vis[x])
+                    continue;
+                q.push(x);
+                vis[x] = 1;
             }
         }
-        return true;
+        return ans;
     }
 };
