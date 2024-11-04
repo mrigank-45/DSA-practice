@@ -4,24 +4,29 @@ using namespace std;
 class Solution
 {
 public:
-
-    vector<int> dailyTemperatures(vector<int> &temperatures)
+    int eraseOverlapIntervals(vector<vector<int>> &intervals)
     {
-        int n = temperatures.size();
-        stack<int> s;
-        vector<int> ans(n);
+        int n = intervals.size();
+        if (n == 0) return 0;
 
-        for (int i = n - 1; i >= 0; i--)
+        sort(intervals.begin(), intervals.end(), [](const vector<int>& a, const vector<int>& b) {
+            return a[1] < b[1];
+        });
+
+        int cnt = 0;
+        int end = intervals[0][1];  
+
+        for (int i = 1; i < n; i++)
         {
-            int curr = temperatures[i];
-            while (!s.empty() && temperatures[s.top()] <= curr)
+            if (intervals[i][0] >= end)  
             {
-                s.pop();
+                end = intervals[i][1];
             }
-
-            ans[i] = s.empty() ? 0 : s.top() - i;
-            s.push(i);
+            else  
+            {
+                cnt++;
+            }
         }
-        return ans;
+        return cnt;
     }
 };
