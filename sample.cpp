@@ -4,46 +4,44 @@ using namespace std;
 class Solution
 {
 public:
-    int nearestExit(vector<vector<char>> &maze, vector<int> &entrance)
+    int equalOrGreater(int val, vector<int> arr)
     {
-        int n = maze.size();
-        int m = maze[0].size();
-        queue<pair<int, int>> q;
-        q.push({entrance[0], entrance[1]});
-        vector<vector<int>> dir = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+        int s = 0, e = arr.size() - 1;
+        int ans = -1;
 
-        maze[entrance[0]][entrance[1]] = '+';
-        int steps = 0;
-
-        while (!q.empty())
+        while (s <= e)
         {
-            int sz = q.size();
-            steps++;
-            for (int i = 0; i < sz; i++)
+            int mid = s + (e - s) / 2;
+            if (arr[mid] >= val)
             {
-                int x = q.front().first, y = q.front().second;
-                q.pop();
-
-                for (auto d : dir)
-                {
-                    int nx = x + d[0];
-                    int ny = y + d[1];
-
-                    if (nx >= 0 && ny >= 0 && nx < n && ny < m && maze[nx][ny] == '.')
-                    {
-                        if (nx == 0 || ny == 0 || nx == n - 1 || ny == m - 1)
-                        {
-                            return steps;
-                        }
-
-                        maze[nx][ny] = '+';
-                        q.push({nx, ny});
-                    }
-                }
-
+                ans = mid;
+                e = mid - 1;
+            }
+            else
+            {
+                s = mid + 1;
             }
         }
 
-        return -1;
+        if (ans == -1)
+            return 0;
+
+        return arr.size() - ans;
+    }
+    vector<int> successfulPairs(vector<int> &spells, vector<int> &potions, long long success)
+    {
+        int n = spells.size();
+        int m = potions.size();
+        sort(potions.begin(), potions.end());
+
+        vector<int> ans;
+        for (int i = 0; i < n; i++)
+        {
+            if (success % (long long)spells[i] == 0)
+                ans.push_back(equalOrGreater(success / (long long)spells[i], potions));
+            else
+                ans.push_back(equalOrGreater(success / (long long)spells[i] + 1, potions));
+        }
+        return ans;
     }
 };
