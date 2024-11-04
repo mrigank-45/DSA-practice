@@ -4,44 +4,39 @@ using namespace std;
 class Solution
 {
 public:
-    int equalOrGreater(int val, vector<int> arr)
+    void dfs(int node, unordered_map<int, vector<int>> &adj, vector<bool> &visited)
     {
-        int s = 0, e = arr.size() - 1;
-        int ans = -1;
-
-        while (s <= e)
+        visited[node] = true;
+        for (auto it : adj[node])
         {
-            int mid = s + (e - s) / 2;
-            if (arr[mid] >= val)
+            if (!visited[it])
             {
-                ans = mid;
-                e = mid - 1;
-            }
-            else
-            {
-                s = mid + 1;
+                dfs(it, adj, visited);
             }
         }
-
-        if (ans == -1)
-            return 0;
-
-        return arr.size() - ans;
     }
-    vector<int> successfulPairs(vector<int> &spells, vector<int> &potions, long long success)
+    bool canVisitAllRooms(vector<vector<int>> &rooms)
     {
-        int n = spells.size();
-        int m = potions.size();
-        sort(potions.begin(), potions.end());
+        int n = rooms.size();
+        unordered_map<int, vector<int>> adj;
 
-        vector<int> ans;
         for (int i = 0; i < n; i++)
         {
-            if (success % (long long)spells[i] == 0)
-                ans.push_back(equalOrGreater(success / (long long)spells[i], potions));
-            else
-                ans.push_back(equalOrGreater(success / (long long)spells[i] + 1, potions));
+            for (int j = 0; j < rooms[i].size(); j++)
+            {
+                adj[i].push_back(rooms[i][j]);
+            }
         }
-        return ans;
+        vector<bool> visited(n, false);
+        dfs(0, adj, visited);
+
+        for (int i = 0; i < n; i++)
+        {
+            if (!visited[i])
+            {
+                return false;
+            }
+        }
+        return true;
     }
 };
