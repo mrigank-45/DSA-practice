@@ -4,29 +4,46 @@ using namespace std;
 class Solution
 {
 public:
-    int eraseOverlapIntervals(vector<vector<int>> &intervals)
+    int nearestExit(vector<vector<char>> &maze, vector<int> &entrance)
     {
-        int n = intervals.size();
-        if (n == 0) return 0;
+        int n = maze.size();
+        int m = maze[0].size();
+        queue<pair<int, int>> q;
+        q.push({entrance[0], entrance[1]});
+        vector<vector<int>> dir = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
 
-        sort(intervals.begin(), intervals.end(), [](const vector<int>& a, const vector<int>& b) {
-            return a[1] < b[1];
-        });
+        maze[entrance[0]][entrance[1]] = '+';
+        int steps = 0;
 
-        int cnt = 0;
-        int end = intervals[0][1];  
-
-        for (int i = 1; i < n; i++)
+        while (!q.empty())
         {
-            if (intervals[i][0] >= end)  
+            int sz = q.size();
+            steps++;
+            for (int i = 0; i < sz; i++)
             {
-                end = intervals[i][1];
-            }
-            else  
-            {
-                cnt++;
+                int x = q.front().first, y = q.front().second;
+                q.pop();
+
+                for (auto d : dir)
+                {
+                    int nx = x + d[0];
+                    int ny = y + d[1];
+
+                    if (nx >= 0 && ny >= 0 && nx < n && ny < m && maze[nx][ny] == '.')
+                    {
+                        if (nx == 0 || ny == 0 || nx == n - 1 || ny == m - 1)
+                        {
+                            return steps;
+                        }
+
+                        maze[nx][ny] = '+';
+                        q.push({nx, ny});
+                    }
+                }
+
             }
         }
-        return cnt;
+
+        return -1;
     }
 };
