@@ -4,32 +4,50 @@ using namespace std;
 class Solution
 {
 public:
-    bool closeStrings(string word1, string word2)
+    int equalPairs(vector<vector<int>> &grid)
     {
-        int n = word1.size();
-        if(n != word2.size()) return false;
+        int n = grid.size();
 
-        vector<int> freq1(26, 0), freq2(26, 0);
+        vector<string> row, col;
 
         for (int i = 0; i < n; i++)
         {
-            freq1[word1[i] - 'a']++;
-            freq2[word2[i] - 'a']++;
+            string r = "", c = "";
+            for (int j = 0; j < n; j++)
+            {
+                r += to_string(grid[i][j]);
+                r += '_';
+            }
+            row.push_back(r);
         }
 
-        for(int i = 0; i < 26; i++)
+        for (int i = 0; i < n; i++)
         {
-            if((freq1[i] == 0 && freq2[i] != 0) || (freq1[i] != 0 && freq2[i] == 0)) return false;
+            string c = "";
+            for (int j = 0; j < n; j++)
+            {
+                c += to_string(grid[j][i]);
+                c += '_';
+            }
+            col.push_back(c);
         }
 
-        sort(freq1.begin(), freq1.end());
-        sort(freq2.begin(), freq2.end());
+        int ans = 0;
 
-        for(int i = 0; i < 26; i++)
+        for (int i = 0; i < n; i++)
         {
-            if(freq1[i] != freq2[i]) return false;
+            for (int j = 0; j < n; j++)
+            {
+                string r = row[i];
+                string c = col[j];
+
+                if (r == c)
+                {
+                    ans++;
+                }
+            }
         }
 
-        return true;
+        return ans;
     }
 };
