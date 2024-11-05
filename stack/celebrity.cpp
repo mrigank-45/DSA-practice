@@ -30,7 +30,7 @@ class Solution
             s.push(i);
         }   
         
-        //step2: get 2 elements and copare them
+        //step2: get 2 elements and compare them
         
         while(s.size() > 1) {
             
