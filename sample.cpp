@@ -4,47 +4,31 @@ using namespace std;
 class Solution
 {
 public:
-    int equalPairs(vector<vector<int>> &grid)
+    int maxOperations(vector<int> &nums, int k)
     {
-        int n = grid.size();
-
-        vector<string> row, col;
-
-        for (int i = 0; i < n; i++)
-        {
-            string r = "", c = "";
-            for (int j = 0; j < n; j++)
-            {
-                r += to_string(grid[i][j]);
-                r += '_';
-            }
-            row.push_back(r);
-        }
-
-        for (int i = 0; i < n; i++)
-        {
-            string c = "";
-            for (int j = 0; j < n; j++)
-            {
-                c += to_string(grid[j][i]);
-                c += '_';
-            }
-            col.push_back(c);
-        }
-
+        int n = nums.size();
+        if (n <= 1)
+            return 0;
         int ans = 0;
+        int i = 0, j = n - 1;
 
-        for (int i = 0; i < n; i++)
+        sort(nums.begin(), nums.end());
+
+        while (i < j)
         {
-            for (int j = 0; j < n; j++)
+            if (nums[i] + nums[j] == k)
             {
-                string r = row[i];
-                string c = col[j];
-
-                if (r == c)
-                {
-                    ans++;
-                }
+                ans++;
+                i++;
+                j--;
+            }
+            else if (nums[i] + nums[j] < k)
+            {
+                i++;
+            }
+            else
+            {
+                j--;
             }
         }
 
