@@ -4,43 +4,25 @@ using namespace std;
 class Solution
 {
 public:
-    int minReorder(int n, vector<vector<int>> &connections)
+    bool increasingTriplet(vector<int> &nums)
     {
-        unordered_map<int, vector<int>> out, in;
-
-        for (auto &c : connections)
+        int min1 = INT_MAX;
+        int min2 = INT_MAX;
+        for (int element : nums)
         {
-            out[c[0]].push_back(c[1]);
-            in[c[1]].push_back(c[0]);
-        }
-
-        queue<int> q;
-        unordered_map<int,int> vis;
-        vis[0] = 1;
-
-        q.push(0);
-        int ans = 0;
-
-        while (!q.empty())
-        {
-            int ele = q.front();
-            q.pop();
-            for(auto &x: out[ele])
+            if (element <= min1)
             {
-                if(vis[x])
-                    continue;
-                ans++;
-                q.push(x);
-                vis[x] = 1;
+                min1 = element;
             }
-            for(auto &x: in[ele])
+            else if (element <= min2)
             {
-                if(vis[x])
-                    continue;
-                q.push(x);
-                vis[x] = 1;
+                min2 = element;
             }
+            else
+            {
+                return true;
+            }
+            return false;
         }
-        return ans;
     }
 };
