@@ -4,34 +4,82 @@ using namespace std;
 class Solution
 {
 public:
-    int longestSubarray(vector<int> &nums)
+    string predictPartyVictory(string senate)
     {
-        int n = nums.size();
-        int ans = 0;
+        int n = senate.size();
 
-        int i = 0, j = 0;
-        int zeroCount = 0;
+        vector<int> marked(n, 0);
 
-        while(j < n)
+        int r = 0, d = 0;
+
+        for (int i = 0; i < n; i++)
         {
-            if(nums[j] == 0)
+            if (senate[i] == 'R')
             {
-                zeroCount++;
+                r++;
             }
-
-            while(zeroCount > 1)
+            else
             {
-                if(nums[i] == 0)
+                d++;
+            }
+        }
+        if (r == 0)
+        {
+            return "Dire";
+        }
+        if (d == 0)
+        {
+            return "Radiant";
+        }
+        int skip_r = 0, skip_d = 0;
+
+        while (1)
+        {
+
+            for (int i = 0; i < n; i++)
+            {
+                if (marked[i])
                 {
-                    zeroCount--;
+                    continue;
                 }
-                i++;
-            }
 
-            ans = max(ans, j - i);
-            j++;
+                if (senate[i] == 'R')
+                {
+                    if (skip_r > 0)
+                    {
+                        skip_r--;
+                        marked[i] = 1;
+                    }
+                    else
+                    {
+                        d--;
+                        if (d == 0)
+                        {
+                            return "Radiant";
+                        }
+                        skip_d++;
+                    }
+                }
+                else
+                {
+                    if (skip_d > 0)
+                    {
+                        skip_d--;
+                        marked[i] = 1;
+                    }
+                    else
+                    {
+                        r--;
+                        if (r == 0)
+                        {
+                            return "Dire";
+                        }
+                        skip_r++;
+                    }
+                }
+            }
         }
 
-        return ans;
+        return "";
     }
 };
