@@ -4,34 +4,25 @@ using namespace std;
 class Solution
 {
 public:
-    int maxOperations(vector<int> &nums, int k)
+    int longestOnes(vector<int> &nums, int k)
     {
-        int n = nums.size();
-        if (n <= 1)
-            return 0;
-        int ans = 0;
-        int i = 0, j = n - 1;
+        int maxLen = 0, l = 0, zeros = 0;
 
-        sort(nums.begin(), nums.end());
-
-        while (i < j)
+        for (int r = 0; r < nums.size(); r++)
         {
-            if (nums[i] + nums[j] == k)
+            if (nums[r] == 0)
+                zeros++;
+
+            while (zeros > k)
             {
-                ans++;
-                i++;
-                j--;
+                if (nums[l] == 0)
+                    zeros--;
+                l++;
             }
-            else if (nums[i] + nums[j] < k)
-            {
-                i++;
-            }
-            else
-            {
-                j--;
-            }
+
+            maxLen = max(maxLen, r - l + 1);
         }
 
-        return ans;
+        return maxLen;
     }
 };
