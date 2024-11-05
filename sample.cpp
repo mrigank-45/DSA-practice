@@ -4,25 +4,34 @@ using namespace std;
 class Solution
 {
 public:
-    int longestOnes(vector<int> &nums, int k)
+    int longestSubarray(vector<int> &nums)
     {
-        int maxLen = 0, l = 0, zeros = 0;
+        int n = nums.size();
+        int ans = 0;
 
-        for (int r = 0; r < nums.size(); r++)
+        int i = 0, j = 0;
+        int zeroCount = 0;
+
+        while(j < n)
         {
-            if (nums[r] == 0)
-                zeros++;
-
-            while (zeros > k)
+            if(nums[j] == 0)
             {
-                if (nums[l] == 0)
-                    zeros--;
-                l++;
+                zeroCount++;
             }
 
-            maxLen = max(maxLen, r - l + 1);
+            while(zeroCount > 1)
+            {
+                if(nums[i] == 0)
+                {
+                    zeroCount--;
+                }
+                i++;
+            }
+
+            ans = max(ans, j - i);
+            j++;
         }
 
-        return maxLen;
+        return ans;
     }
 };
