@@ -4,82 +4,42 @@ using namespace std;
 class Solution
 {
 public:
-    string predictPartyVictory(string senate)
+    int calculate(string s)
     {
-        int n = senate.size();
-
-        vector<int> marked(n, 0);
-
-        int r = 0, d = 0;
+        int n = s.size();
+        int flag = 1;
+        int ans = 0;
 
         for (int i = 0; i < n; i++)
         {
-            if (senate[i] == 'R')
+            if (s[i] == '+')
             {
-                r++;
+                flag = 1;
+            }
+            else if (s[i] == '-')
+            {
+                if (flag == -1)
+                    flag = 1;
+                else
+                    flag = -1;
+            }
+            else if (s[i] == '(' || s[i] == ')' || s[i] == ' ')
+            {
+                continue;
             }
             else
             {
-                d++;
-            }
-        }
-        if (r == 0)
-        {
-            return "Dire";
-        }
-        if (d == 0)
-        {
-            return "Radiant";
-        }
-        int skip_r = 0, skip_d = 0;
-
-        while (1)
-        {
-
-            for (int i = 0; i < n; i++)
-            {
-                if (marked[i])
+                int num = 0;
+                while (i < n && isdigit(s[i]))
                 {
-                    continue;
+                    num = num * 10 + (s[i] - '0');
+                    i++;
                 }
-
-                if (senate[i] == 'R')
-                {
-                    if (skip_r > 0)
-                    {
-                        skip_r--;
-                        marked[i] = 1;
-                    }
-                    else
-                    {
-                        d--;
-                        if (d == 0)
-                        {
-                            return "Radiant";
-                        }
-                        skip_d++;
-                    }
-                }
-                else
-                {
-                    if (skip_d > 0)
-                    {
-                        skip_d--;
-                        marked[i] = 1;
-                    }
-                    else
-                    {
-                        r--;
-                        if (r == 0)
-                        {
-                            return "Dire";
-                        }
-                        skip_r++;
-                    }
-                }
+                i--;
+                ans += flag * num;
             }
         }
 
-        return "";
+        return ans;
     }
 };
