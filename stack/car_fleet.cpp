@@ -1,3 +1,8 @@
+// Car Fleet
+
+#include <bits/stdc++.h>
+using namespace std;
+
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -17,20 +22,20 @@ public:
 
         sort(position.begin(), position.end());
 
-        int ans = n, flag = 0;
+        stack<float> st;
 
-        for(int i = n - 1; i > 0; i--)
+        for (int i = 0; i < n; i++)
         {
-            double time1 = (double)(target - position[i]) / mp[position[i]];
-            double time2 = (double)(target - position[i - 1]) / mp[position[i - 1]];
+            float time = (target - position[i]) / ((float)mp[position[i]]);
 
-            if(time1 >= time2)
+            while (!st.empty() && time >= st.top())
             {
-                mp[position[i - 1]] = mp[position[i]];
-                ans--;
+                st.pop();
             }
+
+            st.push(time);
         }
 
-        return ans;
+        return st.size();
     }
 };
