@@ -1,30 +1,67 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class Solution {
+class Solution
+{
 public:
-    vector<vector<int>> kClosest(vector<vector<int>>& points, int k) {
-        int n = points.size();
-        
-        // min heap int,pair<int,int> to store distance and index
-        priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> minHeap;
+    void islandsAndTreasure(vector<vector<int>> &grid)
+    {
+        int n = grid.size();
+        int m = grid[0].size();
 
-        for(int i=0; i<n; i++){
-            int x = points[i][0];
-            int y = points[i][1];
-            int dist = x*x + y*y;
-            minHeap.push({dist, i});
+        vector<vector<int>> distance(n, vector<int>(m, -2));
+
+        queue<pair<int, int>> q;
+
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < m; j++)
+            {
+                if (grid[i][j] == 0)
+                {
+                    q.push({i, j});
+                }
+            }
         }
 
-        vector<vector<int>> ans;
+        int count = 0;
 
-        while(k--){
-            auto p = minHeap.top();
-            minHeap.pop();
-            ans.push_back(points[p.second]);
+        while (!q.empty())
+        {
+            int size = q.size();
+
+            while (size--)
+            {
+                auto curr = q.front();
+                q.pop();
+
+                int x = curr.first;
+                int y = curr.second;
+
+                if (x < 0 || y < 0 || x >= n || y >= m || distance[x][y] != -2 || grid[x][y] == -1)
+                {
+                    continue;
+                }
+
+                distance[x][y] = count;
+
+                q.push({x + 1, y});
+                q.push({x - 1, y});
+                q.push({x, y + 1});
+                q.push({x, y - 1});
+            }
+            count++;
         }
 
-        return ans;
-        
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < m; j++)
+            {
+                if (distance[i][j] != -2)
+                {
+                    grid[i][j] = distance[i][j];
+                }
+            }
+        }
     }
 };
