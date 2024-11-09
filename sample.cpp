@@ -1,36 +1,55 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class Solution
-{
+class Solution {
 public:
-    int carFleet(int target, vector<int> &position, vector<int> &speed)
-    {
-        int n = position.size();
 
-        unordered_map<int, int> mp;
+    int pivotIndex(vector<int>& nums){
+        int s =0 ;
+        int e = nums.size() -1; 
 
-        for (int i = 0; i < n; i++)
-        {
-            mp[position[i]] = speed[i];
-        }
+        int mid = s + (e-s)/2; 
 
-        sort(position.begin(), position.end());
-
-        int ans = n, flag = 0;
-
-        for(int i = n - 1; i > 0; i--)
-        {
-            double time1 = (double)(target - position[i]) / mp[position[i]];
-            double time2 = (double)(target - position[i - 1]) / mp[position[i - 1]];
-
-            if(time1 >= time2)
-            {
-                mp[position[i - 1]] = mp[position[i]];
-                ans--;
+        while(s<e){
+            if(nums[mid]>=nums[0]){
+                s = mid + 1; 
             }
+            else {
+                e = mid; 
+            }
+            mid = s + (e-s)/2; 
         }
+        return s; 
+    }
 
-        return ans;
+    int binarySearch(vector <int>& nums, int s, int e, int ele){
+        int beg = s; 
+        int end = e; 
+
+        int mid = beg + (end-beg)/2; 
+
+        while(beg<=end){
+            if(nums[mid]==ele){
+                return mid; 
+            }
+            else if(nums[mid]<ele){
+                  beg = mid + 1; 
+            }
+            else{
+                end = mid -1;
+            }
+            mid = beg + (end-beg)/2; 
+        }
+        return -1; 
+    }
+    int search(vector<int>& nums, int target) {
+        int pivot = pivotIndex(nums); 
+
+        if(target>=nums[pivot] && target<=nums[nums.size()-1]){
+           return binarySearch(nums, pivot, nums.size()-1, target); 
+        }
+        else{
+            return binarySearch(nums, 0, pivot - 1, target); 
+        }      
     }
 };
