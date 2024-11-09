@@ -4,64 +4,49 @@ using namespace std;
 class Solution
 {
 public:
-    void islandsAndTreasure(vector<vector<int>> &grid)
+    int solve(vector<int> &nums, int n, int i, int prev, int flag, vector<vector<vector<int>>> &dp)
     {
-        int n = grid.size();
-        int m = grid[0].size();
-
-        vector<vector<int>> distance(n, vector<int>(m, -2));
-
-        queue<pair<int, int>> q;
-
-        for (int i = 0; i < n; i++)
+        if (i >= n)
         {
-            for (int j = 0; j < m; j++)
+            return 0;
+        }
+        if(dp[i][prev][flag] != -1)
+        {
+            return dp[i][prev][flag];
+        }
+        int ans = 0;
+
+        // choose
+        if (prev == 0)
+        {
+            if (i == 0)
             {
-                if (grid[i][j] == 0)
+                ans = max(ans, nums[i] + solve(nums, n, i + 1, 1, 1, dp));
+            }
+            else if (i == n - 1)
+            {
+                if (flag == 0)
                 {
-                    q.push({i, j});
+                    ans = max(ans, nums[i] + solve(nums, n, i + 1, 1, flag, dp));
                 }
+            }
+            else
+            {
+                ans = max(ans, nums[i] + solve(nums, n, i + 1, 1, flag, dp));
             }
         }
 
-        int count = 0;
+        // not choose
+        ans = max(ans, solve(nums, n, i + 1,0, flag, dp));
 
-        while (!q.empty())
-        {
-            int size = q.size();
+        return dp[i][prev][flag] = ans;
+    }
+    int rob(vector<int> &nums)
+    {
+        int n = nums.size();
 
-            while (size--)
-            {
-                auto curr = q.front();
-                q.pop();
+        vector<vector<vector<int>>> dp(n, vector<vector<int>>(2, vector<int>(2, -1)));
 
-                int x = curr.first;
-                int y = curr.second;
-
-                if (x < 0 || y < 0 || x >= n || y >= m || distance[x][y] != -2 || grid[x][y] == -1)
-                {
-                    continue;
-                }
-
-                distance[x][y] = count;
-
-                q.push({x + 1, y});
-                q.push({x - 1, y});
-                q.push({x, y + 1});
-                q.push({x, y - 1});
-            }
-            count++;
-        }
-
-        for (int i = 0; i < n; i++)
-        {
-            for (int j = 0; j < m; j++)
-            {
-                if (distance[i][j] != -2)
-                {
-                    grid[i][j] = distance[i][j];
-                }
-            }
-        }
+        return solve(nums, n, 0, 0, 0, dp);
     }
 };
