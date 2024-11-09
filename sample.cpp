@@ -1,42 +1,30 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class TimeMap
-{
+class Solution {
 public:
-    unordered_map<string, vector<pair<int, string>>> mp;
+    vector<vector<int>> kClosest(vector<vector<int>>& points, int k) {
+        int n = points.size();
+        
+        // min heap int,pair<int,int> to store distance and index
+        priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> minHeap;
 
-    TimeMap()
-    {
-    }
-
-    void set(string key, string value, int timestamp)
-    {
-        mp[key].push_back({timestamp, value});
-    }
-
-    string get(string key, int timestamp)
-    {
-        string ans = "";
-        if (mp.find(key) == mp.end())
-        {
-            return ans;
+        for(int i=0; i<n; i++){
+            int x = points[i][0];
+            int y = points[i][1];
+            int dist = x*x + y*y;
+            minHeap.push({dist, i});
         }
 
-        int l = 0, r = mp[key].size() - 1;
-        while (l <= r)
-        {
-            int mid = l + (r - l) / 2;
-            if (mp[key][mid].first <= timestamp)
-            {
-                ans = mp[key][mid].second;
-                l = mid + 1;
-            }
-            else
-            {
-                r = mid - 1;
-            }
+        vector<vector<int>> ans;
+
+        while(k--){
+            auto p = minHeap.top();
+            minHeap.pop();
+            ans.push_back(points[p.second]);
         }
+
         return ans;
+        
     }
 };
