@@ -1,55 +1,42 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class Solution {
+class TimeMap
+{
 public:
+    unordered_map<string, vector<pair<int, string>>> mp;
 
-    int pivotIndex(vector<int>& nums){
-        int s =0 ;
-        int e = nums.size() -1; 
-
-        int mid = s + (e-s)/2; 
-
-        while(s<e){
-            if(nums[mid]>=nums[0]){
-                s = mid + 1; 
-            }
-            else {
-                e = mid; 
-            }
-            mid = s + (e-s)/2; 
-        }
-        return s; 
+    TimeMap()
+    {
     }
 
-    int binarySearch(vector <int>& nums, int s, int e, int ele){
-        int beg = s; 
-        int end = e; 
-
-        int mid = beg + (end-beg)/2; 
-
-        while(beg<=end){
-            if(nums[mid]==ele){
-                return mid; 
-            }
-            else if(nums[mid]<ele){
-                  beg = mid + 1; 
-            }
-            else{
-                end = mid -1;
-            }
-            mid = beg + (end-beg)/2; 
-        }
-        return -1; 
+    void set(string key, string value, int timestamp)
+    {
+        mp[key].push_back({timestamp, value});
     }
-    int search(vector<int>& nums, int target) {
-        int pivot = pivotIndex(nums); 
 
-        if(target>=nums[pivot] && target<=nums[nums.size()-1]){
-           return binarySearch(nums, pivot, nums.size()-1, target); 
+    string get(string key, int timestamp)
+    {
+        string ans = "";
+        if (mp.find(key) == mp.end())
+        {
+            return ans;
         }
-        else{
-            return binarySearch(nums, 0, pivot - 1, target); 
-        }      
+
+        int l = 0, r = mp[key].size() - 1;
+        while (l <= r)
+        {
+            int mid = l + (r - l) / 2;
+            if (mp[key][mid].first <= timestamp)
+            {
+                ans = mp[key][mid].second;
+                l = mid + 1;
+            }
+            else
+            {
+                r = mid - 1;
+            }
+        }
+        return ans;
     }
 };
