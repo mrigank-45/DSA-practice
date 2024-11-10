@@ -1,52 +1,39 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class Interval
-{
-public:
-    int start, end;
-    Interval(int start, int end)
-    {
-        this->start = start;
-        this->end = end;
-    }
-};
-
 class Solution
 {
 public:
-    int minMeetingRooms(vector<Interval> &intervals)
+    bool dfs(int src, int parent, vector<int> adj[], vector<bool> &vis)
     {
-        int n = intervals.size();
-        sort(intervals.begin(), intervals.end(), [](Interval &a, Interval &b) {
-            return a.start < b.start;
-        });
-
-        vector<pair<int, int>> days;
-
-        for (auto interval : intervals)
+        vis[src] = true;
+        for (auto adjnode : adj[src])
         {
-            int start = interval.start;
-            int end = interval.end;
-
-            bool isInserted = false;
-            for (int i = 0; i < days.size(); i++)
+            if (!vis[adjnode])
             {
-                if (days[i].second <= start)
-                {
-                    days[i].first = start;
-                    days[i].second = end;
-                    isInserted = true;
-                    break;
-                }
+                if (dfs(adjnode, src, adj, vis))
+                    return true;
             }
+            else if (adjnode != parent)
+                return true;
+        }
+        return false;
+    }
 
-            if (!isInserted)
+    vector<int> findRedundantConnection(vector<vector<int>> &edges)
+    {
+        int n = edges.size();
+        vector<int> adj[n + 1];
+        for (int i = 0; i < n; i++)
+        {
+            adj[edges[i][0]].push_back(edges[i][1]);
+            adj[edges[i][1]].push_back(edges[i][0]);
+            vector<bool> vis(n + 1, false);
+            if (dfs(edges[i][0], -1, adj, vis))
             {
-                days.push_back({start, end});
+                return edges[i];
             }
         }
-
-        return days.size();
+        return {};
     }
 };
