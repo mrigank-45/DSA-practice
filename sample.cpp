@@ -4,42 +4,67 @@ using namespace std;
 class Solution
 {
 public:
-    vector<int> partitionLabels(string s)
+    bool checkValidString(string s)
     {
         int n = s.size();
 
-        unordered_map<char, int> mp;
+        stack<char> st;
+
         for (int i = 0; i < n; i++)
         {
-            mp[s[i]]++;
-        }
-        vector<int> ans;
-
-        int len = 0;
-        unordered_map<char, int> temp;
-
-        for(int i = 0; i < n; i++)
-        {
-            len++;
-            temp[s[i]]++;
-
-            bool flag = true;
-            for(auto x : temp)
+            if (s[i] == '(' || s[i] == '*')
             {
-                if(x.second != mp[x.first])
+                st.push(s[i]);
+            }
+            else
+            {
+                int cnt = 0;
+                while (!st.empty() && st.top() != '(')
                 {
-                    flag = false;
-                    break;
+                    cnt++;
+                    st.pop();
+                }
+                if (!st.empty())
+                {
+                    st.pop();
+                    while (cnt--)
+                    {
+                        st.push('*');
+                    }
+                }
+                else
+                {
+                    if(cnt==0)
+                    {
+                        return false;
+                    }
+                    cnt--;
+                    while (cnt--)
+                    {
+                        st.push('*');
+                    }
                 }
             }
-
-            if(flag){
-                ans.push_back(len);
-                len = 0;
-                temp.clear();
-            }
         }
 
-        return ans;
+        int cnt = 0;
+
+        while (!st.empty())
+        {
+            if (st.top() == '*')
+            {
+                cnt++;
+            }
+            else
+            {
+                cnt--;
+            }
+            if (cnt < 0)
+            {
+                return false;
+            }
+            st.pop();
+        }
+        return true;
     }
 };
