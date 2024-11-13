@@ -33,7 +33,7 @@ public:
         int m = mat[0].size();
         int delrow[] = {-1, 0, +1, 0};
         int delcol[] = {0, 1, 0, -1};
-        
+
         vector<vector<int>> vis(n, vector<int>(m, 0));
 
         // traverse first row and last row
