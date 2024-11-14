@@ -52,7 +52,7 @@ int partition(int arr[], int s, int e)
 void quickSort(int arr[], int s, int e)
 {
 
-    // partitioon karenfe
+    // partitioon karenge
     int p = partition(arr, s, e);
 
     // left part sort karo
