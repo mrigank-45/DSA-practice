@@ -1,33 +1,39 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+struct Node
+{
+    int data;
+    Node *left, *right;
+};
+
+// Should return true if tree is Sum Tree, else false
 class Solution
 {
 public:
-    long long countFairPairs(vector<int> &nums, int lower, int upper)
+    int findSum(Node *root)
     {
-        int n = nums.size();
-        sort(nums.begin(), nums.end());
-        long long count = 0;
-
-        for(int i = 0; i < n; i++)
+        if (root->left == NULL && root->right == NULL)
         {
-            int l = lower - nums[i];
-            int u = upper - nums[i];
-
-            int a = lower_bound(nums.begin(), nums.end(), l) - nums.begin();
-
-            int b = upper_bound(nums.begin(), nums.end(), u) - nums.begin() - 1;
-
-            if(a==n || b==-1 || a > b)
-            {
-                continue;
-            }
-
-            count += b - a + 1;
-
+            return root->data;
         }
 
-        return count;
+        int left = findSum(root->left);
+        int right = findSum(root->right);
+        return root->data + left + right;
+    }
+    bool isSumTree(Node *root)
+    {
+        if(root == NULL)
+        {
+            return true;
+        }
+        int sum = findSum(root->left) + findSum(root->right);
+
+        if (root->data == sum)
+        {
+            return true;
+        }
+        return false;
     }
 };
