@@ -1,39 +1,78 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-struct Node
-{
-    int data;
-    Node *left, *right;
-};
-
-// Should return true if tree is Sum Tree, else false
 class Solution
 {
 public:
-    int findSum(Node *root)
+    bool solve(unordered_map<int, vector<int>> &adj, int n, int i, vector<int> &vis)
     {
-        if (root->left == NULL && root->right == NULL)
+        queue<int> q;
+        q.push(i);
+        int color = -1;
+
+        while (!q.empty())
         {
-            return root->data;
+            int size = q.size();
+
+            while (size--)
+            {
+                int ele = q.front();
+                q.pop();
+
+                vis[ele] = color;
+
+                for (auto it : adj[ele])
+                {
+                    if (vis[it] < 0 && vis[ele] == vis[it])
+                    {
+                        return false;
+                    }
+                    else if (vis[it] == 0)
+                    {
+                        q.push(it);
+                    }
+                }
+            }
+            if (color == -1)
+            {
+                color = -2;
+            }
+            else
+            {
+                color = -1;
+            }
         }
 
-        int left = findSum(root->left);
-        int right = findSum(root->right);
-        return root->data + left + right;
+        return true;
     }
-    bool isSumTree(Node *root)
+    bool isBipartite(vector<vector<int>> &graph)
     {
-        if(root == NULL)
-        {
-            return true;
-        }
-        int sum = findSum(root->left) + findSum(root->right);
+        int n = graph.size();
 
-        if (root->data == sum)
+        // build the adj list
+        unordered_map<int, vector<int>> adj;
+
+        for (int i = 0; i < n; i++)
         {
-            return true;
+            for (auto it : graph[i])
+            {
+                adj[i].push_back(it);
+            }
         }
-        return false;
+
+        vector<int> vis(n, 0);
+
+        for (int i = 0; i < n; i++)
+        {
+            if (vis[i] == 0)
+            {
+                if (!solve(adj, n, i, vis))
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 };
