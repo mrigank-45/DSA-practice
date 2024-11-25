@@ -4,6 +4,8 @@ using namespace std;
 // for i=1 till i<n, compare the adjacent elements in array from j=0 to j < n-i and swap them if they are in the wrong order.
 // TC: O(n^2) (best case is O(n))
 // in bubble sort, the largest element goes to its correct position in each iteration.
+// stable algo
+
 
 void bubbleSort(vector<int> &arr, int n)
 {

@@ -17,7 +17,6 @@ bool searchMatrix(vector<vector<int>> matrix, int target)
 
     while (start <= end)
     {
-
         int element = matrix[mid / col][mid % col];
 
         if (element == target)

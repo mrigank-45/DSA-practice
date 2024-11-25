@@ -3,6 +3,7 @@ using namespace std;
 
 // For i = 0 till i<n-1, find the minimum element in the array from (i+1) to (n-1) and swap it with the element at i.
 // TC: O(n^2)
+// not a stable algo
 
 void selectionSort(vector<int> &arr, int n)
 {

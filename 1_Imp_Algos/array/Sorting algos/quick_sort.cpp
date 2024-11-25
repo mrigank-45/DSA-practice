@@ -7,7 +7,6 @@ using namespace std;
 
 int partition(int arr[], int s, int e)
 {
-
     int pivot = arr[s];
 
     int cnt = 0;

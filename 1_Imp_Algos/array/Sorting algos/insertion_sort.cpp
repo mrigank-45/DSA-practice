@@ -3,6 +3,8 @@ using namespace std;
 
 // for i=1 to n-1, find the correct position of the element at i in the array from j=i-1 to 0
 // TC: O(n^2) (best case is O(n))
+// stable algo
+
 
 void insertionSort(int n, vector<int> &arr)
 {
@@ -19,7 +21,7 @@ void insertionSort(int n, vector<int> &arr)
                 arr[j + 1] = arr[j];
             }
             else
-            { 
+            {
                 break;
             }
         }
