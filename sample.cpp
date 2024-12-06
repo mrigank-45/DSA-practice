@@ -4,28 +4,46 @@ using namespace std;
 class Solution
 {
 public:
-    bool isVowel(char c)
-    {
-        return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u';
-    }
-    bool doesAliceWin(string s)
+    int maxOperations(string s)
     {
         int n = s.size();
+        int cnt = 0, ans = 0;
 
-        int v = 0;
+        if (s[0] == '1')
+            cnt++;
 
-        for (int i = 0; i < n; i++)
+        for (int i = 1; i < n; i++)
         {
-            if (isVowel(s[i]))
+            // last element
+            if (i == n - 1)
             {
-                v++;
+                if (s[i] == '1')
+                {
+                    if (s[i - 1] != '1')
+                    {
+                        ans += cnt;
+                    }
+                }
+                else
+                {
+                    ans += cnt;
+                }
+                break;
+            }
+
+            if (s[i] == '1')
+            {
+                if (s[i - 1] != '1')
+                {
+                    ans += cnt;
+                    cnt++;
+                }
+                else{
+                    cnt++;
+                }
             }
         }
 
-        if (v == 0)
-        {
-            return false;
-        }
-        return true;
+        return ans;
     }
 };
