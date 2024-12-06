@@ -1,49 +1,26 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class Solution
-{
+class Solution {
 public:
-    int maxOperations(string s)
-    {
-        int n = s.size();
-        int cnt = 0, ans = 0;
+    long long minimumOperations(vector<int>& nums, vector<int>& target) {
+        int n = nums.size();
+        long long res = 0;
+        int prev = 0;
 
-        if (s[0] == '1')
-            cnt++;
+        for (int i = 0; i < n; i++) {
+            int curr = nums[i] - target[i];
 
-        for (int i = 1; i < n; i++)
-        {
-            // last element
-            if (i == n - 1)
-            {
-                if (s[i] == '1')
-                {
-                    if (s[i - 1] != '1')
-                    {
-                        ans += cnt;
-                    }
-                }
-                else
-                {
-                    ans += cnt;
-                }
-                break;
+            if (curr > 0 && prev < 0 || curr < 0 && prev > 0) {
+                res += abs(curr);
+            }
+            else if (abs(curr) - abs(prev) > 0) {
+                res += abs(curr - prev);
             }
 
-            if (s[i] == '1')
-            {
-                if (s[i - 1] != '1')
-                {
-                    ans += cnt;
-                    cnt++;
-                }
-                else{
-                    cnt++;
-                }
-            }
+            prev = curr;
         }
 
-        return ans;
+        return res;
     }
 };
