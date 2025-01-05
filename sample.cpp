@@ -4,33 +4,31 @@ using namespace std;
 class Solution
 {
 public:
-    int maximumGap(vector<int> &nums)
+    int countBattleships(vector<vector<char>> &board)
     {
-        int n = nums.size();
-        if (n < 2)
-            return 0;
-        int maxi = *max_element(nums.begin(), nums.end());
-        vector<int> temp(maxi + 1, 0);
+        int n = board.size();
+        int m = board[0].size();
+        int ans = 0;
 
         for (int i = 0; i < n; i++)
         {
-            temp[nums[i]]++;
+            for (int j = 0; j < m; j++)
+            {
+                if (board[i][j] == 'X')
+                {
+                    if (i > 0 && board[i - 1][j] == 'X')
+                    {
+                        continue;
+                    }
+                    if (j > 0 && board[i][j - 1] == 'X')
+                    {
+                        continue;
+                    }
+                    ans++;
+                }
+            }
         }
 
-        int maxGap = 0;
-        int prev = -1;
-        for(int i = 1; i < temp.size(); i++)
-        {
-            if(temp[i] == 0)
-                continue;
-            if(prev == -1)
-                prev = i;
-            else{
-                maxGap = max(maxGap, i - prev);
-                prev = i;
-            }
-            
-        }
-        return maxGap;
+        return ans;
     }
 };
