@@ -1,6 +1,9 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+// a -> 1, b-> 10, c -> 100 and so on
+// ac -> 101, bd -> 1010 and so on
+
 class Solution
 {
 public:
