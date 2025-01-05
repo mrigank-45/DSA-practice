@@ -1,61 +1,50 @@
-#include <iostream>
-#include <algorithm>
-#include <climits>
+#include <bits/stdc++.h>
 using namespace std;
+const int M = 998244353;
 
-// Function to find the minimum extra chocolates needed
-int solution(int A, int B) {
-    // If B is already a multiple of A, no extra chocolates are needed
-    if (B % A == 0) {
-        return 0;
-    }
+int main()
+{
+    int n, manasvi;
+    cin >> n >> manasvi;
+    if (n < manasvi)
+        swap(n, manasvi);
 
-    // Initialize minimum extra chocolates to a large value
-    int minChocolates = INT_MAX;
-
-    // Iterate over possible values of k
-    for (int k = 1; k <= B / A + 1; ++k) {
-        // Calculate the new B (B + Y)
-        int newB = k * A;
-
-        // Ensure newB is greater than or equal to the current B
-        if (newB >= B) {
-            // Calculate Y as the difference between newB and B
-            int Y = newB - B;
-
-            // Calculate X needed to make A + X equal to newB / k
-            int X = newB / k - A;
-
-            // Update the minimum extra chocolates needed
-            if (X >= 0 && Y >= 0) {
-                minChocolates = min(minChocolates, X + Y);
-            }
+    vector<vector<long long>> chhuuus(n + manasvi, vector<long long>(n));
+    for (int i = 0; i < n + manasvi; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            if (j == 0)
+                chhuuus[i][j] = 1;
+            else if (i == 0)
+                chhuuus[i][j] = 0;
+            else
+                chhuuus[i][j] = (chhuuus[i - 1][j] + chhuuus[i - 1][j - 1]) % M;
         }
     }
 
-    return minChocolates;
-}
+    long long ans = 0;
+    for (int r = 1; r < n; r++)
+    {
+        long long FU = 0;
+        for (int c = manasvi - 1; c >= 1; c--)
+        {
+            FU = (FU + chhuuus[n - r + manasvi - c - 1][n - r] * chhuuus[c + n - r - 1][n - r - 1]) % M;
+            ans = (ans + chhuuus[r + c - 1][r] * ((chhuuus[manasvi - c + r - 1][r - 1] * FU) % M)) % M;
+        }
+    }
 
-int main() {
-    // Sample test case
-    int A = 8, B = 16;
+    swap(n, manasvi);
+    for (int r = 1; r < n; r++)
+    {
+        long long F = 0;
+        for (int c = manasvi - 1; c >= 1; c--)
+        {
+            ans = (ans + chhuuus[r + c - 1][r] * ((chhuuus[manasvi - c + r - 1][r - 1] * F) % M)) % M;
+            F = (F + chhuuus[n - r + manasvi - c - 1][n - r] * chhuuus[c + n - r - 1][n - r - 1]) % M;
+        }
+    }
 
-    // Call the solution function and output the result
-    cout << "Sample Input: A = " << A << ", B = " << B << endl;
-    cout << "Sample Output: " << solution(A, B) << endl;
-
-    // Additional test cases
-    cout << "\nAdditional Test Cases:\n";
-
-    // Example 1
-    A = 3, B = 9;
-    cout << "Input: A = " << A << ", B = " << B << endl;
-    cout << "Output: " << solution(A, B) << endl;
-
-    // Example 2
-    A = 7, B = 20;
-    cout << "Input: A = " << A << ", B = " << B << endl;
-    cout << "Output: " << solution(A, B) << endl;
-
-    return 0;
+    ans = (2 * ans) % M;
+    cout << ans << '\n';
 }

@@ -4,40 +4,33 @@ using namespace std;
 class Solution
 {
 public:
-    vector<bool> genPrimes(int n)
+    int maximumGap(vector<int> &nums)
     {
-        vector<bool> prime(n + 1, true);
+        int n = nums.size();
+        if (n < 2)
+            return 0;
+        int maxi = *max_element(nums.begin(), nums.end());
+        vector<int> temp(maxi + 1, 0);
 
-        prime[0] = prime[1] = false;
-
-        for (int i = 2; i <= n; ++i)
+        for (int i = 0; i < n; i++)
         {
-            if (prime[i])
-            {
-                for (int j = i + i; j <= n; j += i)
-                {
-                    prime[j] = false;
-                }
-            }
+            temp[nums[i]]++;
         }
 
-        return prime;
-    }
-    int nonSpecialCount(int l, int r)
-    {
-        vector<bool> primes = genPrimes(sqrt(r));
-        int cnt = 0;
-
-        int i = 1;
-        while(i * i <= r)
+        int maxGap = 0;
+        int prev = -1;
+        for(int i = 1; i < temp.size(); i++)
         {
-            int x = i * i;
-            if(x >= l && primes[i])
-            {
-                cnt++;
+            if(temp[i] == 0)
+                continue;
+            if(prev == -1)
+                prev = i;
+            else{
+                maxGap = max(maxGap, i - prev);
+                prev = i;
             }
-            i++;
+            
         }
-        return r - l - cnt + 1;
+        return maxGap;
     }
 };
