@@ -15,14 +15,12 @@ class Solution
 public:
     pair<int, int> maxSumHelper(Node *root)
     {
-        // if root is null, we return two zeroes in pair.
         if (root == NULL)
         {
             pair<int, int> sum(0, 0);
             return sum;
         }
 
-        // calling function recursively for left and right subtrees.
         pair<int, int> sum1 = maxSumHelper(root->left);
         pair<int, int> sum2 = maxSumHelper(root->right);
         pair<int, int> sum;
@@ -37,7 +35,6 @@ public:
         return sum;
     }
 
-    // Function to return the maximum sum of non-adjacent nodes.
     int getMaxSum(Node *root)
     {
         // res->first is when curr node is included and res->second is when curr node is excluded.

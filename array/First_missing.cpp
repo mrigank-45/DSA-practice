@@ -1,12 +1,11 @@
 // First Missing Positive
 
 // Approach: For each positive integer n in the array, calculate the index idx = abs(n) - 1
-// If this index is within the array’s bounds and the number at that position is positive, mark it by making 
+// If this index is within the array’s bounds and the number at that position is positive, mark it by making
 // it negative. This marking process serves as an indicator that the integer n is present in the array.
 
 #include <bits/stdc++.h>
 using namespace std;
-
 
 class Solution
 {

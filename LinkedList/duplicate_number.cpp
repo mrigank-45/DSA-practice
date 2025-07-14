@@ -10,7 +10,7 @@ using namespace std;
 class Solution {
 public:
 
-    int findDuplicate(std::vector<int>& nums) {
+    int findDuplicate(vector<int>& nums) {
         int slow = nums[0];
         int fast = nums[0];
 

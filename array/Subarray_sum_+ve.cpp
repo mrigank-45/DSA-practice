@@ -1,5 +1,5 @@
 // Given an array and a sum k, we need to print the length of the longest subarray that sums to k. 
-// (given elelments of array are +ve only)
+// (given elements of array are +ve only)
 // 2 pointer Approach which both start from 0 index
 
 #include <bits/stdc++.h>

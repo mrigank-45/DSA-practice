@@ -122,18 +122,18 @@ public:
         //    solveRec(matrix, 0, 0, maxi);
         //     return maxi*maxi;
 
-        // int n = matrix.size(), m = matrix[0].size();
-        // int maxi = 0;
-        // vector<vector<int>>dp(n, vector<int>(m, -1));
-        // solveMem(matrix, 0, 0, maxi, dp);
-        // return maxi*maxi;
+        int n = matrix.size(), m = matrix[0].size();
+        int maxi = 0;
+        vector<vector<int>>dp(n, vector<int>(m, -1));
+        solveMem(matrix, 0, 0, maxi, dp);
+        return maxi*maxi;
 
         // int maxi = 0;
         // solveTab(matrix, maxi);
         // return maxi*maxi;
 
-        int maxi = 0;
-        solve(matrix, maxi);
-        return maxi * maxi;
+        // int maxi = 0;
+        // solve(matrix, maxi);
+        // return maxi * maxi;
     }
 };

@@ -4,31 +4,35 @@ using namespace std;
 class Solution
 {
 public:
-    int countBattleships(vector<vector<char>> &board)
+    string solve(int n)
     {
-        int n = board.size();
-        int m = board[0].size();
-        int ans = 0;
-
-        for (int i = 0; i < n; i++)
+        if (n == 1)
         {
-            for (int j = 0; j < m; j++)
-            {
-                if (board[i][j] == 'X')
-                {
-                    if (i > 0 && board[i - 1][j] == 'X')
-                    {
-                        continue;
-                    }
-                    if (j > 0 && board[i][j - 1] == 'X')
-                    {
-                        continue;
-                    }
-                    ans++;
-                }
-            }
+            return "1";
         }
 
-        return ans;
+        string prev = solve(n - 1);
+        string result = "";
+        int i = 0;
+
+        while (i < prev.size())
+        {
+            char c = prev[i];
+            int cnt = 0;
+
+            while (prev[i] == c && i < prev.size())
+            {
+                cnt++;
+                i++;
+            }
+            result += to_string(cnt) + c;
+        }
+
+        return result;
+    }
+    string countAndSay(int n)
+    {
+
+        return solve(n);
     }
 };
