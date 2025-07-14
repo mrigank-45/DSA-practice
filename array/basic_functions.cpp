@@ -3,10 +3,10 @@ using namespace std;
 
 int main()
 {
-    int arr[3] = {5, 1, 2};
+    int arr[3] = {1,1,2};
 
-    swap(arr[0], arr[1]);
-    reverse(arr, arr + 3);
+    // swap(arr[0], arr[1]);
+    // reverse(arr, arr + 3);
 
     // next_permutation returns true if arr can rearrange as a lexicographically greater permutation, else false
     do

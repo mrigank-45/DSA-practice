@@ -1,38 +1,55 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+struct TreeNode
+{
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode() : val(0), left(nullptr), right(nullptr) {}
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+};
 class Solution
 {
 public:
-    string solve(int n)
+    vector<vector<int>> levelOrderBottom(TreeNode *root)
     {
-        if (n == 1)
+        if(root == NULL) return {{}};
+        vector<vector<int>> res;
+        queue<TreeNode *> q;
+        q.push(root);
+
+        while (!q.empty())
         {
-            return "1";
-        }
+            int size = q.size();
 
-        string prev = solve(n - 1);
-        string result = "";
-        int i = 0;
+            vector<int> ans(size);
 
-        while (i < prev.size())
-        {
-            char c = prev[i];
-            int cnt = 0;
-
-            while (prev[i] == c && i < prev.size())
+            for (int i = 0; i < size; i++)
             {
-                cnt++;
-                i++;
+
+                TreeNode *frontNode = q.front();
+                q.pop();
+
+                ans[i] = frontNode->val;
+
+                if (frontNode->left)
+                {
+                    q.push(frontNode->left);
+                }
+
+                if (frontNode->right)
+                {
+                    q.push(frontNode->right);
+                }
             }
-            result += to_string(cnt) + c;
+
+            res.push_back(ans);
         }
 
-        return result;
-    }
-    string countAndSay(int n)
-    {
+        reverse(res.begin(), res.end());
 
-        return solve(n);
+        return res;
     }
 };
