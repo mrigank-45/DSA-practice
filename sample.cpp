@@ -3,28 +3,53 @@ using namespace std;
 
 class Solution
 {
-private:
-    int solveMem(int start, int end, vector<vector<int>> &dp)
+public:
+    vector<vector<vector<int>>> dp;
+
+    int solve(int i, int prev, int flag, vector<int> &nums, int n)
     {
-        if (start >= end)
+        if (i == n)
             return 0;
 
-        if (dp[start][end] != -1)
-            return dp[start][end];
+        if (dp[i][prev][flag] != -1)
+            return dp[i][prev][flag];
 
-        int maxi = INT_MAX;
+        int ans = 0;
 
-        for (int i = start; i <= end; i++)
+        // pick
+        if (prev == n)
         {
-            maxi = min(maxi, i + max(solveMem(start, i - 1, dp), solveMem(i + 1, end, dp)));
+            ans = max(ans, 1 + solve(i + 1, i, 0, nums, n));
         }
-        return dp[start][end] = maxi;
+        else if (flag == 0)
+        {
+            if (nums[i] - nums[prev] > 0)
+                ans = max(ans, 1 + solve(i + 1, i, 1, nums, n));
+
+            else if (nums[i] - nums[prev] < 0)
+                ans = max(ans, 1 + solve(i + 1, i, 2, nums, n));
+        }
+        else if (flag == 1 && nums[i] - nums[prev] < 0)
+        {
+            ans = max(ans, 1 + solve(i + 1, i, 2, nums, n));
+        }
+        else if (flag == 2 && nums[i] - nums[prev] > 0)
+        {
+            ans = max(ans, 1 + solve(i + 1, i, 1, nums, n));
+        }
+
+        // not pick
+        ans = max(ans, solve(i + 1, prev, flag, nums, n));
+
+        return dp[i][prev][flag] = ans;
     }
 
-public:
-    int getMoneyAmount(int n)
+    int wiggleMaxLength(vector<int> &nums)
     {
-        vector<vector<int>> dp(n + 1, vector<int>(n + 1, -1));
-        return solveMem(1, n, dp);
+        int n = nums.size();
+
+        dp.assign(n + 1, vector<vector<int>>(n + 1, vector<int>(3, -1)));
+
+        return solve(0, n, 0, nums, n);
     }
 };
