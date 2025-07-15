@@ -1,55 +1,28 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-struct TreeNode
-{
-    int val;
-    TreeNode *left;
-    TreeNode *right;
-    TreeNode() : val(0), left(nullptr), right(nullptr) {}
-    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
-    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
-};
 class Solution
 {
 public:
-    vector<vector<int>> levelOrderBottom(TreeNode *root)
+    vector<string> findRepeatedDnaSequences(string s)
     {
-        if(root == NULL) return {{}};
-        vector<vector<int>> res;
-        queue<TreeNode *> q;
-        q.push(root);
+        int n = s.size();
+        unordered_map<string, int> mp;
 
-        while (!q.empty())
+        for (int i = 0; i < n - 9; i++)
         {
-            int size = q.size();
-
-            vector<int> ans(size);
-
-            for (int i = 0; i < size; i++)
+            string temp = s.substr(i, 10);
+            mp[temp]++;
+        }
+        vector<string> ans;
+        for (auto it : mp)
+        {
+            if (it.second > 1)
             {
-
-                TreeNode *frontNode = q.front();
-                q.pop();
-
-                ans[i] = frontNode->val;
-
-                if (frontNode->left)
-                {
-                    q.push(frontNode->left);
-                }
-
-                if (frontNode->right)
-                {
-                    q.push(frontNode->right);
-                }
+                ans.push_back(it.first);
             }
-
-            res.push_back(ans);
         }
 
-        reverse(res.begin(), res.end());
-
-        return res;
+        return ans;
     }
 };
