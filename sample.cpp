@@ -3,26 +3,28 @@ using namespace std;
 
 class Solution
 {
-public:
-    vector<string> findRepeatedDnaSequences(string s)
+private:
+    int solveMem(int start, int end, vector<vector<int>> &dp)
     {
-        int n = s.size();
-        unordered_map<string, int> mp;
+        if (start >= end)
+            return 0;
 
-        for (int i = 0; i < n - 9; i++)
-        {
-            string temp = s.substr(i, 10);
-            mp[temp]++;
-        }
-        vector<string> ans;
-        for (auto it : mp)
-        {
-            if (it.second > 1)
-            {
-                ans.push_back(it.first);
-            }
-        }
+        if (dp[start][end] != -1)
+            return dp[start][end];
 
-        return ans;
+        int maxi = INT_MAX;
+
+        for (int i = start; i <= end; i++)
+        {
+            maxi = min(maxi, i + max(solveMem(start, i - 1, dp), solveMem(i + 1, end, dp)));
+        }
+        return dp[start][end] = maxi;
+    }
+
+public:
+    int getMoneyAmount(int n)
+    {
+        vector<vector<int>> dp(n + 1, vector<int>(n + 1, -1));
+        return solveMem(1, n, dp);
     }
 };
