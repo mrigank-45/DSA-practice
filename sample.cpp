@@ -1,31 +1,38 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+struct TreeNode
+{
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode() : val(0), left(nullptr), right(nullptr) {}
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+};
 class Solution
 {
 public:
-    unordered_map<int, vector<int>> mp;
-
-    Solution(vector<int> &nums)
+    int solve(TreeNode *root, int prev)
     {
-        int n = nums.size();
-        for (int i = 0; i < n; i++)
+        if (root == NULL)
+            return 0;
+
+        int ans = 0;
+
+        // not pick
+        ans = max(ans, solve(root->left, 0) + solve(root->right, 0));
+
+        // pick
+        if (prev == 0)
         {
-            mp[nums[i]].push_back(i);
+            ans = max(ans, root->val + solve(root->left, 1) + solve(root->right, 1));
         }
-    }
 
-    int pick(int target)
+        return ans;
+    }
+    int rob(TreeNode *root)
     {
-        int n = mp[target].size();
-        int rand();
-        int index = rand() % n;
-        return mp[target][index];
+        return solve(root, 0);
     }
 };
-
-/**
- * Your Solution object will be instantiated and called as such:
- * Solution* obj = new Solution(nums);
- * int param_1 = obj->pick(target);
- */
