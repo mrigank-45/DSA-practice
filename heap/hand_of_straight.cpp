@@ -1,4 +1,4 @@
-// hand of straights
+// Hand of straights
 
 #include <bits/stdc++.h>
 using namespace std;

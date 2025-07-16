@@ -1,55 +1,52 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class Solution
-{
+class Solution {
 public:
-    vector<vector<vector<int>>> dp;
-
-    int solve(int i, int prev, int flag, vector<int> &nums, int n)
-    {
-        if (i == n)
-            return 0;
-
-        if (dp[i][prev][flag] != -1)
-            return dp[i][prev][flag];
-
-        int ans = 0;
-
-        // pick
-        if (prev == n)
+    bool isPossibleDivide(vector<int>& hand, int k) {
+        map<int, int> m;
+        for (int i = 0; i < hand.size(); i++)
         {
-            ans = max(ans, 1 + solve(i + 1, i, 0, nums, n));
-        }
-        else if (flag == 0)
-        {
-            if (nums[i] - nums[prev] > 0)
-                ans = max(ans, 1 + solve(i + 1, i, 1, nums, n));
-
-            else if (nums[i] - nums[prev] < 0)
-                ans = max(ans, 1 + solve(i + 1, i, 2, nums, n));
-        }
-        else if (flag == 1 && nums[i] - nums[prev] < 0)
-        {
-            ans = max(ans, 1 + solve(i + 1, i, 2, nums, n));
-        }
-        else if (flag == 2 && nums[i] - nums[prev] > 0)
-        {
-            ans = max(ans, 1 + solve(i + 1, i, 1, nums, n));
+            m[hand[i]]++;
         }
 
-        // not pick
-        ans = max(ans, solve(i + 1, prev, flag, nums, n));
+        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> h;
 
-        return dp[i][prev][flag] = ans;
-    }
+        for (auto it : m)
+        {
+            h.push({it.first, it.second});
+        }
 
-    int wiggleMaxLength(vector<int> &nums)
-    {
-        int n = nums.size();
-
-        dp.assign(n + 1, vector<vector<int>>(n + 1, vector<int>(3, -1)));
-
-        return solve(0, n, 0, nums, n);
+        while (!h.empty())
+        {
+            vector<pair<int, int>> v;
+            int temp = h.top().first - 1;
+            for (int i = 0; i < k; i++)
+            {
+                if (h.empty())
+                {
+                    return false;
+                }
+                else
+                {
+                    if (h.top().first != temp + 1)
+                    {
+                        return false;
+                    }
+                    temp++;
+                    v.push_back(h.top());
+                    h.pop();
+                }
+            }
+            for (int i = 0; i < v.size(); i++)
+            {
+                if (v[i].second > 1)
+                {
+                    h.push({v[i].first, v[i].second - 1});
+                }
+            }
+        }
+        return true;
+        
     }
 };
