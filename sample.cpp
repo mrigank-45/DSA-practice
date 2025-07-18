@@ -1,46 +1,54 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-struct TreeNode
+class Node
 {
+public:
     int val;
-    TreeNode *left;
-    TreeNode *right;
-    TreeNode() : val(0), left(nullptr), right(nullptr) {}
-    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
-    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+    Node *left;
+    Node *right;
+    Node *next;
+
+    Node() : val(0), left(NULL), right(NULL), next(NULL) {}
+
+    Node(int _val) : val(_val), left(NULL), right(NULL), next(NULL) {}
+
+    Node(int _val, Node *_left, Node *_right, Node *_next)
+        : val(_val), left(_left), right(_right), next(_next) {}
 };
 
 class Solution
 {
 public:
-    int findBottomLeftValue(TreeNode *root)
+    Node *connect(Node *root)
     {
         if (!root)
-            return 0;
-        queue<TreeNode *> q;
+            return root;
+
+        queue<Node *> q;
         q.push(root);
-        unordered_map<int, int> levelMap; 
-        int level = 0;
+        Node *prev;
+
         while (!q.empty())
         {
-            int size = q.size();
-            for (int i = 0; i < size; i++)
+            int N = q.size();
+            prev = NULL;
+            while (N--)
             {
-                TreeNode *node = q.front();
+                Node *curr = q.front();
                 q.pop();
-                if (i == 0) 
-                {
-                    levelMap[level] = node->val;
-                }
-                if (node->left)
-                    q.push(node->left);
-                if (node->right)
-                    q.push(node->right);
-            }
-            level++;
-        }
 
-        return levelMap[level - 1]; 
+                if (prev)
+                    prev->next = curr;
+
+                if (curr->left)
+                    q.push(curr->left);
+                if (curr->right)
+                    q.push(curr->right);
+
+                prev = curr;
+            }
+        }
+        return root;
     }
 };
