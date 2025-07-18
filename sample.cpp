@@ -1,37 +1,46 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+struct TreeNode
+{
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode() : val(0), left(nullptr), right(nullptr) {}
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+};
+
 class Solution
 {
 public:
-    vector<int> findAnagrams(string s, string p)
+    int findBottomLeftValue(TreeNode *root)
     {
-        int n = s.size();
-        int m = p.size();
-        if(n<m){
-            return {};
-        }
-        vector<int> v1(26, 0);
-        vector<int> v2(26, 0);
-
-        for (int i = 0; i < m; i++)
+        if (!root)
+            return 0;
+        queue<TreeNode *> q;
+        q.push(root);
+        unordered_map<int, int> levelMap; 
+        int level = 0;
+        while (!q.empty())
         {
-            v1[p[i] - 'a']++;
-            v2[s[i] - 'a']++;
+            int size = q.size();
+            for (int i = 0; i < size; i++)
+            {
+                TreeNode *node = q.front();
+                q.pop();
+                if (i == 0) 
+                {
+                    levelMap[level] = node->val;
+                }
+                if (node->left)
+                    q.push(node->left);
+                if (node->right)
+                    q.push(node->right);
+            }
+            level++;
         }
 
-        vector<int> ans;
-        if (v1 == v2)
-            ans.push_back(0);
-
-        for (int i = m; i < n; i++)
-        {
-            v2[s[i] - 'a']++;
-            v2[s[i - m] - 'a']--;
-
-            if (v1 == v2)
-                ans.push_back(i - m + 1);
-        }
-        return ans;
+        return levelMap[level - 1]; 
     }
 };
