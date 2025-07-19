@@ -1,37 +1,26 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class Solution
+class NumMatrix
 {
 public:
-    set<vector<int>> ans;
-    void solve(vector<int> nums, int n, int i, vector<int> output)
+    vector<vector<int>> sumMatrix;
+    NumMatrix(vector<vector<int>> &matrix)
     {
-        if (output.size() > 1)
-            ans.insert(output);
-        if (i == n)
-            return;
-
-        // not choose
-        solve(nums, n, i + 1, output);
-
-        // choose
-        if (output.size() == 0 || nums[i] >= output.back())
+        int n = matrix.size();
+        int m = matrix[0].size();
+        sumMatrix.resize(n + 1, vector<int>(m + 1, 0));
+        for (int i = 1; i <= n; i++)
         {
-            output.push_back(nums[i]);
-            solve(nums, n, i + 1, output);
+            for (int j = 1; j <= m; j++)
+            {
+                sumMatrix[i][j] = matrix[i - 1][j - 1] + sumMatrix[i - 1][j] + sumMatrix[i][j - 1] - sumMatrix[i - 1][j - 1];
+            }
         }
     }
-    vector<vector<int>> findSubsequences(vector<int> &nums)
+
+    int sumRegion(int row1, int col1, int row2, int col2)
     {
-        int n = nums.size();
-        vector<int> output;
-        solve(nums, n, 0, output);
-        vector<vector<int>> res;
-        for (auto it : ans)
-        {
-            res.push_back(it);
-        }
-        return res;
+        return sumMatrix[row2 + 1][col2 + 1] - sumMatrix[row1][col2 + 1] - sumMatrix[row2 + 1][col1] + sumMatrix[row1][col1];
     }
 };
