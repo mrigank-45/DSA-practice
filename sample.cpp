@@ -1,54 +1,37 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class Node
-{
-public:
-    int val;
-    Node *left;
-    Node *right;
-    Node *next;
-
-    Node() : val(0), left(NULL), right(NULL), next(NULL) {}
-
-    Node(int _val) : val(_val), left(NULL), right(NULL), next(NULL) {}
-
-    Node(int _val, Node *_left, Node *_right, Node *_next)
-        : val(_val), left(_left), right(_right), next(_next) {}
-};
-
 class Solution
 {
 public:
-    Node *connect(Node *root)
+    set<vector<int>> ans;
+    void solve(vector<int> nums, int n, int i, vector<int> output)
     {
-        if (!root)
-            return root;
+        if (output.size() > 1)
+            ans.insert(output);
+        if (i == n)
+            return;
 
-        queue<Node *> q;
-        q.push(root);
-        Node *prev;
+        // not choose
+        solve(nums, n, i + 1, output);
 
-        while (!q.empty())
+        // choose
+        if (output.size() == 0 || nums[i] >= output.back())
         {
-            int N = q.size();
-            prev = NULL;
-            while (N--)
-            {
-                Node *curr = q.front();
-                q.pop();
-
-                if (prev)
-                    prev->next = curr;
-
-                if (curr->left)
-                    q.push(curr->left);
-                if (curr->right)
-                    q.push(curr->right);
-
-                prev = curr;
-            }
+            output.push_back(nums[i]);
+            solve(nums, n, i + 1, output);
         }
-        return root;
+    }
+    vector<vector<int>> findSubsequences(vector<int> &nums)
+    {
+        int n = nums.size();
+        vector<int> output;
+        solve(nums, n, 0, output);
+        vector<vector<int>> res;
+        for (auto it : ans)
+        {
+            res.push_back(it);
+        }
+        return res;
     }
 };
