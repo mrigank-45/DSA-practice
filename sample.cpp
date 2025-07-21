@@ -1,40 +1,37 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-struct TreeNode
-{
-    int val;
-    TreeNode *left;
-    TreeNode *right;
-    TreeNode() : val(0), left(nullptr), right(nullptr) {}
-    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
-    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
-};
 class Solution
 {
 public:
-    vector<int> largestValues(TreeNode *root)
+    string getHint(string secret, string guess)
     {
-        if(root == NULL)  return {};
-        vector<int> ans;
-        queue<TreeNode *> q;
-        q.push(root);
-
-        while(!q.empty())
+        int n = secret.size();
+        int x = 0, y = 0;
+        unordered_map<int, int> mp;
+        for (int i = 0; i < n; i++)
         {
-            int size = q.size();
-            int maxVal = INT_MIN;
-            for(int i = 0; i < size; i++)
+            if (secret[i] == guess[i])
             {
-                TreeNode *node = q.front();
-                q.pop();
-                maxVal = max(maxVal, node->val);
-                if(node->left) q.push(node->left);
-                if(node->right) q.push(node->right);
+                x++;
             }
-            ans.push_back(maxVal);
+            else
+            {
+                mp[secret[i]]++;
+            }
         }
-
+        for (int i = 0; i < n; i++)
+        {
+            if (secret[i] != guess[i])
+            {
+                if (mp[guess[i]] > 0)
+                {
+                    y++;
+                    mp[guess[i]]--;
+                }
+            }
+        }
+        string ans = to_string(x) + 'A' + to_string(y) + 'B';
         return ans;
     }
 };
