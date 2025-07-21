@@ -1,12 +1,13 @@
+// Circular Array Loop (leetcode)
+
 #include <bits/stdc++.h>
 using namespace std;
 
 class Solution
 {
-    bool dfs(int i, int sign, vector<int> &a, vector<int> &v, vector<int> &pathVis)
+    bool dfs(int i, int sign, vector<int> &a, vector<int> &vis, vector<int> &pathVis, int n)
     {
-        int n = a.size();
-        v[i] = 1;
+        vis[i] = 1;
         pathVis[i] = 1;
 
         long long jump = (long long)i + a[i];
@@ -22,7 +23,7 @@ class Solution
         if (pathVis[next])
             return true;
 
-        if(v[next] == 0 && dfs(next, sign, a, v, pathVis))  return true;
+        if(vis[next] == 0 && dfs(next, sign, a, vis, pathVis, n))  return true;
         pathVis[i] = 0;
         return false;
     }
@@ -31,16 +32,16 @@ public:
     bool circularArrayLoop(vector<int> &a)
     {
         int n = a.size();
-        vector<int> v(n, 0);
+        vector<int> vis(n, 0);
         for (int i = 0; i < n; i++)
         {
-            if (v[i] == 0)
+            if (vis[i] == 0)
             {
                 vector<int> pathVis(n, 0);
                 int sign = 1;
                 if (a[i] < 0)
                     sign = -1;
-                if (dfs(i, sign, a, v, pathVis))
+                if (dfs(i, sign, a, vis, pathVis, n))
                     return 1;
             }
         }
