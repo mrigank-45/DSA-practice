@@ -3,47 +3,35 @@ using namespace std;
 
 class Solution
 {
-    bool dfs(int i, int sign, vector<int> &a, vector<int> &v, vector<int> &pathVis)
-    {
-        int n = a.size();
-        v[i] = 1;
-        pathVis[i] = 1;
-
-        long long jump = (long long)i + a[i];
-        jump = ((jump % n) + n) % n;
-        int next = (int)jump;
-
-        if (sign * a[next] < 0)
-            return false;
-
-        if (next == i)
-            return false;
-
-        if (pathVis[next])
-            return true;
-
-        if(v[next] == 0 && dfs(next, sign, a, v, pathVis))  return true;
-        pathVis[i] = 0;
-        return false;
-    }
-
 public:
-    bool circularArrayLoop(vector<int> &a)
+    static bool cmp(const pair<int, string> &a, const pair<int, string> &b)
     {
-        int n = a.size();
-        vector<int> v(n, 0);
+        if (a.first != b.first)
+            return a.first > b.first;
+        return a.second < b.second;
+    }
+    vector<string> topKFrequent(vector<string> &words, int k)
+    {
+        int n = words.size();
+        unordered_map<string, int> mp;
+
         for (int i = 0; i < n; i++)
         {
-            if (v[i] == 0)
-            {
-                vector<int> pathVis(n, 0);
-                int sign = 1;
-                if (a[i] < 0)
-                    sign = -1;
-                if (dfs(i, sign, a, v, pathVis))
-                    return 1;
-            }
+            mp[words[i]]++;
         }
-        return 0;
+        vector<pair<int, string>> v;
+        for (auto it : mp)
+        {
+            v.push_back({it.second, it.first});
+        }
+        sort(v.begin(), v.end(), cmp);
+        vector<string> ans;
+        for (auto it : v)
+        {
+            ans.push_back(it.second);
+            if (ans.size() == k)
+                break;
+        }
+        return ans;
     }
 };
