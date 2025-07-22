@@ -4,33 +4,65 @@ using namespace std;
 class Solution
 {
 public:
-    static bool cmp(const pair<int, string> &a, const pair<int, string> &b)
+    bool possible(vector<int> houses, vector<int> heaters, int k, int n)
     {
-        if (a.first != b.first)
-            return a.first > b.first;
-        return a.second < b.second;
-    }
-    vector<string> topKFrequent(vector<string> &words, int k)
-    {
-        int n = words.size();
-        unordered_map<string, int> mp;
+        vector<vector<int>> res;
 
-        for (int i = 0; i < n; i++)
+        int first = max(heaters[0] - k, 0);
+        int second = heaters[0] + k;
+
+        for(int i = 1; i < heaters.size(); i++)
         {
-            mp[words[i]]++;
+            int a = max(heaters[i] - k, 0);
+            int b = heaters[i] + k;
+            if(a <= second)
+            {
+                second = max(second, b);
+            }
+            else
+            {
+                res.push_back({first, second});
+                first = a;
+                second = b;
+            }
         }
-        vector<pair<int, string>> v;
-        for (auto it : mp)
+        res.push_back({first, second});
+
+        for(int i = 0; i < houses.size(); i++)
         {
-            v.push_back({it.second, it.first});
+            bool found = false;
+            for(int j = 0; j < res.size(); j++)
+            {
+                if(houses[i] >= res[j][0] && houses[i] <= res[j][1])
+                {
+                    found = true;
+                }
+            }
+            if(!found) return false;
         }
-        sort(v.begin(), v.end(), cmp);
-        vector<string> ans;
-        for (auto it : v)
+        return true;
+    }
+    int findRadius(vector<int> &houses, vector<int> &heaters)
+    {
+        int n = houses.size();
+        sort(houses.begin(), houses.end());
+        sort(heaters.begin(), heaters.end());
+        int s = 0, e = max(heaters[heaters.size() - 1], houses[n - 1]);
+        int ans = e;
+        while (s <= e)
         {
-            ans.push_back(it.second);
-            if (ans.size() == k)
-                break;
+            int mid = (s + e) / 2;
+            if (possible(houses, heaters, mid, n))
+            {
+                ans = min(ans, mid);
+                e = mid;
+                if (s == e)
+                    break;
+            }
+            else
+            {
+                s = mid + 1;
+            }
         }
         return ans;
     }

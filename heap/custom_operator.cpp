@@ -6,7 +6,7 @@ struct Compare
 {
     bool operator()(const pair<char, int> &p1, const pair<char, int> &p2)
     {
-        // return the case where we would select p2 over p1
+        // kis case me p1 pehle aayega p2 se
         if (p1.first == p2.first)
         {
             return p1.second < p2.second;
