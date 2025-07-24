@@ -4,45 +4,47 @@ using namespace std;
 class Solution
 {
 public:
-    int ans = 0;
-    int solve(int node, int prev, unordered_map<int, vector<int>> &adj)
+    vector<int> resultsArray(vector<int> &nums, int k)
     {
-        int size = 0;
-        int singleSize = -1;
-        bool good = true;
-        for (auto neighbour : adj[node])
+        if (k == 1)
+            return nums;
+        int n = nums.size();
+        vector<int> ans;
+        queue<int> q;
+        for (int i = 1; i < k; i++)
         {
-            if (neighbour == prev)
+            if (nums[i] != nums[i - 1] + 1)
             {
-                continue; 
+                q.push(i);
             }
-            int temp = solve(neighbour, node, adj);
+        }
+        if (q.empty())
+            ans.push_back(nums[k - 1]);
+        else
+            ans.push_back(-1);
 
-            size += temp;
-            if (singleSize == -1)
-            {
-                singleSize = temp;
-            }
-            else if(singleSize != temp)
-            {
-                good = false;
-            }
-        }
-        if (good)
+        int l = 1, r = k;
+
+        while (r < n)
         {
-            ans++;
+            if (nums[r] != nums[r - 1] + 1)
+                q.push(r);
+
+            while (!q.empty() && q.front() <= l)
+            {
+                q.pop();
+            }
+            if (q.empty())
+            {
+                ans.push_back(nums[r]);
+            }
+            else
+            {
+                ans.push_back(-1);
+            }
+            l++;
+            r++;
         }
-        return size + 1;
-    }
-    int countGoodNodes(vector<vector<int>> &edges)
-    {
-        unordered_map<int, vector<int>> adj;
-        for (auto edge : edges)
-        {
-            adj[edge[0]].push_back(edge[1]);
-            adj[edge[1]].push_back(edge[0]);
-        }
-        int temp = solve(0, -1, adj);
         return ans;
     }
 };
