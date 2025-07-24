@@ -4,42 +4,45 @@ using namespace std;
 class Solution
 {
 public:
-    int solveColumn(int n, int m, vector<vector<int>> &grid)
+    int ans = 0;
+    int solve(int node, int prev, unordered_map<int, vector<int>> &adj)
     {
-        int ans = 0;
-        for (int i = 0; i < m; i++)
+        int size = 0;
+        int singleSize = -1;
+        bool good = true;
+        for (auto neighbour : adj[node])
         {
-            for (int j = 0; j < n; j++)
+            if (neighbour == prev)
             {
-                int k = n - j - 1;
-                if (k <= j)
-                    break;
-                if (grid[j][i] != grid[k][i])
-                    ans++;
+                continue; 
+            }
+            int temp = solve(neighbour, node, adj);
+
+            size += temp;
+            if (singleSize == -1)
+            {
+                singleSize = temp;
+            }
+            else if(singleSize != temp)
+            {
+                good = false;
             }
         }
-        return ans;
-    }
-    int solveRow(int n, int m, vector<vector<int>> &grid)
-    {
-        int ans = 0;
-        for (int i = 0; i < n; i++)
+        if (good)
         {
-            for (int j = 0; j < m; j++)
-            {
-                int k = m - j - 1;
-                if (k <= j)
-                    break;
-                if (grid[i][j] != grid[i][k])
-                    ans++;
-            }
+            ans++;
         }
-        return ans;
+        return size + 1;
     }
-    int minFlips(vector<vector<int>> &grid)
+    int countGoodNodes(vector<vector<int>> &edges)
     {
-        int n = grid.size();
-        int m = grid[0].size();
-        return min(solveRow(n, m, grid), solveColumn(n, m, grid));
+        unordered_map<int, vector<int>> adj;
+        for (auto edge : edges)
+        {
+            adj[edge[0]].push_back(edge[1]);
+            adj[edge[1]].push_back(edge[0]);
+        }
+        int temp = solve(0, -1, adj);
+        return ans;
     }
 };
