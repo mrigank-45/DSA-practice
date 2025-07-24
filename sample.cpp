@@ -4,39 +4,68 @@ using namespace std;
 class Solution
 {
 public:
-    long long solve(int m, int n, vector<vector<int>> &waitCost, int i, int j, int t, vector<vector<vector<long long>>> &dp)
+    vector<int> longestCommonPrefix(vector<string> &words)
     {
-        if (i == m - 1 && j == n - 1)
-            return (i + 1) * (j + 1);
+        int n = words.size();
+        if (n == 1)
+            return {0};
 
-        if (dp[i][j][t] != -1)
-            return dp[i][j][t];
-
-        long long ans = LLONG_MAX;
-        long long cost = (i + 1) * (j + 1);
-
-        if (t == 1)
+        vector<int> maxPrefix(n, 0);
+        int minLength = INT_MAX;
+        maxPrefix[0] = 0;
+        int maxi = 0;
+        for (int i = 1; i < n; i++)
         {
-            if (i + 1 < m)
-                ans = min(ans, cost + solve(m, n, waitCost, i + 1, j, 0, dp));
-            if (j + 1 < n)
-                ans = min(ans, cost + solve(m, n, waitCost, i, j + 1, 0, dp));
-        }
-        else
-        {
-            long long wait = waitCost[i][j];
-            if (i + 1 < m)
-                ans = min(ans, cost + wait + solve(m, n, waitCost, i + 1, j, 0, dp));
-            if (j + 1 < n)
-                ans = min(ans, cost + wait + solve(m, n, waitCost, i, j + 1, 0, dp));
+            int j = 0;
+            while (j < words[i - 1].size() && j < words[i].size() && words[i - 1][j] == words[i][j])
+            {
+                j++;
+            }
+            maxi = max(maxi, j);
+            maxPrefix[i] = maxi;
         }
 
-        return dp[i][j][t] = ans;
-    }
+        vector<int> maxSuffix(n, 0);
+        maxSuffix[n - 1] = 0;
+        maxi = 0;
+        for (int i = n - 2; i >= 0; i--)
+        {
+            int j = 0;
+            while (j < words[i + 1].size() && j < words[i].size() && words[i + 1][j] == words[i][j])
+            {
+                j++;
+            }
+            maxi = max(maxi, j);
+            maxSuffix[i] = maxi;
+        }
 
-    long long minCost(int m, int n, vector<vector<int>> &waitCost)
-    {
-        vector<vector<vector<long long>>> dp(m, vector<vector<long long>>(n, vector<long long>(2, -1)));
-        return solve(m, n, waitCost, 0, 0, 1, dp);
+        // print maxPrefix and maxSuffix for debugging
+        for(int i = 0; i < n; i++)
+        {
+            cout << "maxPrefix[" << i << "] = " << maxPrefix[i] << ", maxSuffix[" << i << "] = " << maxSuffix[i] << endl;
+        }
+
+        vector<int> ans;
+        for (int i = 0; i < n; i++)
+        {
+            if (i == 0)
+            {
+                ans.push_back(maxSuffix[i + 1]);
+            }
+            else if (i == n - 1)
+            {
+                ans.push_back(maxPrefix[i - 1]);
+            }
+            else
+            {
+                int j = 0;
+                while (j < words[i - 1].size() && j < words[i + 1].size() && words[i - 1][j] == words[i + 1][j])
+                {
+                    j++;
+                }
+                ans.push_back(max(j, max(maxPrefix[i - 1], maxSuffix[i + 1])));
+            }
+        }
+        return ans;
     }
 };
