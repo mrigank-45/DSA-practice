@@ -4,33 +4,39 @@ using namespace std;
 class Solution
 {
 public:
-    bool isPossible(vector<int> &nums)
+    long long solve(int m, int n, vector<vector<int>> &waitCost, int i, int j, int t, vector<vector<vector<long long>>> &dp)
     {
-        unordered_map<int, int> left, seq;
-        int n = nums.size();
-        for (int i = 0; i < n; ++i)
-            ++left[nums[i]];
-        for (int i = 0; i < n; ++i)
+        if (i == m - 1 && j == n - 1)
+            return (i + 1) * (j + 1);
+
+        if (dp[i][j][t] != -1)
+            return dp[i][j][t];
+
+        long long ans = LLONG_MAX;
+        long long cost = (i + 1) * (j + 1);
+
+        if (t == 1)
         {
-            int x = nums[i];
-            if (!left[x])
-                continue;
-            if (seq[x - 1])
-            {
-                --left[x];
-                --seq[x - 1];
-                ++seq[x];
-            }
-            else
-            {
-                if (!left[x + 2] || !left[x + 1])
-                    return false;
-                --left[x];
-                --left[x + 1];
-                --left[x + 2];
-                ++seq[x + 2];
-            }
+            if (i + 1 < m)
+                ans = min(ans, cost + solve(m, n, waitCost, i + 1, j, 0, dp));
+            if (j + 1 < n)
+                ans = min(ans, cost + solve(m, n, waitCost, i, j + 1, 0, dp));
         }
-        return true;
+        else
+        {
+            long long wait = waitCost[i][j];
+            if (i + 1 < m)
+                ans = min(ans, cost + wait + solve(m, n, waitCost, i + 1, j, 0, dp));
+            if (j + 1 < n)
+                ans = min(ans, cost + wait + solve(m, n, waitCost, i, j + 1, 0, dp));
+        }
+
+        return dp[i][j][t] = ans;
+    }
+
+    long long minCost(int m, int n, vector<vector<int>> &waitCost)
+    {
+        vector<vector<vector<long long>>> dp(m, vector<vector<long long>>(n, vector<long long>(2, -1)));
+        return solve(m, n, waitCost, 0, 0, 1, dp);
     }
 };
