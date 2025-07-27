@@ -1,65 +1,42 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class Router
-{
+class Solution {
 public:
-    struct custom_hash
-    {
-        size_t operator()(const pair<int, pair<int, int>> &p) const
-        {
-            return hash<int>()(p.first) ^ hash<int>()(p.second.first) ^ hash<int>()(p.second.second);
-        }
-    };
-    deque<pair<int, pair<int, int>>> q; // {source, {destination, timestamp}}
-    unordered_set<pair<int, pair<int, int>>, custom_hash> s;
-    int memoryLimit;
-    Router(int memoryLimit)
-    {
-        this->memoryLimit = memoryLimit;
+    int m, n;
+
+    long long dfs(int i, int j, vector<vector<int>>& grid) {
+        if (i < 0 || j < 0 || i >= m || j >= n || grid[i][j] == 0) return INT_MAX;
+
+        long long count = grid[i][j];
+        grid[i][j] = 0;
+
+        int x = dfs(i+1, j, grid);
+        int y = dfs(i, j+1, grid);
+        int a = dfs(i-1, j, grid);
+        int b = dfs(i, j-1, grid);
+
+        if (x != INT_MAX) count += x;
+        if (y != INT_MAX) count += y;
+        if (a != INT_MAX) count += a;
+        if (b != INT_MAX) count += b;
+
+        return count;
     }
 
-    bool addPacket(int source, int destination, int timestamp)
-    {
-        if (s.find({source, {destination, timestamp}}) != s.end())
-        {
-            return false;
-        }
+    int countIslands(vector<vector<int>>& grid, int k) {
+        int ans = 0;
+        m = grid.size();
+        n = grid[0].size();
 
-        if (q.size() == memoryLimit)
-        {
-            auto oldestPacket = q.front();
-            s.erase({oldestPacket.first, {oldestPacket.second.first, oldestPacket.second.second}});
-            q.pop_front();
-        }
-
-        q.push_back({source, {destination, timestamp}});
-        s.insert({source, {destination, timestamp}});
-        return true;
-    }
-
-    vector<int> forwardPacket()
-    {
-        if (q.empty())
-        {
-            return {};
-        }
-        vector<int> result = {q.front().first, q.front().second.first, q.front().second.second};
-        s.erase({q.front().first, {q.front().second.first, q.front().second.second}});
-        q.pop_front();
-        return result;
-    }
-
-    int getCount(int destination, int startTime, int endTime)
-    {
-        int cnt = 0;
-        for (auto &packet : s)
-        {
-            if (packet.second.first == destination && packet.second.second >= startTime && packet.second.second <= endTime)
-            {
-                cnt++;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] != 0) {
+                    long long curr = dfs(i, j, grid);
+                    if (curr % k == 0) ans++;
+                }
             }
         }
-        return cnt;
+        return ans;
     }
 };
