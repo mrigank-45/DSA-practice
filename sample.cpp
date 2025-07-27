@@ -1,42 +1,111 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class Solution {
+class Solution
+{
 public:
-    int m, n;
+    int maxi;
 
-    long long dfs(int i, int j, vector<vector<int>>& grid) {
-        if (i < 0 || j < 0 || i >= m || j >= n || grid[i][j] == 0) return INT_MAX;
+    vector<bool> sieve()
+    {
+        vector<bool> is_Prime(maxi, true);
+        is_Prime[0] = false;
+        is_Prime[1] = false;
 
-        long long count = grid[i][j];
-        grid[i][j] = 0;
+        for (int i = 2; i * i < maxi; i++)
+        {
 
-        int x = dfs(i+1, j, grid);
-        int y = dfs(i, j+1, grid);
-        int a = dfs(i-1, j, grid);
-        int b = dfs(i, j-1, grid);
+            if (is_Prime[i])
+            {
 
-        if (x != INT_MAX) count += x;
-        if (y != INT_MAX) count += y;
-        if (a != INT_MAX) count += a;
-        if (b != INT_MAX) count += b;
+                for (int j = i * i; j < maxi; j = j + i)
+                {
 
-        return count;
-    }
-
-    int countIslands(vector<vector<int>>& grid, int k) {
-        int ans = 0;
-        m = grid.size();
-        n = grid[0].size();
-
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                if (grid[i][j] != 0) {
-                    long long curr = dfs(i, j, grid);
-                    if (curr % k == 0) ans++;
+                    is_Prime[j] = false;
                 }
             }
         }
+        return is_Prime;
+    }
+
+    vector<int> primefactors(int x, vector<bool> &is_Prime)
+    {
+        vector<int> ans;
+        for (int i = 2; i * i <= x; i++)
+        {
+            if (x % i == 0 && is_Prime[i])
+            {
+
+                ans.push_back(i);
+                while (x % i == 0)
+                    x = x / i;
+            }
+        }
+        if (x > 1)
+            ans.push_back(x);
         return ans;
+    }
+    int minJumps(vector<int> &nums)
+    {
+        int n = nums.size();
+        vector<int> vis(n, false);
+        queue<pair<int, int>> q;            // store number of steps, current_index
+        unordered_map<int, vector<int>> mp; // map to store the corresonding relation for each index
+
+        maxi = *max_element(nums.begin(), nums.end()) + 1;
+
+        vector<bool> is_Prime = sieve();
+
+        for (int i = 0; i < n; i++)
+        {
+            vector<int> c = primefactors(nums[i], is_Prime);
+            for (int p : c)
+            {
+
+                mp[p].push_back(i);
+            }
+        }
+        q.push({0, 0});
+
+        while (!q.empty())
+        {
+            int steps = q.front().first;
+            int i = q.front().second;
+
+            q.pop();
+            if (i == n - 1)
+                return steps;
+            if (i + 1 < n && !vis[i + 1])
+            {
+                vis[i + 1] = true;
+                q.push({steps + 1, i + 1});
+            }
+
+            if (i - 1 >= 0 && !vis[i - 1])
+            {
+                vis[i - 1] = true;
+                q.push({steps + 1, i - 1});
+            }
+
+            if (is_Prime[nums[i]])
+            {
+
+                int x = nums[i];
+                if (mp.count(x))
+                {
+                    for (auto it : mp[x])
+                    {
+                        if (!vis[it])
+                        {
+                            vis[it] = true;
+                            q.push({steps + 1, it});
+                        }
+                    }
+                }
+                mp.erase(x);  // avoid visiting the same prime factor again
+            }
+        }
+
+        return -1;
     }
 };
