@@ -4,32 +4,47 @@ using namespace std;
 class Solution
 {
 public:
-    vector<bool> pathExistenceQueries(int n, vector<int> &nums, int maxDiff, vector<vector<int>> &queries)
+    int findMinimumTime(vector<int> &strength, int k)
     {
-        unordered_map<int,int> mp;
-        int cnt = 0;
+        int n = strength.size();
+        sort(strength.begin(), strength.end());
 
-        for (int i = 0; i < n; i++)
+        int t = 0, x = 1, i = 0, e = 0;
+
+        while (i < n)
         {
-            mp[nums[i]] = cnt;
-            while(i < n - 1 && abs(nums[i] - nums[i+1]) <= maxDiff)
+            if (e >= strength[i])
             {
-                mp[nums[i+1]] = cnt;
+                int j = i + 1;
+                while (j < n)
+                {
+                    if (e >= strength[j])
+                    {
+                        j++;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                j--;
+                while (i < j)
+                {
+                    strength[j] = strength[j - 1];
+                    j--;
+                }
                 i++;
+                e = 0;
+                x += k;
             }
-            cnt++;
+            if (i == n)
+                break;
+
+            int diff = strength[i] - e;
+            int op = (diff / x) + (diff % x != 0);
+            t += op;
+            e += op * x;
         }
-        vector<bool> ans(queries.size(), false);
-        for (int i = 0; i < queries.size(); i++)
-        {
-            int u = queries[i][0];
-            int v = queries[i][1];
-            if (mp[nums[u]] == mp[nums[v]])
-            {
-                ans[i] = true;
-            }
-        }
-        
-        return ans;
+        return t;
     }
 };
