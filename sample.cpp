@@ -4,26 +4,35 @@ using namespace std;
 class Solution
 {
 public:
-    int getLargestOutlier(vector<int> &nums)
+    bool isPossibleToRearrange(string s, string t, int k)
     {
-        int n = nums.size();
-
-        int sum = 0;
-        unordered_map<int, int> mp;
-        for (int i = 0; i < n; i++)
+        int n = s.size();
+        int len = n / k;
+        unordered_map<string, int> mp;
+        int i = 0;
+        while (i < n)
         {
-            sum += nums[i];
-            mp[nums[i]] = i;
+            string temp = s.substr(i, len);
+            sort(temp.begin(), temp.end());
+            mp[temp]++;
+            i += len;
         }
-        int maxi = 0;
-        for (int i = 0; i < n; i++)
+        i = 0;
+        while (i < n)
         {
-            int temp = sum - nums[i];
-            if (temp % 2 == 0 && mp.find(temp / 2) != mp.end() && mp[temp / 2] != i)
+            string temp = t.substr(i, len);
+            sort(temp.begin(), temp.end());
+            if (mp.find(temp) == mp.end())
             {
-                maxi = max(maxi, nums[i]);
+                return false;
             }
+            mp[temp]--;
+            if (mp[temp] == 0)
+            {
+                mp.erase(temp);
+            }
+            i+= len;
         }
-        return maxi;
+        return true;
     }
 };
