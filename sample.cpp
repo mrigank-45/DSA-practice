@@ -4,36 +4,32 @@ using namespace std;
 class Solution
 {
 public:
-    long long maxSum(vector<vector<int>> &grid, vector<int> &limits, int k)
+    vector<bool> pathExistenceQueries(int n, vector<int> &nums, int maxDiff, vector<vector<int>> &queries)
     {
-        int n = grid.size();
-        int m = grid[0].size();
-        priority_queue<pair<int,int>> pq;
+        unordered_map<int,int> mp;
+        int cnt = 0;
 
-        for(int i = 0; i < n; i++)
+        for (int i = 0; i < n; i++)
         {
-            for (int j = 0; j < m; j++)
+            mp[nums[i]] = cnt;
+            while(i < n - 1 && abs(nums[i] - nums[i+1]) <= maxDiff)
             {
-                pq.push({grid[i][j], i});
+                mp[nums[i+1]] = cnt;
+                i++;
+            }
+            cnt++;
+        }
+        vector<bool> ans(queries.size(), false);
+        for (int i = 0; i < queries.size(); i++)
+        {
+            int u = queries[i][0];
+            int v = queries[i][1];
+            if (mp[nums[u]] == mp[nums[v]])
+            {
+                ans[i] = true;
             }
         }
-        unordered_map<int, int> mp;
-
-        long long ans = 0;
-        while (!pq.empty() && k > 0)
-        {
-            int val = pq.top().first;
-            int row = pq.top().second;
-            pq.pop();
-
-            if (mp[row] < limits[row])
-            {
-                ans += val;
-                mp[row]++;
-                k--;
-            }
-        }
-
+        
         return ans;
     }
 };
