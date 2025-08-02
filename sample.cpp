@@ -4,30 +4,28 @@ using namespace std;
 class Solution
 {
 public:
-    vector<int> findRightInterval(vector<vector<int>> &intervals)
-    {
-        int n = intervals.size();
-        unordered_map<int, int> mp;
-        vector<int> start;
-        for (int i = 0; i < n; i++)
-        {
-            start.push_back(intervals[i][0]);
-            mp[intervals[i][0]] = i;
-        }
-        sort(start.begin(),start.end());
-        vector<int> ans;
+    double x_min, x_max, y_min, y_max;
+    double radius;
 
-        for (int i = 0; i < n; i++)
+    Solution(double radius, double x_center, double y_center)
+    {
+        x_min = x_center - radius;
+        x_max = x_center + radius;
+        y_min = y_center - radius;
+        y_max = y_center + radius;
+        this->radius = radius;
+    }
+
+    vector<double> randPoint()
+    {
+        while (true)
         {
-            if (lower_bound(start.begin(), start.end(), intervals[i][1]) != start.end())
+            double x_value = x_min + static_cast<double>(rand()) / (static_cast<double>(RAND_MAX / (x_max - x_min)));
+            double y_value = y_min + static_cast<double>(rand()) / (static_cast<double>(RAND_MAX / (y_max - y_min)));
+            if (x_value * x_value + y_value * y_value <= (radius) * (radius))
             {
-                int val = *lower_bound(start.begin(), start.end(), intervals[i][1]);
-                ans.push_back(mp[val]);
-            }
-            else{
-                ans.push_back(-1);
+                return {x_value, y_value};
             }
         }
-        return ans;
     }
 };
