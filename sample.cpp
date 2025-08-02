@@ -4,64 +4,30 @@ using namespace std;
 class Solution
 {
 public:
-    int solve(int i, int op1, int op2, int k, vector<int> nums, int n, vector<vector<vector<int>>> &dp)
+    vector<int> findRightInterval(vector<vector<int>> &intervals)
     {
-        if ((op1 == 0 && op2 == 0) || i == n)
-        {
-            return 0;
-        }
-
-        if (dp[i][op1][op2] != -1)
-        {
-            return dp[i][op1][op2];
-        }
-
-        int ans = 0;
-        if (op1 > 0)
-        {
-            int temp = (nums[i] / 2);
-
-            ans = max(ans, temp + solve(i + 1, op1 - 1, op2, k, nums, n, dp));
-        }
-        if (op2 > 0 && nums[i] >= k)
-        {
-            int temp = k;
-
-            ans = max(ans, temp + solve(i + 1, op1, op2 - 1, k, nums, n, dp));
-        }
-        if (op1 > 0 && op2 > 0 && nums[i] > 1)
-        {
-            int temp = (nums[i] / 2);
-            if ((nums[i] / 2) + (nums[i] % 2 == 1) >= k)
-            {
-                temp += k;
-            }
-            ans = max(ans, temp + solve(i + 1, op1 - 1, op2 - 1, k, nums, n, dp));
-        }
-        if (op1 > 0 && op2 > 0 && nums[i] >= k)
-        {
-            int temp = k;
-            if ((nums[i] - k) > 1)
-            {
-                temp += ((nums[i] - k) / 2);
-            }
-            ans = max(ans, temp + solve(i + 1, op1 - 1, op2 - 1, k, nums, n, dp));
-        }
-
-        ans = max(ans, solve(i + 1, op1, op2, k, nums, n, dp));
-
-        return dp[i][op1][op2] = ans;
-    }
-    int minArraySum(vector<int> &nums, int k, int op1, int op2)
-    {
-        int n = nums.size();
-        int sum = 0;
+        int n = intervals.size();
+        unordered_map<int, int> mp;
+        vector<int> start;
         for (int i = 0; i < n; i++)
         {
-            sum += nums[i];
+            start.push_back(intervals[i][0]);
+            mp[intervals[i][0]] = i;
         }
-        vector<vector<vector<int>>> dp(n + 1, vector<vector<int>>(op1 + 1, vector<int>(op2 + 1, -1)));
-        int maxi = solve(0, op1, op2, k, nums, n, dp);
-        return sum - maxi;
+        sort(start.begin(),start.end());
+        vector<int> ans;
+
+        for (int i = 0; i < n; i++)
+        {
+            if (lower_bound(start.begin(), start.end(), intervals[i][1]) != start.end())
+            {
+                int val = *lower_bound(start.begin(), start.end(), intervals[i][1]);
+                ans.push_back(mp[val]);
+            }
+            else{
+                ans.push_back(-1);
+            }
+        }
+        return ans;
     }
 };
