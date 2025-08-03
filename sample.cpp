@@ -1,34 +1,47 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+struct TreeNode
+{
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode() : val(0), left(nullptr), right(nullptr) {}
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+};
+
 class Solution
 {
 public:
-    struct pair_hash
+    vector<int> v;
+    void inorder(TreeNode *root)
     {
-        size_t operator()(const pair<int, int> &p) const
-        {
-            return hash<int>()(p.first) ^ (hash<int>()(p.second) << 1);
-        }
-    };
-    int findPairs(vector<int> &nums, int k)
+        if (root == nullptr)
+            return;
+        inorder(root->left);
+        v.push_back(root->val);
+        inorder(root->right);
+    }
+    void populate(TreeNode *root, unordered_map<int, int> &m)
     {
-        int n = nums.size();
-        unordered_set<int> st;
-
-        unordered_set < pair<int, int>, pair_hash> pairs;
-        for (int i = 0; i < n; i++)
+        if (root == nullptr)
+            return;
+        populate(root->left, m);
+        root->val = m[root->val];
+        populate(root->right, m);
+    }
+    TreeNode *convertBST(TreeNode *root)
+    {
+        unordered_map<int, int> m;
+        inorder(root);
+        int sum = 0;
+        for (int i = v.size() - 1; i >= 0; i--)
         {
-            if (st.find(nums[i] - k) != st.end())
-            {
-                pairs.insert({nums[i] - k, nums[i]});
-            }
-            if (st.find(nums[i] + k) != st.end())
-            {
-                pairs.insert({nums[i], nums[i] + k});
-            }
-            st.insert(nums[i]);
+            sum += v[i];
+            m[v[i]] = sum;
         }
-        return pairs.size();
+        populate(root, m);
+        return root;
     }
 };
