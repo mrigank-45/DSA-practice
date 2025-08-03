@@ -1,47 +1,38 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-struct TreeNode
-{
-    int val;
-    TreeNode *left;
-    TreeNode *right;
-    TreeNode() : val(0), left(nullptr), right(nullptr) {}
-    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
-    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
-};
-
 class Solution
 {
 public:
-    vector<int> v;
-    void inorder(TreeNode *root)
+    unordered_map<int, int> mp;
+    int solve(int i, vector<int> &nums)
     {
-        if (root == nullptr)
-            return;
-        inorder(root->left);
-        v.push_back(root->val);
-        inorder(root->right);
-    }
-    void populate(TreeNode *root, unordered_map<int, int> &m)
-    {
-        if (root == nullptr)
-            return;
-        populate(root->left, m);
-        root->val = m[root->val];
-        populate(root->right, m);
-    }
-    TreeNode *convertBST(TreeNode *root)
-    {
-        unordered_map<int, int> m;
-        inorder(root);
-        int sum = 0;
-        for (int i = v.size() - 1; i >= 0; i--)
+        if (nums[i] == -1)
         {
-            sum += v[i];
-            m[v[i]] = sum;
+            return 0;
         }
-        populate(root, m);
-        return root;
+        int index = nums[i];
+        nums[i] = -1; 
+        mp[i] = 1 + solve(index, nums);
+
+        return mp[i];
+    }
+
+    int arrayNesting(vector<int> &nums)
+    {
+        int n = nums.size();
+        for (int i = 0; i < n; i++)
+        {
+            if(mp.find(i) == mp.end())
+            {
+                solve(i, nums);
+            }
+        }
+        int ans = 0;
+        for (auto &it : mp)
+        {
+            ans = max(ans, it.second);
+        }
+        return ans;
     }
 };
