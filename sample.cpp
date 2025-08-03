@@ -4,28 +4,31 @@ using namespace std;
 class Solution
 {
 public:
-    double x_min, x_max, y_min, y_max;
-    double radius;
-
-    Solution(double radius, double x_center, double y_center)
+    struct pair_hash
     {
-        x_min = x_center - radius;
-        x_max = x_center + radius;
-        y_min = y_center - radius;
-        y_max = y_center + radius;
-        this->radius = radius;
-    }
-
-    vector<double> randPoint()
-    {
-        while (true)
+        size_t operator()(const pair<int, int> &p) const
         {
-            double x_value = x_min + static_cast<double>(rand()) / (static_cast<double>(RAND_MAX / (x_max - x_min)));
-            double y_value = y_min + static_cast<double>(rand()) / (static_cast<double>(RAND_MAX / (y_max - y_min)));
-            if (x_value * x_value + y_value * y_value <= (radius) * (radius))
-            {
-                return {x_value, y_value};
-            }
+            return hash<int>()(p.first) ^ (hash<int>()(p.second) << 1);
         }
+    };
+    int findPairs(vector<int> &nums, int k)
+    {
+        int n = nums.size();
+        unordered_set<int> st;
+
+        unordered_set < pair<int, int>, pair_hash> pairs;
+        for (int i = 0; i < n; i++)
+        {
+            if (st.find(nums[i] - k) != st.end())
+            {
+                pairs.insert({nums[i] - k, nums[i]});
+            }
+            if (st.find(nums[i] + k) != st.end())
+            {
+                pairs.insert({nums[i], nums[i] + k});
+            }
+            st.insert(nums[i]);
+        }
+        return pairs.size();
     }
 };
