@@ -4,35 +4,43 @@ using namespace std;
 class Solution
 {
 public:
-    unordered_map<int, int> mp;
-    int solve(int i, vector<int> &nums)
+    int findUnsortedSubarray(vector<int> &nums)
     {
-        if (nums[i] == -1)
+        int n = nums.size();
+        vector<int> v = nums;
+        sort(nums.begin(), nums.end());
+
+        int i = 0, j = n - 1;
+        while (i < n)
+        {
+            if (nums[i] == v[i])
+            {
+                i++;
+            }
+            else
+            {
+                break;
+            }
+        }
+        while (j >= 0)
+        {
+            if (nums[j] == v[j])
+            {
+                j--;
+            }
+            else
+            {
+                break;
+            }
+        }
+
+        if (i == n || j == -1 || i >= j)
         {
             return 0;
         }
-        int index = nums[i];
-        nums[i] = -1; 
-        mp[i] = 1 + solve(index, nums);
-
-        return mp[i];
-    }
-
-    int arrayNesting(vector<int> &nums)
-    {
-        int n = nums.size();
-        for (int i = 0; i < n; i++)
+        else
         {
-            if(mp.find(i) == mp.end())
-            {
-                solve(i, nums);
-            }
+            return j - i + 1;
         }
-        int ans = 0;
-        for (auto &it : mp)
-        {
-            ans = max(ans, it.second);
-        }
-        return ans;
     }
 };
