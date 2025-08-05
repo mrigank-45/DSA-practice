@@ -1,46 +1,33 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+class Employee
+{
+public:
+    int id;
+    int importance;
+    vector<int> subordinates;
+};
+
 class Solution
 {
 public:
-    int findUnsortedSubarray(vector<int> &nums)
+    int solve(int id, unordered_map<int, pair<int, vector<int>>> &mp)
     {
-        int n = nums.size();
-        vector<int> v = nums;
-        sort(nums.begin(), nums.end());
-
-        int i = 0, j = n - 1;
-        while (i < n)
+        int totalImportance = mp[id].first;
+        for (int subId : mp[id].second)
         {
-            if (nums[i] == v[i])
-            {
-                i++;
-            }
-            else
-            {
-                break;
-            }
+            totalImportance += solve(subId, mp);
         }
-        while (j >= 0)
+        return totalImportance;
+    }
+    int getImportance(vector<Employee *> employees, int id)
+    {
+        unordered_map<int, pair<int, vector<int>>> mp;
+        for (auto emp : employees)
         {
-            if (nums[j] == v[j])
-            {
-                j--;
-            }
-            else
-            {
-                break;
-            }
+            mp[emp->id] = {emp->importance, emp->subordinates};
         }
-
-        if (i == n || j == -1 || i >= j)
-        {
-            return 0;
-        }
-        else
-        {
-            return j - i + 1;
-        }
+        return solve(id, mp);
     }
 };
