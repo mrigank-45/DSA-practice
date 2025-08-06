@@ -1,33 +1,29 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class Employee
-{
-public:
-    int id;
-    int importance;
-    vector<int> subordinates;
-};
-
 class Solution
 {
 public:
-    int solve(int id, unordered_map<int, pair<int, vector<int>>> &mp)
+    int totalHammingDistance(vector<int> &nums)
     {
-        int totalImportance = mp[id].first;
-        for (int subId : mp[id].second)
+        int n = nums.size();
+        vector<int> v(32, 0);
+
+        for (int i = 0; i < 32; i++)
         {
-            totalImportance += solve(subId, mp);
+            for (int j = 0; j < n; j++)
+            {
+                if (nums[j] & (1 << i))
+                {
+                    v[i]++;
+                }
+            }
         }
-        return totalImportance;
-    }
-    int getImportance(vector<Employee *> employees, int id)
-    {
-        unordered_map<int, pair<int, vector<int>>> mp;
-        for (auto emp : employees)
+        int ans = 0;
+        for (int i = 0; i < 32; i++)
         {
-            mp[emp->id] = {emp->importance, emp->subordinates};
+            ans += v[i] * (n - v[i]);
         }
-        return solve(id, mp);
+        return ans;
     }
 };
