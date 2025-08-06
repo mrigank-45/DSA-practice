@@ -1,32 +1,48 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-struct TreeNode
-{
-    int val;
-    TreeNode *left;
-    TreeNode *right;
-    TreeNode() : val(0), left(nullptr), right(nullptr) {}
-    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
-    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
-};
 class Solution
 {
 public:
-    TreeNode *constructMaximumBinaryTree(vector<int> &nums)
+    int solve(int i, vector<int> &nums, int n, vector<int> &dp)
     {
-        if (nums.empty())
-            return nullptr;
+        if (i == n)
+            return 0;
 
-        int maxIndex = max_element(nums.begin(), nums.end()) - nums.begin();
-        TreeNode *root = new TreeNode(nums[maxIndex]);
+        if (dp[i] != -1)
+        {
+            return dp[i];
+        }
+        // not pick
+        int j = i;
+        while (j < n && nums[j] == nums[j + 1])
+            j++;
+        int c1 = solve(j + 1, nums, n, dp);
 
-        vector<int> leftSubtree(nums.begin(), nums.begin() + maxIndex);
-        vector<int> rightSubtree(nums.begin() + maxIndex + 1, nums.end());
+        // pick
+        int points = nums[i];
+        j = i;
+        while (j < n && nums[j] == nums[j + 1])
+        {
+            points += nums[j];
+            j++;
+        }
+        j++;
+        while (j < n && nums[j] == nums[i] - 1)
+            j++;
+        int c2 = points + solve(j, nums, n, dp);
 
-        root->left = constructMaximumBinaryTree(leftSubtree);
-        root->right = constructMaximumBinaryTree(rightSubtree);
+        return dp[i] = max(c1, c2);
+    }
+    int deleteAndEarn(vector<int> &nums)
+    {
+        int n = nums.size();
+        if (n == 1)
+            return nums[0];
+        sort(nums.rbegin(), nums.rend());
 
-        return root;
+        vector<int> dp(n + 1, -1);
+
+        return solve(0, nums, n, dp);
     }
 };
