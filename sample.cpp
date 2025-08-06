@@ -4,37 +4,36 @@ using namespace std;
 class Solution
 {
 public:
-    bool solve(int i, vector<int> &nums, vector<int> &v, int n)
+    int dp[1001][2001];
+    int solve(int i, int prev, vector<vector<int>> &pairs, int n)
     {
         if (i == n)
-        {
-            for (int j = 1; j < v.size(); j++)
-            {
-                if (v[j] != v[j - 1])
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
+            return 0;
 
-        for (int j = 0; j < v.size(); j++)
+        if (dp[i][prev + 1000] != -1)
+            return dp[i][prev + 1000];
+
+        int ans = 0;
+        for (int j = i + 1; j < n; j++)
         {
-            v[j] += nums[i];
-            if (solve(i+1, nums, v, n))
+            if (pairs[j][0] > prev)
             {
-                return true;
+                ans = max(ans, 1 + solve(j, pairs[j][1], pairs, n));
             }
-            v[j] -= nums[i];
         }
-        return false;
+        return dp[i][prev + 1000] = ans;
     }
-    bool canPartitionKSubsets(vector<int> &nums, int k)
+    int findLongestChain(vector<vector<int>> &pairs)
     {
-        if (k == 1)
-            return true;
-        int n = nums.size();
-        vector<int> v(k, 0);
-        return solve(0, nums, v, n);
+        int n = pairs.size();
+        memset(dp, -1, sizeof(dp));
+        sort(pairs.begin(), pairs.end());
+        int ans = 0;
+        for (int i = 0; i < n; i++)
+        {
+            dp[i][pairs[i][1] +1000] = solve(i, pairs[i][1], pairs, n);
+            ans = max(ans, 1 + dp[i][pairs[i][1] + 1000]);
+        }
+        return ans;
     }
 };
