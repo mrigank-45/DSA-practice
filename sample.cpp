@@ -1,39 +1,32 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+struct TreeNode
+{
+    int val;
+    TreeNode *left;
+    TreeNode *right;
+    TreeNode() : val(0), left(nullptr), right(nullptr) {}
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+    TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+};
 class Solution
 {
 public:
-    int dp[1001][2001];
-    int solve(int i, int prev, vector<vector<int>> &pairs, int n)
+    TreeNode *constructMaximumBinaryTree(vector<int> &nums)
     {
-        if (i == n)
-            return 0;
+        if (nums.empty())
+            return nullptr;
 
-        if (dp[i][prev + 1000] != -1)
-            return dp[i][prev + 1000];
+        int maxIndex = max_element(nums.begin(), nums.end()) - nums.begin();
+        TreeNode *root = new TreeNode(nums[maxIndex]);
 
-        int ans = 0;
-        for (int j = i + 1; j < n; j++)
-        {
-            if (pairs[j][0] > prev)
-            {
-                ans = max(ans, 1 + solve(j, pairs[j][1], pairs, n));
-            }
-        }
-        return dp[i][prev + 1000] = ans;
-    }
-    int findLongestChain(vector<vector<int>> &pairs)
-    {
-        int n = pairs.size();
-        memset(dp, -1, sizeof(dp));
-        sort(pairs.begin(), pairs.end());
-        int ans = 0;
-        for (int i = 0; i < n; i++)
-        {
-            dp[i][pairs[i][1] +1000] = solve(i, pairs[i][1], pairs, n);
-            ans = max(ans, 1 + dp[i][pairs[i][1] + 1000]);
-        }
-        return ans;
+        vector<int> leftSubtree(nums.begin(), nums.begin() + maxIndex);
+        vector<int> rightSubtree(nums.begin() + maxIndex + 1, nums.end());
+
+        root->left = constructMaximumBinaryTree(leftSubtree);
+        root->right = constructMaximumBinaryTree(rightSubtree);
+
+        return root;
     }
 };
