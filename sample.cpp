@@ -4,45 +4,51 @@ using namespace std;
 class Solution
 {
 public:
-    int solve(int i, vector<int> &nums, int n, vector<int> &dp)
+    int solve(int i, vector<int> &price, vector<vector<int>> &special, vector<int> &needs, int n, int m)
     {
-        if (i == n)
-            return 0;
-
-        if (dp[i] != -1)
+        if (i == m)
         {
-            return dp[i];
+            int ans = 0;
+            for (int i = 0; i < n; i++)
+            {
+                ans += needs[i] * price[i];
+            }
+            return ans;
         }
-        // not pick
-        int j = i;
-        while (j < n && nums[j] == nums[j + 1])
-            j++;
-        int c1 = solve(j + 1, nums, n, dp);
 
-        // pick
-        int points = nums[i];
-        j = i;
-        while (j < n && nums[j] == nums[j + 1])
+        // take
+        int take = INT_MAX;
+        bool canUse = true;
+        for (int j = 0; j < n; j++)
         {
-            points += nums[j];
-            j++;
+            if (needs[j] < special[i][j])
+            {
+                canUse = false;
+                break;
+            }
         }
-        j++;
-        while (j < n && nums[j] == nums[i] - 1)
-            j++;
-        int c2 = points + solve(j, nums, n, dp);
+        if (canUse)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                needs[j] -= special[i][j];
+            }
+            take = special[i][n] + solve(i, price, special, needs, n, m);
+            for (int j = 0; j < n; j++)
+            {
+                needs[j] += special[i][j];
+            }
+        }
 
-        return dp[i] = max(c1, c2);
+        // not take
+        int notTake = solve(i + 1, price, special, needs, n, m);
+
+        return min(take, notTake);
     }
-    int deleteAndEarn(vector<int> &nums)
+    int shoppingOffers(vector<int> &price, vector<vector<int>> &special, vector<int> &needs)
     {
-        int n = nums.size();
-        if (n == 1)
-            return nums[0];
-        sort(nums.rbegin(), nums.rend());
-
-        vector<int> dp(n + 1, -1);
-
-        return solve(0, nums, n, dp);
+        int n = price.size();
+        int m = special.size();
+        return solve(0, price, special, needs, n, m);
     }
 };
