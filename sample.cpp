@@ -4,51 +4,57 @@ using namespace std;
 class Solution
 {
 public:
-    int solve(int i, vector<int> &price, vector<vector<int>> &special, vector<int> &needs, int n, int m)
+    int openLock(vector<string> &deadends, string target)
     {
-        if (i == m)
+        int n = deadends.size();
+        unordered_map<string, bool> mp;
+        for (int i = 0; i < n; i++)
         {
-            int ans = 0;
-            for (int i = 0; i < n; i++)
-            {
-                ans += needs[i] * price[i];
-            }
-            return ans;
+            mp[deadends[i]] = true;
         }
+        queue<string> q;
+        unordered_map<string, bool> vis;
+        q.push("0000");
+        vis["0000"] = true;
+        if (mp["0000"] || mp[target])
+            return -1;
+        if (target == "0000")
+            return 0;
+        int ans = 0;
 
-        // take
-        int take = INT_MAX;
-        bool canUse = true;
-        for (int j = 0; j < n; j++)
+        while (!q.empty())
         {
-            if (needs[j] < special[i][j])
+            int size = q.size();
+            for (int i = 0; i < size; i++)
             {
-                canUse = false;
-                break;
-            }
-        }
-        if (canUse)
-        {
-            for (int j = 0; j < n; j++)
-            {
-                needs[j] -= special[i][j];
-            }
-            take = special[i][n] + solve(i, price, special, needs, n, m);
-            for (int j = 0; j < n; j++)
-            {
-                needs[j] += special[i][j];
-            }
-        }
+                string s = q.front();
+                q.pop();
 
-        // not take
-        int notTake = solve(i + 1, price, special, needs, n, m);
+                for (int j = 0; j < 4; j++)
+                {
+                    string s1 = s;
+                    s1[j] = (s[j] == '9') ? '0' : s[j] + 1; 
+                    if (s1 == target)
+                        return ans + 1;
+                    if (!vis[s1] && !mp[s1])
+                    {
+                        q.push(s1);
+                        vis[s1] = true;
+                    }
 
-        return min(take, notTake);
-    }
-    int shoppingOffers(vector<int> &price, vector<vector<int>> &special, vector<int> &needs)
-    {
-        int n = price.size();
-        int m = special.size();
-        return solve(0, price, special, needs, n, m);
+                    string s2 = s;
+                    s2[j] = (s[j] == '0') ? '9' : s[j] - 1; 
+                    if (s2 == target)
+                        return ans + 1;
+                    if (!vis[s2] && !mp[s2])
+                    {
+                        q.push(s2);
+                        vis[s2] = true;
+                    }
+                }
+            }
+            ans++;
+        }
+        return -1;
     }
 };
