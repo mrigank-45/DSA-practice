@@ -1,60 +1,157 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class Solution
+class Node
 {
 public:
-    int openLock(vector<string> &deadends, string target)
+    int data;
+    Node *next;
+
+    Node(int d)
     {
-        int n = deadends.size();
-        unordered_map<string, bool> mp;
-        for (int i = 0; i < n; i++)
+        this->data = d;
+        this->next = NULL;
+    }
+
+    ~Node()
+    {
+        int value = this->data;
+        if (this->next != NULL)
         {
-            mp[deadends[i]] = true;
+            delete next;
+            next = NULL;
         }
-        queue<string> q;
-        unordered_map<string, bool> vis;
-        q.push("0000");
-        vis["0000"] = true;
-        if (mp["0000"] || mp[target])
+    }
+};
+
+class MyLinkedList
+{
+public:
+    Node *head, *tail;
+    MyLinkedList()
+    {
+        head = NULL;
+        tail = NULL;
+    }
+
+    int get(int index)
+    {
+        if (index < 0 || head == NULL)
+        {
             return -1;
-        if (target == "0000")
-            return 0;
-        int ans = 0;
-
-        while (!q.empty())
-        {
-            int size = q.size();
-            for (int i = 0; i < size; i++)
-            {
-                string s = q.front();
-                q.pop();
-
-                for (int j = 0; j < 4; j++)
-                {
-                    string s1 = s;
-                    s1[j] = (s[j] == '9') ? '0' : s[j] + 1; 
-                    if (s1 == target)
-                        return ans + 1;
-                    if (!vis[s1] && !mp[s1])
-                    {
-                        q.push(s1);
-                        vis[s1] = true;
-                    }
-
-                    string s2 = s;
-                    s2[j] = (s[j] == '0') ? '9' : s[j] - 1; 
-                    if (s2 == target)
-                        return ans + 1;
-                    if (!vis[s2] && !mp[s2])
-                    {
-                        q.push(s2);
-                        vis[s2] = true;
-                    }
-                }
-            }
-            ans++;
         }
-        return -1;
+        Node *current = head;
+        while (index--)
+        {
+            current = current->next;
+            if (current == NULL)
+            {
+                return -1;
+            }
+        }
+        return current->data;
+    }
+
+    void addAtHead(int val)
+    {
+        Node *newNode = new Node(val);
+        if (head == NULL)
+        {
+            head = newNode;
+            tail = newNode;
+            newNode->next = NULL;
+        }
+        else
+        {
+            newNode->next = head;
+            head = newNode;
+        }
+    }
+
+    void addAtTail(int val)
+    {
+        Node *newNode = new Node(val);
+        if (tail == NULL)
+        {
+            head = newNode;
+            tail = newNode;
+            newNode->next = NULL;
+        }
+        else
+        {
+            tail->next = newNode;
+            tail = newNode;
+            newNode->next = NULL;
+        }
+    }
+
+    void addAtIndex(int index, int val)
+    {
+        if (index == 0)
+        {
+            addAtHead(val);
+            return;
+        }
+        
+        index--;
+
+        Node *current = head;
+        while (index--)
+        {
+            current = current->next;
+            if (current == NULL)
+            {
+                return;
+            }
+        }
+        if (current == NULL)
+        {
+            return;
+        }
+
+        Node *newNode = new Node(val);
+        newNode->next = current->next;
+        current->next = newNode;
+
+        if (newNode->next == NULL)
+        {
+            tail = newNode;
+        }
+    }
+
+    void deleteAtIndex(int index)
+    {
+        if(head == NULL || index < 0)
+        {
+            return;
+        }
+        if (index == 0)
+        {
+            head = head->next;
+            if (head == NULL)
+            {
+                tail = NULL;
+            }
+            return;
+        }
+        index--;
+        Node *current = head;
+        while (index--)
+        {
+            current = current->next;
+            if (current->next == NULL)
+            {
+                return;
+            }
+        }
+        if (current->next == NULL)
+        {
+            return;
+        }
+        current->next = current->next->next;
+        if (current->next == NULL)
+        {
+            tail = current;
+        }
     }
 };
