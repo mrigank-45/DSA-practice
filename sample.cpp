@@ -1,42 +1,35 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-struct ListNode
-{
-    int val;
-    ListNode *next;
-    ListNode() : val(0), next(nullptr) {}
-    ListNode(int x) : val(x), next(nullptr) {}
-    ListNode(int x, ListNode *next) : val(x), next(next) {}
-};
-
 class Solution
 {
 public:
-    int numComponents(ListNode *head, vector<int> &nums)
+    int maxIncreaseKeepingSkyline(vector<vector<int>> &grid)
     {
-        unordered_map<int, bool> mp;
-        for (auto it : nums)
-            mp[it] = true;
-        int count = 0;
-        bool flag = false;
-        while (head != NULL)
+        int n = grid.size();
+        vector<int> maxRow(n, 0);
+        vector<int> maxCol(n, 0);
+
+        for (int i = 0; i < n; i++)
         {
-            if (mp.find(head->val) == mp.end())
+            for (int j = 0; j < n; j++)
             {
-                if (flag == true)
-                {
-                    count++;
-                    flag = false;
+                maxRow[i] = max(maxRow[i], grid[i][j]);
+                maxCol[j] = max(maxCol[j], grid[i][j]);
+            }
+        }
+
+        int increase = 0;
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                int temp = min(maxRow[i], maxCol[j]);
+                if(temp > grid[i][j]) {
+                    increase += (temp - grid[i][j]);
                 }
             }
-            else
-            {
-                flag = true;
-            }
-            head = head->next;
         }
-        if(flag == true) count++;
-        return count;
+        return increase;
     }
 };
