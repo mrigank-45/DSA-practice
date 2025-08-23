@@ -1,25 +1,60 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class Solution
+class MyCircularQueue
 {
 public:
-    int findMinDifference(vector<string> &timePoints)
+    vector<int> v;
+    int front = 0, rear = -1, tot = 0;
+    MyCircularQueue(int k)
     {
-        int n = timePoints.size();
-        vector<int> v(n, -1);
+        tot = k;
+    }
 
-        for (int i = 0; i < n; i++)
-        {
-            int minutes = (stoi(timePoints[i].substr(0, 2)) * 60) + stoi(timePoints[i].substr(3, 2));
-            v[i] = minutes;
-        }
-        sort(v.begin(), v.end());
-        int minDiff = ((24 * 60) + v[0]) - v[n - 1];
-        for(int i = 1; i < n; i++)
-        {
-            minDiff = min(minDiff, v[i] - v[i - 1]);
-        }
-        return minDiff;
+    bool enQueue(int value)
+    {
+        int size = rear - front + 1;
+        if (size >= tot)
+            return false;
+        v.push_back(value);
+        rear++;
+        return true;
+    }
+
+    bool deQueue()
+    {
+        int size = rear - front + 1;
+        if (size <= 0)
+            return false;
+        front++;
+        return true;
+    }
+
+    int Front()
+    {
+        int size = rear - front + 1;
+        if (size <= 0)
+            return -1;
+        return v[front];
+    }
+
+    int Rear()
+    {
+        int size = rear - front + 1;
+        if (size <= 0)
+            return -1;
+        return v[rear];
+    }
+
+    bool isEmpty()
+    {
+        int size = rear - front + 1;
+        return size <= 0;
+    }
+
+    bool isFull()
+    {
+        int size = rear - front + 1;
+        return size == tot;
     }
 };
