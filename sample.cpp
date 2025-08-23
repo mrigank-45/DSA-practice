@@ -1,60 +1,42 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class MyCircularQueue
+struct ListNode
+{
+    int val;
+    ListNode *next;
+    ListNode() : val(0), next(nullptr) {}
+    ListNode(int x) : val(x), next(nullptr) {}
+    ListNode(int x, ListNode *next) : val(x), next(next) {}
+};
+
+class Solution
 {
 public:
-    vector<int> v;
-    int front = 0, rear = -1, tot = 0;
-    MyCircularQueue(int k)
+    int numComponents(ListNode *head, vector<int> &nums)
     {
-        tot = k;
-    }
-
-    bool enQueue(int value)
-    {
-        int size = rear - front + 1;
-        if (size >= tot)
-            return false;
-        v.push_back(value);
-        rear++;
-        return true;
-    }
-
-    bool deQueue()
-    {
-        int size = rear - front + 1;
-        if (size <= 0)
-            return false;
-        front++;
-        return true;
-    }
-
-    int Front()
-    {
-        int size = rear - front + 1;
-        if (size <= 0)
-            return -1;
-        return v[front];
-    }
-
-    int Rear()
-    {
-        int size = rear - front + 1;
-        if (size <= 0)
-            return -1;
-        return v[rear];
-    }
-
-    bool isEmpty()
-    {
-        int size = rear - front + 1;
-        return size <= 0;
-    }
-
-    bool isFull()
-    {
-        int size = rear - front + 1;
-        return size == tot;
+        unordered_map<int, bool> mp;
+        for (auto it : nums)
+            mp[it] = true;
+        int count = 0;
+        bool flag = false;
+        while (head != NULL)
+        {
+            if (mp.find(head->val) == mp.end())
+            {
+                if (flag == true)
+                {
+                    count++;
+                    flag = false;
+                }
+            }
+            else
+            {
+                flag = true;
+            }
+            head = head->next;
+        }
+        if(flag == true) count++;
+        return count;
     }
 };
