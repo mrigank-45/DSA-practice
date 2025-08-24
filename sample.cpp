@@ -4,32 +4,28 @@ using namespace std;
 class Solution
 {
 public:
-    int maxIncreaseKeepingSkyline(vector<vector<int>> &grid)
+    vector<vector<int>> ans;
+    void solve(vector<vector<int>> &graph, int n, vector<int> &curr, int i)
     {
-        int n = grid.size();
-        vector<int> maxRow(n, 0);
-        vector<int> maxCol(n, 0);
-
-        for (int i = 0; i < n; i++)
+        if (i == n - 1)
         {
-            for (int j = 0; j < n; j++)
-            {
-                maxRow[i] = max(maxRow[i], grid[i][j]);
-                maxCol[j] = max(maxCol[j], grid[i][j]);
-            }
+            ans.push_back(curr);
         }
 
-        int increase = 0;
-        for (int i = 0; i < n; i++)
+        for (auto it : graph[i])
         {
-            for (int j = 0; j < n; j++)
-            {
-                int temp = min(maxRow[i], maxCol[j]);
-                if(temp > grid[i][j]) {
-                    increase += (temp - grid[i][j]);
-                }
-            }
+            curr.push_back(it);
+            solve(graph, n, curr, it);
+            curr.pop_back();
         }
-        return increase;
+    }
+    vector<vector<int>> allPathsSourceTarget(vector<vector<int>> &graph)
+    {
+        int n = graph.size();
+        vector<int> curr;
+        curr.push_back(0);
+        solve(graph, n, curr, 0);
+
+        return ans;
     }
 };
