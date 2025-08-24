@@ -4,34 +4,25 @@ using namespace std;
 class Solution
 {
 public:
-    vector<int> sumEvenAfterQueries(vector<int> &nums, vector<vector<int>> &queries)
+    bool checkSubarraySum(vector<int> &nums, int k)
     {
         int n = nums.size();
-        int q = queries.size();
-        int sum = 0;
-        for (auto it : nums)
-        {
-            if (it % 2 == 0)
-            {
-                sum += it;
-            }
-        }
-        vector<int> ans;
+        unordered_map<int, int> mp;
 
-        for (int i = 0; i < q; i++)
+        int ans = 0, i = 0, sum = 0;
+        mp[0] = 1;
+        while (i < n)
         {
-            int val = queries[i][0];
-            int index = queries[i][1];
-            if (nums[index] % 2 == 0)
-            {
-                sum -= nums[index];
-            }
-            nums[index] += val;
-            if (nums[index] % 2 == 0)
-            {
-                sum += nums[index];
-            }
-            ans.push_back(sum);
+            sum += nums[i];
+            int rem = sum % k;
+            if (rem == 0 && i != 0)
+                ans++;
+
+            ans += mp[rem];
+            if ((sum - nums[i]) % k == rem)
+                ans--;
+            mp[rem]++;
+            i++;
         }
         return ans;
     }
