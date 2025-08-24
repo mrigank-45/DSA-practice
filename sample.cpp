@@ -4,51 +4,35 @@ using namespace std;
 class Solution
 {
 public:
-    pair<int, int> solveMem(vector<int> &nums, int curr, int prev, vector<vector<pair<int, int>>> &dp)
+    vector<int> sumEvenAfterQueries(vector<int> &nums, vector<vector<int>> &queries)
     {
-        if (curr == nums.size())
-            return make_pair(0, 1);
-
-        if (dp[curr][prev + 1].first != -1)
-            return dp[curr][prev + 1];
-
-        int length = 0, count = 0;
-
-        if (prev == -1 || nums[prev] < nums[curr])
+        int n = nums.size();
+        int q = queries.size();
+        int sum = 0;
+        for (auto it : nums)
         {
-            pair<int, int> include = solveMem(nums, curr + 1, curr, dp);
-            int includeLength = 1 + include.first;
-            if (includeLength > length)
+            if (it % 2 == 0)
             {
-                length = includeLength;
-                count = include.second;
-            }
-            else if (includeLength == length)
-            {
-                count += include.second;
+                sum += it;
             }
         }
+        vector<int> ans;
 
-        pair<int, int> exclude = solveMem(nums, curr + 1, prev, dp);
-        if (exclude.first > length)
+        for (int i = 0; i < q; i++)
         {
-            length = exclude.first;
-            count = exclude.second;
+            int val = queries[i][0];
+            int index = queries[i][1];
+            if (nums[index] % 2 == 0)
+            {
+                sum -= nums[index];
+            }
+            nums[index] += val;
+            if (nums[index] % 2 == 0)
+            {
+                sum += nums[index];
+            }
+            ans.push_back(sum);
         }
-        else if (exclude.first == length)
-        {
-            count += exclude.second;
-        }
-
-        dp[curr][prev + 1] = make_pair(length, count);
-
-        return dp[curr][prev + 1];
-    }
-    int findNumberOfLIS(vector<int> &nums)
-    {
-        int curr = 0, prev = -1;
-        vector<vector<pair<int, int>>> dp(nums.size(), vector<pair<int, int>>(nums.size() + 1, make_pair(-1, -1)));
-        pair<int, int> result = solveMem(nums, curr, prev, dp);
-        return result.second;
+        return ans;
     }
 };
