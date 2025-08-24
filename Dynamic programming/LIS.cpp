@@ -18,7 +18,7 @@ public:
 
         int take = 0;
         int notTake = solve(curr + 1, prev, nums, dp);
-        if (prev == -1 || nums[curr] < nums[prev])
+        if (prev == -1 || nums[curr] > nums[prev])
         {
             take = 1 + solve(curr + 1, curr, nums, dp);
         }
