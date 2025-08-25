@@ -4,26 +4,39 @@ using namespace std;
 class Solution
 {
 public:
-    bool checkSubarraySum(vector<int> &nums, int k)
+    vector<int> prefix;
+    vector<vector<double>> dp;
+
+    double solve(int i, int k, vector<int> &nums)
     {
         int n = nums.size();
-        unordered_map<int, int> mp;
-
-        int ans = 0, i = 0, sum = 0;
-        mp[0] = 1;
-        while (i < n)
+        if (k == 1)
         {
-            sum += nums[i];
-            int rem = sum % k;
-            if (rem == 0 && i != 0)
-                ans++;
-
-            ans += mp[rem];
-            if ((sum - nums[i]) % k == rem)
-                ans--;
-            mp[rem]++;
-            i++;
+            return (prefix[n] - prefix[i]) * 1.0 / (n - i);
         }
-        return ans;
+
+        if (dp[i][k] >= 0)
+            return dp[i][k];
+
+        double ans = 0;
+        for (int j = i + 1; j <= n - k + 1; j++)
+        {
+            double avg = (prefix[j] - prefix[i]) * 1.0 / (j - i);
+            ans = max(ans, avg + solve(j, k - 1, nums));
+        }
+
+        return dp[i][k] = ans;
+    }
+
+    double largestSumOfAverages(vector<int> &nums, int k)
+    {
+        int n = nums.size();
+        prefix.assign(n + 1, 0);
+        for (int i = 0; i < n; i++)
+            prefix[i + 1] = prefix[i] + nums[i];
+        
+        dp.assign(n, vector<double>(k + 1, -1));
+        
+        return solve(0, k, nums);
     }
 };
