@@ -1,146 +1,61 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class Node
+class Solution
 {
 public:
-    int data;
-    Node *prev;
-    Node *next;
-
-    Node(int d)
+    int longestMountain(vector<int> &arr)
     {
-        this->data = d;
-        this->prev = NULL;
-        this->next = NULL;
-    }
-
-    ~Node()
-    {
-        if (next != NULL)
+        int n = arr.size();
+        int flag = 0, curr = 0, ans = 0;
+        for (int i = 0; i < n - 1; i++)
         {
-            delete next;
-            next = NULL;
+            if (flag == 0)
+            {
+                if (arr[i] < arr[i + 1])
+                {
+                    curr = 2;
+                    flag = 1;
+                }
+            }
+            else if (flag == 1)
+            {
+                if (arr[i] < arr[i + 1])
+                {
+                    curr++;
+                }
+                else if (arr[i] > arr[i + 1])
+                {
+                    curr++;
+                    flag = 2;
+                    ans = max(ans, curr);
+                }
+                else
+                {
+                    curr = 0;
+                    flag = 0;
+                }
+            }
+            else if (flag == 2)
+            {
+                if(arr[i] > arr[i + 1])
+                {
+                    curr++;
+                    ans = max(ans, curr);
+                }
+                else if (arr[i] < arr[i + 1])
+                {
+                    curr = 2;
+                    flag = 1;
+                }
+                else
+                {
+                    curr = 0;
+                    flag = 0;
+                }
+
+            }
         }
-    }
-};
-
-class MyCircularDeque
-{
-public:
-    int size, curr;
-    Node *front, *rear;
-    MyCircularDeque(int k)
-    {
-        size = k;
-        curr = 0;
-        front = NULL;
-        rear = NULL;
-    }
-
-    bool insertFront(int value)
-    {
-        if (isFull())
-            return false;
-        if (isEmpty())
-        {
-            front = new Node(value);
-            rear = front;
-            curr++;
-            return true;
-        }
-        Node *temp = new Node(value);
-        temp->next = front;
-        front->prev = temp;
-        front = temp;
-        curr++;
-        return true;
-    }
-
-    bool insertLast(int value)
-    {
-        if (isFull())
-            return false;
-        if (isEmpty())
-        {
-            front = new Node(value);
-            rear = front;
-            curr++;
-            return true;
-        }
-        Node *temp = new Node(value);
-        temp->prev = rear;
-        rear->next = temp;
-        rear = temp;
-        curr++;
-        return true;
-    }
-
-    bool deleteFront()
-    {
-        if (isEmpty())
-            return false;
-        if(front == rear){
-            delete front;
-            front = NULL;
-            rear = NULL;
-            curr--;
-            return true;
-        }
-        Node *temp = front;
-        front = front->next;
-        front->prev = NULL;
-        temp->next = NULL;
-        delete temp;
-        curr--;
-        return true;
-    }
-
-    bool deleteLast()
-    {
-        if (isEmpty())
-            return false;
-         if(front == rear){
-            delete front;
-            front = NULL;
-            rear = NULL;
-            curr--;
-            return true;
-        }
-        Node *temp = rear;
-        rear = rear->prev;
-        rear->next = NULL;
-        temp->prev = NULL;
-        delete temp;
-        curr--;
-        return true;
-    }
-
-    int getFront()
-    {
-        if (isEmpty())
-            return -1;
-        return front->data;
-    }
-
-    int getRear()
-    {
-        if (isEmpty())
-            return -1;
-        return rear->data;
-    }
-
-    bool isEmpty()
-    {
-        if (curr == 0)
-            return true;
-        return false;
-    }
-
-    bool isFull()
-    {
-        if (curr == size)
-            return true;
-        return false;
+        return ans;
     }
 };
