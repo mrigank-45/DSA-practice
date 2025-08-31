@@ -15,23 +15,13 @@ public:
     vector<vector<int>> reconstructQueue(vector<vector<int>> &people)
     {
         int n = people.size();
+        // people = {{7,0},{4,4},{7,1},{5,0},{6,1},{5,2}}
         sort(people.begin(), people.end(), comparator);
 
-        vector<vector<int>> result;
-        int i = 0, curr = 0;
-        while (i < n)
-        {
-            result.push_back(people[i]);
-            int j = i, ncurr = curr;
-            while (ncurr > people[i][1] && j > 0)
-            {
-                swap(result[j], result[j - 1]);
-                j--;
-                ncurr--;
-            }
-            i++;
-            curr++;
+        // prints: {7,0}, {7,1}, {6,1}, {5,0}, {5,2}, {4,4}
+        for(int i = 0; i < n; i++){
+            cout << people[i][0] << " " << people[i][1] << endl;
         }
-        return result;
+        return people;
     }
 };
