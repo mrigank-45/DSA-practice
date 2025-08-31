@@ -4,26 +4,50 @@ using namespace std;
 class Solution
 {
 public:
-    int totalFruit(vector<int> &fruits)
+    vector<vector<int>> colorBorder(vector<vector<int>> &grid, int row, int col, int color)
     {
-        int n = fruits.size();
-        unordered_map<int, int> mp;
-        int i = 0, j = 0, ans = 1;
-        while (j < n)
+        int n = grid.size();
+        int m = grid[0].size();
+
+        int curr = grid[row][col];
+        vector<vector<bool>> visited(n, vector<bool>(m, false));
+        vector<vector<int>> directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+        queue<pair<int, int>> q;
+        q.push({row, col});
+        visited[row][col] = true;
+        vector<pair<int, int>> borders;
+        while (!q.empty())
         {
-            mp[fruits[j]]++;
-            while (mp.size() > 2 && i <= j)
+            int size = q.size();
+            for (int i = 0; i < size; i++)
             {
-                mp[fruits[i]]--;
-                if (mp[fruits[i]] == 0)
+                int r = q.front().first, c = q.front().second;
+                q.pop();
+                bool flag = false;
+                for (auto dir : directions)
                 {
-                    mp.erase(fruits[i]);
+                    int newRow = r + dir[0], newCol = c + dir[1];
+                    if (newRow < 0 || newRow >= n || newCol < 0 || newCol >= m || grid[newRow][newCol] != curr)
+                    {
+                        flag = true;
+                        continue;
+                    }
+                    if (!visited[newRow][newCol])
+                    {
+                        visited[newRow][newCol] = true;
+                        q.push({newRow, newCol});
+                    }
                 }
-                i++;
+                if (flag)
+                {
+                    borders.push_back({r, c});
+                }
             }
-            ans = max(ans, j - i + 1);
-            j++;
         }
-        return ans;
+        for (auto border : borders)
+        {
+            grid[border.first][border.second] = color;
+        }
+        return grid;
     }
 };
