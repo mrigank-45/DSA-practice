@@ -4,34 +4,25 @@ using namespace std;
 class Solution
 {
 public:
-    static bool comparator(const vector<int> &a, const vector<int> &b)
-    {
-        if (a[0] == b[0])
-        {
-            return a[1] < b[1];
-        }
-        return a[0] > b[0];
-    }
-    vector<vector<int>> reconstructQueue(vector<vector<int>> &people)
+    int numRescueBoats(vector<int> &people, int limit)
     {
         int n = people.size();
-        sort(people.begin(), people.end(), comparator);
-
-        vector<vector<int>> result;
-        int i = 0, curr = 0;
-        while (i < n)
+        sort(people.begin(), people.end());
+        int i = 0, j = n - 1;
+        int ans = 0;
+        while (i <= j)
         {
-            result.push_back(people[i]);
-            int j = i, ncurr = curr;
-            while (ncurr > people[i][1] && j > 0)
+            if (people[i] + people[j] <= limit)
             {
-                swap(result[j], result[j - 1]);
+                i++;
                 j--;
-                ncurr--;
             }
-            i++;
-            curr++;
+            else
+            {
+                j--;
+            }
+            ans++;
         }
-        return result;
+        return ans;
     }
 };
