@@ -1,24 +1,36 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class Solution
-{
+class Solution {
 public:
-    int maxSubarraySumCircular(vector<int> &A)
-    {
-        int total_sum = 0, curr_sum1 = 0, curr_sum2 = 0, mxsum_subary = INT_MIN, minsum_subary = INT_MAX;
-        for (auto i : A)
-        {
-            total_sum += i;
-            curr_sum1 += i;
-            curr_sum2 += i;
-            mxsum_subary = max(mxsum_subary, curr_sum1);
-            if (curr_sum1 < 0)
-                curr_sum1 = 0;
-            minsum_subary = min(curr_sum2, minsum_subary);
-            if (curr_sum2 > 0)
-                curr_sum2 = 0;
+    bool canPick(vector<int>& nums, int k, int limit) {
+        int count = 0;
+        int i = 0;
+        while (i < nums.size()) {
+            if (nums[i] <= limit) {
+                count++;
+                i += 2; 
+            } else {
+                i++;
+            }
         }
-        return (total_sum == minsum_subary) ? mxsum_subary : max(mxsum_subary, total_sum - minsum_subary);
+        return count >= k;
+    }
+
+    int minCapability(vector<int>& nums, int k) {
+        int low = *min_element(nums.begin(), nums.end());
+        int high = *max_element(nums.begin(), nums.end());
+        int ans = high;
+
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+            if (canPick(nums, k, mid)) {
+                ans = mid;       
+                high = mid - 1;
+            } else {
+                low = mid + 1;    
+            }
+        }
+        return ans;
     }
 };
