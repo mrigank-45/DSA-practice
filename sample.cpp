@@ -4,23 +4,23 @@ using namespace std;
 class Solution
 {
 public:
-    vector<string> removeSubfolders(vector<string> &folder)
+    int minDeletion(vector<int> &nums)
     {
-        int n = folder.size();
-        sort(folder.begin(), folder.end());
-        string prev = folder[0];
-        vector<string> ans;
-        ans.push_back(prev);
+        int n = nums.size();
+        int ans = 0, parity = 1;
         for (int i = 1; i < n; i++)
         {
-            string curr = folder[i];
-            int k = prev.size();
-            if (curr.size() <= k || curr.substr(0, k + 1) != prev + '/')
+            if (parity % 2 == 1 && nums[i] == nums[i - 1])
             {
-                ans.push_back(curr);
-                prev = curr;
+                ans++;
+            }
+            else
+            {
+                parity++;
             }
         }
+        if(parity % 2 == 1)
+            ans++;  
         return ans;
     }
 };
