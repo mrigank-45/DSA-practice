@@ -4,18 +4,22 @@ using namespace std;
 class Solution
 {
 public:
-    vector<int> divisibilityArray(string word, int m)
+    vector<string> removeSubfolders(vector<string> &folder)
     {
-        int n = word.size();
-        vector<int> ans(n);
-        long long num = 0;
-        for (int i = 0; i < n; i++)
+        int n = folder.size();
+        sort(folder.begin(), folder.end());
+        string prev = folder[0];
+        vector<string> ans;
+        ans.push_back(prev);
+        for (int i = 1; i < n; i++)
         {
-            num = (num * 10 + (word[i] - '0')) % m;
-            if (num == 0)
-                ans[i] = 1;
-            else
-                ans[i] = 0;
+            string curr = folder[i];
+            int k = prev.size();
+            if (curr.size() <= k || curr.substr(0, k + 1) != prev + '/')
+            {
+                ans.push_back(curr);
+                prev = curr;
+            }
         }
         return ans;
     }
