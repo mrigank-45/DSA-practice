@@ -1,24 +1,54 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class Solution
+int minNumberOfFrogs(string cOf)
 {
-public:
-    int maxDistance(vector<int> &nums1, vector<int> &nums2)
+    int onGoing = 0;
+    int maxOngoing = 0;
+    vector<int> curr(5, 0);
+    for (auto a : cOf)
     {
-        int n = nums1.size(), m = nums2.size();
-        reverse(nums2.begin(), nums2.end());
-        int ans = 0;
-        for (int i = 0; i < n; i++)
+        if (a == 'c')
         {
-            int val = nums1[i];
-            int index = lower_bound(nums2.begin(), nums2.end(), val) - nums2.begin();
-            index = m - 1 - index;
-            if (index != m)
+            curr[0]++;
+            onGoing++;
+            maxOngoing = max(maxOngoing, onGoing);
+        }
+        else
+        {
+            if (a == 'r')
             {
-                ans = max(ans, index - i);
+                if (curr[0] <= curr[1])
+                    return -1;
+                curr[1]++;
+            }
+            else if (a == 'o')
+            {
+                if (curr[1] <= curr[2])
+                    return -1;
+                curr[2]++;
+            }
+            else if (a == 'a')
+            {
+                if (curr[2] <= curr[3])
+                    return -1;
+                curr[3]++;
+            }
+            else if (a == 'k')
+            {
+                if (curr[3] <= curr[4])
+                    return -1;
+                curr[4]++;
+                onGoing--;
             }
         }
-        return ans;
     }
-};
+    int total = curr[0];
+    for (int i = 1; i < 5; i++)
+    {
+        if (curr[i] != total)
+            return -1;
+    }
+
+    return maxOngoing;
+}
