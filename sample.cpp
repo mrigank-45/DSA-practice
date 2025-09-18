@@ -4,19 +4,33 @@ using namespace std;
 class Solution
 {
 public:
-    vector<int> findSmallestSetOfVertices(int n, vector<vector<int>> &edges)
+    int videoStitching(vector<vector<int>> &clips, int time)
     {
-        vector<int> indegree(n,0);
-        for(auto it:edges)
+        int n = clips.size();
+        sort(clips.begin(), clips.end());
+
+        if (clips[0][0] != 0)
+            return -1;
+
+        int last = clips[0][1], cnt = 1, prev = 0;
+
+        for (int i = 0; i < n; i++)
         {
-            indegree[it[1]]++;
+            if (clips[i][0] > last)
+                return -1;
+
+            if (clips[i][1] > last)
+            {
+                if (clips[i][0] > prev)
+                {
+                    cnt++;
+                    prev = max(prev, last);
+                }
+                last = clips[i][1];
+            }
+            if (last >= time)
+                return cnt;
         }
-        vector<int> ans;
-        for(int i=0;i<n;i++)
-        {
-            if(indegree[i]==0)
-                ans.push_back(i);
-        }
-        return ans;
+        return -1;
     }
 };
