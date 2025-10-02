@@ -4,30 +4,112 @@ using namespace std;
 class Solution
 {
 public:
-    bool check(string s, string curr)
+    string pushDominoes(string dominoes)
     {
-        int  i = 0, j = 0;
-        while(i < s.size() && j < curr.size())
+        int n = dominoes.size();
+        vector<int> next(n, -1);
+        int flag = -1;
+        for (int i = n - 1; i >= 0; i--)
         {
-            if(s[i] == curr[j])
-                j++;
-            i++;
+            next[i] = flag;
+            if (dominoes[i] != '.')
+            {
+                flag = i;
+            }
         }
-        if(j == curr.size())
-            return true;
-        return false;
-    }
+        int i = 0, curr = 0;
+        while (i < n)
+        {
+            if (dominoes[i] == 'R')
+            {
+                if (next[i] == -1)
+                {
+                    for (int j = i + 1; j < n; j++)
+                    {
+                        dominoes[j] = 'R';
+                    }
+                    break;
+                }
+                else if (dominoes[next[i]] == 'L')
+                {
+                    int j = i + 1;
+                    int k = next[i] - 1;
+                    while (j < k)
+                    {
+                        dominoes[j] = 'R';
+                        dominoes[k] = 'L';
+                        j++;
+                        k--;
+                    }
+                    i = next[i] + 1;
+                }
+                else
+                {
+                    for (int j = i + 1; j < next[i]; j++)
+                    {
+                        dominoes[j] = 'R';
+                    }
+                    i = next[i];
+                }
+            }
+            else
+            {
+                i++;
+            }
+        }
 
-    int numMatchingSubseq(string s, vector<string> &words)
-    {
-        int cnt = 0;
-        unordered_map<string, int> words_map;
-        for(auto &word: words)
-            words_map[word]++;
+        vector<int> prev(n, -1);
+        flag = -1;
+        for (int i = 0; i < n; i++)
+        {
+            prev[i] = flag;
+            if (dominoes[i] != '.')
+            {
+                flag = i;
+            }
+        }
 
-        for(auto &word: words_map)
-            if(check(s, word.first))
-                cnt+= word.second;
-        return cnt;
+        i = n - 1;
+        while (i >= 0)
+        {
+            if (dominoes[i] == 'L')
+            {
+                if (prev[i] == -1)
+                {
+                    for (int j = i - 1; j >= 0; j--)
+                    {
+                        dominoes[j] = 'L';
+                    }
+                    break;
+                }
+                else if (dominoes[prev[i]] == 'R')
+                {
+                    int j = prev[i] + 1;
+                    int k = i - 1;
+                    while (j < k)
+                    {
+                        dominoes[j] = 'R';
+                        dominoes[k] = 'L';
+                        j++;
+                        k--;
+                    }
+                    i = prev[i] - 1;
+                }
+                else
+                {
+                    for (int j = i - 1; j > prev[i]; j--)
+                    {
+                        dominoes[j] = 'L';
+                    }
+                    i = prev[i];
+                }
+            }
+            else
+            {
+                i--;
+            }
+        }
+
+        return dominoes;
     }
 };
