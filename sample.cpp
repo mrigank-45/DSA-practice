@@ -1,26 +1,26 @@
+#include <bits/stdc++.h>
+using namespace std;
+
 class Solution {
 public:
-    string tree2str(TreeNode* root) {
-        string str = "";
-         check(root, str);
-         return str;
-    }
-    void check(TreeNode* root, string &str) {
-        if (root == NULL) {
-            return;
+    int leastBricks(vector<vector<int>>& wall) {
+        int n = wall.size();
+        unordered_map<long long, long long> mp; 
+
+        for(int i = 0; i < n; i++) {
+            long long sum = 0;
+            for(int j = 0; j < wall[i].size() - 1; j++) {
+                sum += wall[i][j];
+                mp[sum]++;
+            }
         }
-        str += to_string(root->val);
-        if (root->left || root->right) {
-            str += '(';
-            check(root->left, str);
-            str += ')';
+
+        long long maxEdges = 0;
+        for(auto it : mp) {
+            maxEdges = max(maxEdges, it.second);
         }
-        if (root->right) {
-            str += '(';
-            check(root->right, str);
-            str += ')';
-        }
+
+        return n - maxEdges;
         
     }
-    
 };
