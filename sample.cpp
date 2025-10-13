@@ -1,75 +1,24 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class MountainArray
-{
+class Solution {
 public:
-    int get(int index);
-    int length();
-};
+    int numRabbits(vector<int>& answers) {
+        int n = answers.size();
+        unordered_map<int, int> mp;
+        for(int i = 0; i < n; i++) mp[answers[i]]++;
 
-class Solution
-{
-public:
-    int peakIndexInMountainArray(MountainArray &arr)
-    {
-        int n = arr.length();
-        int start = 0, end = n - 1;
+        int ans = 0;
+        for(auto it : mp) {
+            int x = it.first;
+            int freq = it.second;
 
-        while (start < end)
-        {
-            int mid = start + (end - start) / 2;
-            if (arr.get(mid) < arr.get(mid + 1))
-            {
-                start = mid + 1;
-            }
-            else
-            {
-                end = mid;
-            }
+            int groupSize = x + 1;
+            ans += (freq / groupSize) * groupSize;
+            if(freq % groupSize != 0) ans += groupSize;
+
         }
-        return start;
-    }
-    int findInMountainArray(int target, MountainArray &mountainArr)
-    {
-        int n = mountainArr.length();
-        int peak = peakIndexInMountainArray(mountainArr);
-        if(mountainArr.get(peak) == target) return peak;
-        if(target > mountainArr.get(peak)) return -1;
-        int start = 0, end = peak;
-        while (start <= end)
-        {
-            int mid = start + (end - start) / 2;
-            if (mountainArr.get(mid) == target)
-            {
-                return mid;
-            }
-            else if (mountainArr.get(mid) < target)
-            {
-                start = mid + 1;
-            }
-            else
-            {
-                end = mid - 1;
-            }
-        }
-        start = peak, end = n - 1;
-        while (start <= end)
-        {
-            int mid = start + (end - start) / 2;
-            if (mountainArr.get(mid) == target)
-            {
-                return mid;
-            }
-            else if (mountainArr.get(mid) < target)
-            {
-                end = mid - 1;
-            }
-            else
-            {
-                start = mid + 1;
-            }
-        }
-        return -1;
+        return ans;
+        
     }
 };
