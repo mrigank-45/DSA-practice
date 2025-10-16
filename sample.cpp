@@ -1,24 +1,20 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class Solution {
+class Solution
+{
 public:
-    int numRabbits(vector<int>& answers) {
-        int n = answers.size();
-        unordered_map<int, int> mp;
-        for(int i = 0; i < n; i++) mp[answers[i]]++;
+    string shiftingLetters(string s, vector<int> &shifts)
+    {
+        int n = shifts.size();
+        int curr = 0;
 
-        int ans = 0;
-        for(auto it : mp) {
-            int x = it.first;
-            int freq = it.second;
-
-            int groupSize = x + 1;
-            ans += (freq / groupSize) * groupSize;
-            if(freq % groupSize != 0) ans += groupSize;
-
+        for (int i = n - 1; i >= 0; i--)
+        {
+            curr += shifts[i];
+            curr %= 26;
+            s[i] = (s[i] - 'a' + curr) % 26 + 'a';
         }
-        return ans;
-        
+        return s;
     }
 };
