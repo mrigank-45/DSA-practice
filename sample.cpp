@@ -1,43 +1,22 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class WordDictionary {
+class Solution {
 public:
-    unordered_set<string> st;
-    WordDictionary() {
-    }
-    
-    void addWord(string word) {
-        st.insert(word);
-    }
-    
-    bool search(string word) {
-        if (st.count(word)) return true;
-        int n = word.size();
-        int p1 = -1, p2 = -1;
-        for(int i = 0; i < n; i++) {
-            if (word[i] == '.') {
-                if (p1 == -1) p1 = i;
-                else p2 = i;
-            }
+    bool check(vector<int> nums, int l, int r, int sum1, int sum2, bool turn) {
+        if (l > r) {
+            return sum1 >= sum2;
         }
-        if (p1 == -1) return false;
-        if(p2 == -1) {
-            for(int i = 0; i < 26; i++) {
-                string modified = word;
-                modified[p1] = 'a' + i;
-                if (st.count(modified)) return true;
-            }
+        if (turn) {
+            return check(nums, l + 1, r, sum1 + nums[l], sum2, !turn) ||
+                   check(nums, l, r - 1, sum1 + nums[r], sum2, !turn);
         } else {
-            for(int i = 0; i < 26; i++) {
-                for(int j = 0; j < 26; j++) {
-                    string modified = word;
-                    modified[p1] = 'a' + i;
-                    modified[p2] = 'a' + j;
-                    if (st.count(modified)) return true;
-                }
-            }
+            return check(nums, l + 1, r, sum1, sum2 + nums[l], !turn) &&
+                   check(nums, l, r - 1, sum1, sum2 + nums[r], !turn);
         }
-        return false;
+    }
+    bool predictTheWinner(vector<int>& nums) {
+        int n = nums.size();
+        return check(nums, 0, n - 1, 0, 0, true);
     }
 };
