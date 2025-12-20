@@ -1,43 +1,42 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class Solution {
+class Solution
+{
 public:
-    int getNextRideIndex(vector<vector<int>>& rides, int endPoint) {
-        int l = 0, r = rides.size() - 1;
-        int ans = rides.size();
-        while (l <= r) {
-            int mid = l + (r - l) / 2;
-            if (rides[mid][0] >= endPoint) {
-                ans = mid;
-                r = mid - 1;
-            } else {
-                l = mid + 1;
-            }
+    bool solve(vector<int> &nums, int n, int i, vector<int> &dp)
+    {
+        if(i>=n-1) return false;
+        if (i == n - 2)
+        {
+            if (nums[i] == nums[i + 1])
+                return true;
+            return false;
         }
-        return ans;
+        if (i == n - 3)
+        {
+            bool c1 = (nums[i] == nums[i + 1]) && (nums[i + 1] == nums[i + 2]);
+            bool c2 = (nums[i] + 1 == nums[i + 1]) && (nums[i + 1] + 1 == nums[i + 2]);
+            if (c1 || c2)
+                return true;
+            return false;
+        }
+        if(dp[i] != -1) return dp[i];
+        bool c1 = false, c2 = false;
+
+        if(nums[i] == nums[i + 1]){
+            c1 = solve(nums,n,i+2, dp);
+        }
+
+        if(((nums[i] == nums[i + 1]) && (nums[i + 1] == nums[i + 2]))|| ((nums[i] + 1 == nums[i + 1]) && (nums[i + 1] + 1 == nums[i + 2]))){
+            c2 = solve(nums,n,i+3, dp);
+        }
+        return dp[i] = c1 || c2;
     }
-
-    long long solve(vector<vector<int>>& rides, int i, vector<long long>& dp) {
-        if (i >= rides.size()) {
-            return 0;
-        }
-        if (dp[i] != -1) {
-            return dp[i];
-        }
-
-        long long notPick = solve(rides, i + 1, dp);
-
-        int nextIndex = getNextRideIndex(rides, rides[i][1]);
-        long long profit = (long long)(rides[i][1] - rides[i][0] + rides[i][2]);
-        long long pick = profit + solve(rides, nextIndex, dp);
-
-        return dp[i] = max(pick, notPick);
-    }
-
-    long long maxTaxiEarnings(int n, vector<vector<int>>& rides) {
-        sort(rides.begin(), rides.end());
-        vector<long long> dp(rides.size(), -1);
-        return solve(rides, 0, dp);
+    bool validPartition(vector<int> &nums)
+    {
+        int n = nums.size();
+        vector<int> dp(n+1, -1);
+        return solve(nums, n, 0, dp);
     }
 };
