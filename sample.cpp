@@ -1,53 +1,43 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class LFUCache {
+class Solution {
 public:
-    int size = 0;
-    int capacity;
-    unordered_map<int, pair<int, int>> keyToValFreq; // key -> {value, freq}
-    map<int,vector<int>> freqToKeys; // freq -> keys
-
-    LFUCache(int capacity) {
-        capacity = capacity;
-    }
-    
-    int get(int key) {
-        if(keyToValFreq.find(key) == keyToValFreq.end()) return -1;
-        
-        int value = keyToValFreq[key].first;
-        int freq = keyToValFreq[key].second;
-        keyToValFreq[key].second++;
-
-        vector<int> keys = freqToKeys[freq];
-        keys.erase(remove(keys.begin(), keys.end(), key), keys.end());
-        if(keys.empty()){
-            freqToKeys.erase(freq);
-        }
-        freqToKeys[freq + 1].push_back(key);
-
-        return value;
-    }
-    
-    void put(int key, int value) {
-        if(size == capacity && keyToValFreq.find(key) == keyToValFreq.end()){
-            int leastFreq = freqToKeys.begin()->first;
-            int keyToRemove = freqToKeys[leastFreq].front();
-            freqToKeys[leastFreq].erase(freqToKeys[leastFreq].begin());
-            if(freqToKeys[leastFreq].empty()){
-                freqToKeys.erase(leastFreq);
+    int getNextRideIndex(vector<vector<int>>& rides, int endPoint) {
+        int l = 0, r = rides.size() - 1;
+        int ans = rides.size();
+        while (l <= r) {
+            int mid = l + (r - l) / 2;
+            if (rides[mid][0] >= endPoint) {
+                ans = mid;
+                r = mid - 1;
+            } else {
+                l = mid + 1;
             }
-            keyToValFreq.erase(keyToRemove);
-            size--;
+        }
+        return ans;
+    }
+
+    long long solve(vector<vector<int>>& rides, int i, vector<long long>& dp) {
+        if (i >= rides.size()) {
+            return 0;
+        }
+        if (dp[i] != -1) {
+            return dp[i];
         }
 
-        if(keyToValFreq.find(key) != keyToValFreq.end()){
-            keyToValFreq[key].first = value;
-            get(key); // Update frequency
-        } else {
-            keyToValFreq[key] = {value, 1};
-            freqToKeys[1].push_back(key);
-            size++;
-        }
+        long long notPick = solve(rides, i + 1, dp);
+
+        int nextIndex = getNextRideIndex(rides, rides[i][1]);
+        long long profit = (long long)(rides[i][1] - rides[i][0] + rides[i][2]);
+        long long pick = profit + solve(rides, nextIndex, dp);
+
+        return dp[i] = max(pick, notPick);
+    }
+
+    long long maxTaxiEarnings(int n, vector<vector<int>>& rides) {
+        sort(rides.begin(), rides.end());
+        vector<long long> dp(rides.size(), -1);
+        return solve(rides, 0, dp);
     }
 };
