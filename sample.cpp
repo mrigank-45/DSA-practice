@@ -4,39 +4,68 @@ using namespace std;
 class Solution
 {
 public:
-    bool solve(vector<int> &nums, int n, int i, vector<int> &dp)
+    int dfs(int n, unordered_map<int, pair<int, int>> &mp, int i, vector<int> &sum)
     {
-        if(i>=n-1) return false;
-        if (i == n - 2)
+        if (mp[i].first == -1 && mp[i].second == -1)
         {
-            if (nums[i] == nums[i + 1])
-                return true;
-            return false;
+            sum[i] = 1;
+            return 1;
         }
-        if (i == n - 3)
+        int ans = 1;
+        if(mp[i].first != -1)
         {
-            bool c1 = (nums[i] == nums[i + 1]) && (nums[i + 1] == nums[i + 2]);
-            bool c2 = (nums[i] + 1 == nums[i + 1]) && (nums[i + 1] + 1 == nums[i + 2]);
-            if (c1 || c2)
-                return true;
-            return false;
+            ans += dfs(n, mp, mp[i].first, sum);
         }
-        if(dp[i] != -1) return dp[i];
-        bool c1 = false, c2 = false;
-
-        if(nums[i] == nums[i + 1]){
-            c1 = solve(nums,n,i+2, dp);
+        if(mp[i].second != -1)
+        {
+            ans += dfs(n, mp, mp[i].second, sum);
         }
-
-        if(((nums[i] == nums[i + 1]) && (nums[i + 1] == nums[i + 2]))|| ((nums[i] + 1 == nums[i + 1]) && (nums[i + 1] + 1 == nums[i + 2]))){
-            c2 = solve(nums,n,i+3, dp);
-        }
-        return dp[i] = c1 || c2;
+        sum[i] = ans;
+        return ans;
     }
-    bool validPartition(vector<int> &nums)
+    int countHighestScoreNodes(vector<int> &parents)
     {
-        int n = nums.size();
-        vector<int> dp(n+1, -1);
-        return solve(nums, n, 0, dp);
+        int n = parents.size();
+        unordered_map<int, pair<int, int>> mp;
+        for (int i = 0; i < n; i++)
+            mp[i] = {-1, -1};
+
+        for (int i = 1; i < n; i++)
+        {
+            if (mp[parents[i]].first == -1)
+            {
+                mp[parents[i]].first = i;
+            }
+            else
+            {
+                mp[parents[i]].second = i;
+            }
+        }
+        vector<int> sum(n, -1);
+        sum[0] = dfs(n, mp, 0, sum);
+
+        long long maxi = 0;
+        vector<long long> res(n, -1);
+        for(int i =0; i<n;i++){
+            long long score = 1;
+            if(mp[i].first != -1){
+                score *= sum[mp[i].first];
+            }
+            if(mp[i].second != -1){
+                score *= sum[mp[i].second];
+            }
+            if(i!=0){
+                score *= (n-sum[i]);
+            }
+            res[i] = score;
+            maxi = max(maxi,score);
+        }
+        int ans = 0;
+        for(int i=0; i<n;i++){
+            if(res[i] == maxi){
+                ans++;
+            }
+        }
+        return ans;
     }
 };
