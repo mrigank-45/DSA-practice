@@ -3,22 +3,27 @@ using namespace std;
 
 class Solution {
 public:
-    int maxNonOverlapping(vector<int>& nums, int target) {
-        int n = nums.size();
-        unordered_map<int,int> mp; // sum before index -> index
-        mp[0] = 0;
-        int sum = 0, ans = 0, prev = -1;
-        for(int i =0; i<n; i++){
-            sum+= nums[i];
-            if(mp.find(sum - target) != mp.end()){
-                if(mp[sum-target]>prev){
-                    ans++;
-                    prev = i;
-                }
+    int edgeScore(vector<int>& edges) {
+        int n = edges.size();
+        unordered_map<int,vector<int>> mp;
+        for(int i =0; i<n;i++){
+            mp[edges[i]].push_back(i);
+        }
+        long long max_score = 0;
+        int ans = 0;
+        for(auto it: mp){
+            long long score = 0;
+            for(int i = 0; i<it.second.size();i++){
+                score += it.second[i];
             }
-            mp[sum] = i + 1;
+            if(score>max_score){
+                max_score = score;
+                ans = it.first;
+            }
+            if(score==max_score && it.first<ans){
+                ans = it.first;
+            }
         }
         return ans;
-        
     }
 };
