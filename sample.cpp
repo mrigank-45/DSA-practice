@@ -1,41 +1,32 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class StockPrice {
+class Solution {
 public:
-    int latest_time;
-    unordered_map<int,int> mp;
-    priority_queue<pair<int,int>,vector<pair<int,int>>,greater<pair<int,int>>> min_heap;
-    priority_queue<pair<int,int>> max_heap;
+    long long maximumImportance(int n, vector<vector<int>>& roads) {
+        unordered_map<int,int> deg;
+        for(int i =0; i<roads.size();i++){
+            deg[roads[i][0]]++;
+            deg[roads[i][1]]++;
+        }
+        vector<pair<int,int>> v;
+        for(auto it : deg){
+            v.push_back({it.second,it.first});
+        }
+        sort(v.rbegin(),v.rend());
+        unordered_map<int,int> mp;
+        int curr = n;
 
-    StockPrice() {
-        latest_time = -1;
-    }
-    
-    void update(int timestamp, int price) {
-        mp[timestamp] = price;
-        if(timestamp>latest_time) latest_time = timestamp;
-        max_heap.push({price,timestamp});
-        min_heap.push({price,timestamp});
-    }
-    
-    int current() {
-        return mp[latest_time];
-    }
-    
-    int maximum() {
-        while(!max_heap.empty() && max_heap.top().first != mp[max_heap.top().second]){
-            max_heap.pop();
+        for(int i =0; i<v.size(); i++){
+            mp[v[i].second] = curr;
+            curr--;
         }
-        return max_heap.top().first;
-        
-    }
-    
-    int minimum() {
-         while(!min_heap.empty() && min_heap.top().first != mp[min_heap.top().second]){
-            min_heap.pop();
+        long long ans = 0;
+        for(int i =0; i<roads.size();i++){
+            ans += mp[roads[i][0]];
+            ans += mp[roads[i][1]];
         }
-        return min_heap.top().first;
-        
+        return ans;
+
     }
 };
