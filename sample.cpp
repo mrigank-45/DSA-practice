@@ -1,25 +1,41 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class Solution {
+class StockPrice {
 public:
-    int eliminateMaximum(vector<int>& dist, vector<int>& speed) {
-        int n = dist.size();
-        for(int i =0; i<n; i++){
-            if(dist[i]%speed[i] == 0){
-                dist[i] = dist[i]/speed[i];
-            }
-            else{
-                dist[i] = (dist[i]/speed[i])+1;
-            }
+    int latest_time;
+    unordered_map<int,int> mp;
+    priority_queue<pair<int,int>,vector<pair<int,int>>,greater<pair<int,int>>> min_heap;
+    priority_queue<pair<int,int>> max_heap;
+
+    StockPrice() {
+        latest_time = -1;
+    }
+    
+    void update(int timestamp, int price) {
+        mp[timestamp] = price;
+        if(timestamp>latest_time) latest_time = timestamp;
+        max_heap.push({price,timestamp});
+        min_heap.push({price,timestamp});
+    }
+    
+    int current() {
+        return mp[latest_time];
+    }
+    
+    int maximum() {
+        while(!max_heap.empty() && max_heap.top().first != mp[max_heap.top().second]){
+            max_heap.pop();
         }
-        sort(dist.begin(),dist.end());
-        for(int i =1; i<n; i++){
-            if((dist[i]<=i)){
-                return i;
-            }
+        return max_heap.top().first;
+        
+    }
+    
+    int minimum() {
+         while(!min_heap.empty() && min_heap.top().first != mp[min_heap.top().second]){
+            min_heap.pop();
         }
-        return n;
+        return min_heap.top().first;
         
     }
 };
