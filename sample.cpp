@@ -1,27 +1,27 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class Solution
-{
+class Solution {
 public:
-    int reductionOperations(vector<int> &nums)
-    {
-        int n = nums.size();
-        sort(nums.begin(), nums.end());
-        unordered_set<int> st;
-        int ans = 0;
-        for (int i = 0; i < n; i++)
-        {
-            if (st.find(nums[i]) == st.end())
-            {
-                st.insert(nums[i]);
-                ans += st.size() - 1;
+    int maxFrequency(vector<int>& nums, int k) {
+        int countK = count(nums.begin(), nums.end(), k);
+        int maxIncrease = 0;
+
+        for (int i = 1; i <= 50; i++) {
+            if (i == k) continue;
+
+            int delta = k - i;
+            int balance = 0, peak = 0;
+
+            for (int j = 0; j < nums.size(); j++) {
+                balance += (nums[j] == i) ? 1 : (nums[j] == k) ? -1 : 0;
+                if (balance < 0) balance = 0;
+                peak = max(peak, balance);
             }
-            else
-            {
-                ans += st.size() - 1;
-            }
+
+            maxIncrease = max(maxIncrease, peak);
         }
-        return ans;
+
+        return countK + maxIncrease;
     }
 };
