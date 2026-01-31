@@ -1,30 +1,30 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class Solution {
+class Solution
+{
 public:
-    vector<int> findingUsersActiveMinutes(vector<vector<int>>& logs, int k) {
-        int n = logs.size();
-        sort(logs.begin(),logs.end());
-        vector<int> ans(k, 0);
+    int maxSubarrayLength(vector<int> &nums, int k)
+    {
+        int n = nums.size();
+        unordered_map<int, int> freq;
 
-        int id = logs[0][0];
-        int curr = 1;
+        int i = 0, j = 1, ans = 1;
+        freq[nums[i]]++;
 
-        for(int i = 1; i<n; i++){
-            if(logs[i][0] == logs[i-1][0] && logs[i][1] == logs[i-1][1]){
-                continue;
+        while (j < n)
+        {
+            freq[nums[j]]++;
+            
+            while(i<=j && freq[nums[j]]>k){
+                freq[nums[i]]--;
+                i++;
             }
-            if(logs[i][0] == id){
-                curr++;
-            }
-            else{
-                ans[curr - 1]++;
-                id = logs[i][0];
-                curr = 1;
-            }
+
+            ans = max(ans, j - i + 1);
+            j++;
         }
-        ans[curr - 1]++;
+
         return ans;
     }
 };
