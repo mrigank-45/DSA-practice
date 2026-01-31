@@ -3,25 +3,28 @@ using namespace std;
 
 class Solution {
 public:
-    int maxFrequency(vector<int>& nums, int k) {
-        int countK = count(nums.begin(), nums.end(), k);
-        int maxIncrease = 0;
+    vector<int> findingUsersActiveMinutes(vector<vector<int>>& logs, int k) {
+        int n = logs.size();
+        sort(logs.begin(),logs.end());
+        vector<int> ans(k, 0);
 
-        for (int i = 1; i <= 50; i++) {
-            if (i == k) continue;
+        int id = logs[0][0];
+        int curr = 1;
 
-            int delta = k - i;
-            int balance = 0, peak = 0;
-
-            for (int j = 0; j < nums.size(); j++) {
-                balance += (nums[j] == i) ? 1 : (nums[j] == k) ? -1 : 0;
-                if (balance < 0) balance = 0;
-                peak = max(peak, balance);
+        for(int i = 1; i<n; i++){
+            if(logs[i][0] == logs[i-1][0] && logs[i][1] == logs[i-1][1]){
+                continue;
             }
-
-            maxIncrease = max(maxIncrease, peak);
+            if(logs[i][0] == id){
+                curr++;
+            }
+            else{
+                ans[curr - 1]++;
+                id = logs[i][0];
+                curr = 1;
+            }
         }
-
-        return countK + maxIncrease;
+        ans[curr - 1]++;
+        return ans;
     }
 };
